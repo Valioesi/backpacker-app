@@ -1,4 +1,4 @@
-package im.backpacker;
+package com.interactivemedia.backpacker;
 
 import org.junit.Test;
 
