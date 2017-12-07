@@ -12,5 +12,6 @@
     <string name="des_LocationName">Name of Location, City</string>
     <string name="des_countryName">Country</string>
     <string name="des_cityName">City Name</string>
+    <string name="des_toggleFavorite">ToggleButton for favorite locations</string>
 
 </resources>
