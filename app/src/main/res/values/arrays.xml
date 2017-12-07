@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="locations">
+        <item>Kölner Dom</item>
+        <item>Schiefer Turm</item>
+        <item>Gran Canyon</item>
+    </string-array>
+
+</resources>

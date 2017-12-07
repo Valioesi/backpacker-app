@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.TextView;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.fragments.FriendsFragment;
 import com.interactivemedia.backpacker.fragments.MapFragment;

@@ -10,4 +10,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="des_buttonFav">Is Button Favorite?</string>
+    <string name="des_LocationName">Name of Location, City</string>
+    <string name="des_countryName">Country</string>
+    <string name="des_cityName">City Name</string>
 </resources>
