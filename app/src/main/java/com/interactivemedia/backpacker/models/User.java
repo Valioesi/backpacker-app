@@ -1,5 +1,7 @@
 package com.interactivemedia.backpacker.models;
 
+import java.util.ArrayList;
+
 /**
  * Created by Vali on 26.11.2017.
  *
@@ -7,13 +9,34 @@ package com.interactivemedia.backpacker.models;
  */
 
 public class User {
-    private String  name;
+    private int id;
+    private String firstName;
+    private String lastName;
+    private ArrayList<Location> locations;
 
-    public User(String name){
-        this.name = name;
+    public User(int id, String firstName, String lastName, ArrayList<Location> locations) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.locations = locations;
     }
 
-    public String getName(){
-        return this.name;
+    public int getId() {
+        return id;
     }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public ArrayList<Location> getLocations() {
+        return locations;
+    }
+
+
+
 }

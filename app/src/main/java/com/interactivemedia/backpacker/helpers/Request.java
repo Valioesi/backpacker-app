@@ -8,7 +8,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -19,7 +18,7 @@ import java.net.URL;
 
 public class Request {
 
-    private static final String DOMAIN_URL = "http://jsonplaceholder.typicode.com";
+    private static final String DOMAIN_URL = "http://192.168.42.143:3000";
     /**
      * this function can be used to perform a get request to a server
      *
@@ -36,9 +35,7 @@ public class Request {
             urlConnection.setRequestMethod("GET");
             response = readStream(urlConnection.getInputStream());
             urlConnection.disconnect();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        }  catch (IOException e) {
             e.printStackTrace();
         } finally {
             if (urlConnection != null) {
@@ -77,12 +74,12 @@ public class Request {
 
             response = readStream(urlConnection.getInputStream());
 
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            urlConnection.disconnect();
+            if(urlConnection != null){
+                urlConnection.disconnect();
+            }
         }
         return response;
     }
@@ -90,15 +87,15 @@ public class Request {
     /**
      * this method converts the inputstream to a string
      *
-     * @param in
+     * @param in is the inputstream
      * @return the response as String
      */
     private static String readStream(InputStream in) {
         BufferedReader reader = null;
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
         try {
             reader = new BufferedReader(new InputStreamReader(in));
-            String line = "";
+            String line;
             while ((line = reader.readLine()) != null) {
                 response.append(line);
             }

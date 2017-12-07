@@ -6,14 +6,12 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.fragments.FriendsFragment;
 import com.interactivemedia.backpacker.fragments.MapFragment;
 import com.interactivemedia.backpacker.fragments.MyListFragment;
 import com.interactivemedia.backpacker.fragments.SettingsFragment;
-import com.interactivemedia.backpacker.helpers.Request;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -40,7 +38,6 @@ public class HomeActivity extends AppCompatActivity {
                     break;
             }
 
-            //Manually displaying the first fragment - one time only
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.frame_layout, selectedFragment);
             transaction.commit();
@@ -53,7 +50,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         //Manually displaying the first fragment - one time only
@@ -63,13 +60,13 @@ public class HomeActivity extends AppCompatActivity {
 
         //this serves as an example of how to use Request helper class
         //can be deleted later
-        new Thread(new Runnable() {
+      /*  new Thread(new Runnable() {
             @Override
             public void run() {
                 Log.i("Json Response",Request.get("/posts"));
                 Log.i("Json Response",Request.post("/posts", "{ \"title\": \"what\", \"body\": \"blub\"}"));
             }
-        }).start();
+        }).start();*/
     }
 
 }
