@@ -1,16 +1,26 @@
 package com.interactivemedia.backpacker.fragments;
 
 import android.content.Context;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
+
 
 import com.interactivemedia.backpacker.R;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +29,12 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  *
  */
-public class MyListFragment extends Fragment {
+public class MyListFragment extends Fragment{
 
     private ListView lvMyLocation;
+    //private ToggleButton toggleFavorite;
+    private ImageButton imageButton;
+    private View view;
 
 
     public MyListFragment() {
@@ -36,8 +49,7 @@ public class MyListFragment extends Fragment {
     // TODO: Rename and change types and number of parameters
 
     public static MyListFragment newInstance() {
-        MyListFragment fragment = new MyListFragment();
-        return fragment;
+        return new MyListFragment();
     }
 
     /**
@@ -56,35 +68,35 @@ public class MyListFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_my_list, container, false);
+        view = inflater.inflate(R.layout.fragment_my_list, container, false);
 
-        CodeLearnAdpater locationListAdapter = new CodeLearnAdpater();
-        lvMyLocation = (ListView) view.findViewById(R.id.lv_myloc);
-        lvMyLocation.setAdapter(locationListAdapter);
+        fillListAdapter(view);
 
 
-        //String[] cities = new String[] {"Oper", "Kölner Dom", "Aussichtsplattform"};
-        //String [] cities = new String [] {"Sydney", "Köln", "Jungfraujoch"};
-        //String [] countries = new String [] {"Australien", "Deutschland", "Schweiz"};
-
-
-        /*
-        lvMyLocation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                final String item = (String) adapterView.getItemAtPosition(position);
-            }
-        });
-        */
+//         toggleFavorite=(ToggleButton) view.findViewById(R.id.toggleFavorite);
+//        toggleFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+//                if (isChecked) {
+//                    //Toggle is enabled
+//                    Log.i("Toggle", "Enabled");
+//                } else {
+//                    //Toggle is disabled
+//                    Log.i ("Toggle", "Disabled");
+//                }
+//            }
+//        });
 
         return view;
-
-
     }
 
-    public void OnActivityCreated (Bundle savedInstanceState){
-        super.onActivityCreated(savedInstanceState);
+
+    private void fillListAdapter(View view) {
+        CodeLearnAdpater locationListAdapter = new CodeLearnAdpater();
+        lvMyLocation = view.findViewById(R.id.lv_myloc);
+        lvMyLocation.setAdapter(locationListAdapter);
     }
+
 
     public class LocationChapter{
         String attraction;
@@ -97,7 +109,7 @@ public class MyListFragment extends Fragment {
     String [] ListCountry = new String [] {"Australien", "Deutschland", "Schweiz"};
 
     public List<LocationChapter> getDataForListView(){
-        List<LocationChapter> codeLocationChaptersList = new ArrayList<LocationChapter>();
+        List<LocationChapter> codeLocationChaptersList = new ArrayList<>();
         for (int i = 0; i< ListAttractions.length; i++){
             LocationChapter chapter = new LocationChapter();
             chapter.attraction = ListAttractions[i];
@@ -108,13 +120,18 @@ public class MyListFragment extends Fragment {
         return codeLocationChaptersList;
     }
 
+    static class ViewHolder{
+        TextView nameLocation;
+        TextView nameCity;
+        TextView nameCountry;
+        ImageButton btn_favorite;
+    }
 
     public class CodeLearnAdpater extends BaseAdapter{
         List <LocationChapter> codeLearnChapterList;
-        public CodeLearnAdpater() {
+        CodeLearnAdpater() {
             codeLearnChapterList = getDataForListView();
         }
-
 
         @Override
         public int getCount(){
@@ -132,28 +149,44 @@ public class MyListFragment extends Fragment {
         }
 
         @Override
-        public View getView(int arg0, View arg1, ViewGroup arg2){
-            if (arg1==null){
+        public View getView(int position, View convertView, ViewGroup parent){
+            ViewHolder viewHolder = new ViewHolder();
+            final boolean isFavorite=false;
+
+            if (convertView==null){
                 LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                arg1 = inflater.inflate(R.layout.listitem_mylist, arg2,false);
-            }
+                convertView = inflater.inflate(R.layout.listitem_mylist, parent, false);
 
-            TextView chapterCity = (TextView)arg1.findViewById(R.id.tv_cityName);
-            TextView chapterLocation = (TextView)arg1.findViewById(R.id.tv_locationName);
-            TextView chapterCountry = (TextView)arg1.findViewById(R.id.tv_countryName);
+                viewHolder.nameLocation=(TextView) convertView.findViewById(R.id.tv_locationName);
+                viewHolder.nameCountry=(TextView) convertView.findViewById(R.id.tv_countryName);
+                viewHolder.nameCity= (TextView) convertView.findViewById(R.id.tv_cityName);
+                viewHolder.btn_favorite=(ImageButton) convertView.findViewById(R.id.btn_favorite);
 
-            LocationChapter chapter = codeLearnChapterList.get(arg0);
+                convertView.setTag(viewHolder);
+            } else viewHolder = (ViewHolder) convertView.getTag();
+
+            LocationChapter chapter = codeLearnChapterList.get(position);
 
             String attraction = chapter.attraction;
             String city = chapter.city;
             String country=chapter.country;
 
-            chapterCity.setText(chapter.city);
-            chapterLocation.setText(chapter.attraction);
-            chapterCountry.setText(chapter.country);
+            viewHolder.nameLocation.setText(attraction);
+            viewHolder.nameCity.setText(city);
+            viewHolder.nameCountry.setText(country);
 
-            return arg1;
+            viewHolder.btn_favorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.i ("ONCLICKLISTENER", "IRGENDWAS");
+                    //viewHolder.btn_favorite.setImageResource(R.drawable.ic_favorite_black_24dp);
+                    Log.i("OnClick", "IsFavorite");
+                }
+            });
+
+            return convertView;
         }
+
     }
 
 }
