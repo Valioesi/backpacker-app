@@ -11,15 +11,12 @@
     <string name="des_LocationName">Name of Location, City</string>
     <string name="des_countryName">Country</string>
     <string name="des_cityName">City Name</string>
-<<<<<<< c67f3c26bcf94cf15219bafed4dd1ef03f63f547
     <string name="des_toggleFavorite">ToggleButton for favorite locations</string>
-=======
     <string name="label_categories">Categories</string>
     <string name="label_description">Description</string>
     <string name="hint_description">Write a short description.</string>
     <string name="add_picture">Add picture</string>
     <string name="label_select_picture">Select Picture (multiple possible)</string>
     <string name="save_location">Save location</string>
->>>>>>> added some functionality to AddLocationActivity
 
 </resources>
