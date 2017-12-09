@@ -18,7 +18,7 @@ import java.net.URL;
 
 public class Request {
 
-    private static final String DOMAIN_URL = "http://192.168.42.143:3000";
+    private static final String DOMAIN_URL = "http://192.168.0.15:3000";
     /**
      * this function can be used to perform a get request to a server
      *

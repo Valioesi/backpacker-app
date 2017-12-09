@@ -1,5 +1,6 @@
 package com.interactivemedia.backpacker.fragments;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -23,6 +24,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.interactivemedia.backpacker.R;
+import com.interactivemedia.backpacker.activities.AddLocationActivity;
 import com.interactivemedia.backpacker.helpers.CustomArrayAdapter;
 import com.interactivemedia.backpacker.helpers.MarkerColors;
 import com.interactivemedia.backpacker.helpers.Request;
@@ -139,6 +141,15 @@ public class MapFragment extends Fragment {
             }
         });
 
+        //find add location button and set on clock method to open new activity
+        final ImageButton addLocationButton = view.findViewById(R.id.add_location_button);
+        addLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openAddLocationActivity();
+            }
+        });
+
         //getMapAsync is called, when the map is ready, the API call is fired
         //i have decided to it this way instead of first AsyncTask, then getMapAsync in onPostExecute (i had it like that earlier)
         //I think that the performance is better this way
@@ -155,6 +166,13 @@ public class MapFragment extends Fragment {
         return view;
     }
 
+    /**
+     * this function simply opens the addLocationActivity
+     */
+    private void openAddLocationActivity(){
+        Intent intent = new Intent(getContext(), AddLocationActivity.class);
+        startActivity(intent);
+    }
 
     /**
      * this AsyncTask makes a call to our API to get locations, which will be rendered on the map
@@ -180,6 +198,9 @@ public class MapFragment extends Fragment {
         }
     }
 
+    /**
+     * this function loops through all users and adds their locations to the map
+     */
     private void addMarkersForAllUsers(){
         for (int i = 0; i < users.length; i++) {
             for (Location location : users[i].getLocations()) {
