@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.interactivemedia.backpacker.activities.AddLocationActivity"
+    android:orientation="vertical"
+    android:padding="15dp"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_view_location"
+        android:textSize="12pt"
+        android:layout_marginBottom="25dp"/>
+
+    <TextView
+        android:id="@+id/label_categories"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/label_categories"
+
+        />
+
+    <com.interactivemedia.backpacker.helpers.MultiSelectionSpinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner"
+        android:layout_marginBottom="20dp"/>
+
+    <TextView
+        android:id="@+id/label_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/label_description" />
+
+    <EditText
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:hint="@string/hint_description"
+        android:layout_marginBottom="20dp"/>
+
+
+    <TextView
+        android:id="@+id/label_picture"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/label_select_picture" />
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_picture"
+        android:onClick="openCamera"/>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/image_layout"/>
+    </HorizontalScrollView>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/save_location"
+        android:backgroundTint="@color/colorPrimary"
+        android:textColor="@android:color/white"
+        android:onClick="saveLocation"/>
+
+
+</LinearLayout>
