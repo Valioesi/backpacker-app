@@ -1,26 +1,20 @@
 package com.interactivemedia.backpacker.fragments;
 
 import android.content.Context;
-import android.media.Image;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ToggleButton;
-
 
 import com.interactivemedia.backpacker.R;
-
-import org.w3c.dom.Text;
+import com.interactivemedia.backpacker.activities.AddLocationActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +25,8 @@ import java.util.List;
  */
 public class MyListFragment extends Fragment{
 
-    private ListView lvMyLocation;
     //private ToggleButton toggleFavorite;
     private ImageButton imageButton;
-    private View view;
-
 
     public MyListFragment() {
         // Required empty public constructor
@@ -68,7 +59,7 @@ public class MyListFragment extends Fragment{
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_my_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_my_list, container, false);
 
         fillListAdapter(view);
 
@@ -87,13 +78,40 @@ public class MyListFragment extends Fragment{
 //            }
 //        });
 
+
+        //find add location button and set on clock method to open new activity
+        final ImageButton addLocationButton = view.findViewById(R.id.add_location_button);
+        addLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openAddLocationActivity();
+            }
+        });
+
+
+
+
+
         return view;
+
+
+
+    }
+
+    /**
+     * this function simply opens the addLocationActivity
+     */
+    private void openAddLocationActivity(){
+        Intent intent = new Intent(getContext(), AddLocationActivity.class);
+        startActivity(intent);
     }
 
 
+
+    //Fills Adapter and sets it
     private void fillListAdapter(View view) {
         CodeLearnAdpater locationListAdapter = new CodeLearnAdpater();
-        lvMyLocation = view.findViewById(R.id.lv_myloc);
+        ListView lvMyLocation = view.findViewById(R.id.lv_myloc);
         lvMyLocation.setAdapter(locationListAdapter);
     }
 
@@ -127,6 +145,7 @@ public class MyListFragment extends Fragment{
         ImageButton btn_favorite;
     }
 
+    //Custom Adapter
     public class CodeLearnAdpater extends BaseAdapter{
         List <LocationChapter> codeLearnChapterList;
         CodeLearnAdpater() {
