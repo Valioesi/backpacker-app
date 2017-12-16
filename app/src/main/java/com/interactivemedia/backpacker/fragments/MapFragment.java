@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.CheckedTextView;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -44,7 +45,7 @@ public class MapFragment extends Fragment {
 
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     private MapView mapView;
-    private User[] users;
+    private User[] friends;
     private DrawerLayout drawer;
     private CustomArrayAdapter adapter;
     private GoogleMap map;
@@ -89,11 +90,11 @@ public class MapFragment extends Fragment {
         mapView = view.findViewById(R.id.map_view);
         mapView.onCreate(mapViewBundle);
 
-        users = new User[]{};
+        friends = new User[]{};
 
         //find list view, create adapter containing friend list and set adapter of list view
         listView = view.findViewById(R.id.filter_list);
-        adapter = new CustomArrayAdapter(getContext(), R.layout.custom_list_item_multiple_choice, users);
+        adapter = new CustomArrayAdapter(getContext(), R.layout.custom_list_item_multiple_choice, friends);
         listView.setAdapter(adapter);
 
         //on item click listener will implement the functionality to filter the markers by user
@@ -112,10 +113,10 @@ public class MapFragment extends Fragment {
                 }else{
                     //get all of the checked items
                     SparseBooleanArray booleanArray = listView.getCheckedItemPositions();
-                    for (int index = 0; index < users.length; index++) {
+                    for (int index = 0; index < friends.length; index++) {
                         //if the position is checked in the listview, we want to display the markers of this user
                         if (booleanArray.get(index)) {
-                            for (Location location : users[index].getLocations()) {
+                            for (Location location : friends[index].getLocations()) {
                                 map.addMarker(new MarkerOptions()
                                         .position(new LatLng(location.getCoordinates()[0], location.getCoordinates()[1]))
                                         .title(location.getName())
@@ -159,8 +160,7 @@ public class MapFragment extends Fragment {
                 map = googleMap;
                 //call AsycnTask to get users and their saved locations to show from server
                 //this will be changed later, since we are only getting our friends!
-                //TODO: uncomment the api call
-           //     new GetLocations().execute("/users");
+               new GetLocations().execute("/users/5a32ababbc49d32e6cddb813/friends");
             }
         });
         return view;
@@ -186,14 +186,21 @@ public class MapFragment extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             Log.d("JSON response: ", result);
-            Gson gson = new Gson();
-            users = gson.fromJson(result, User[].class);
+            if(result.equals("error")){
+                Log.d("Error: ", "Error in GET Request");
+                Toast.makeText(getContext(), "There was an Error loading the locations of your friends", Toast.LENGTH_LONG).show();
+            } else {
+                Gson gson = new Gson();
+                friends = gson.fromJson(result, User[].class);
 
-            adapter.setUsers(users);
-            adapter.notifyDataSetChanged();
+                adapter.setUsers(friends);
+                adapter.notifyDataSetChanged();
 
-
-            addMarkersForAllUsers();
+                //check if friends are not empty
+                if(friends.length != 0){
+                    addMarkersForAllUsers();
+                }
+            }
 
         }
     }
@@ -202,8 +209,8 @@ public class MapFragment extends Fragment {
      * this function loops through all users and adds their locations to the map
      */
     private void addMarkersForAllUsers(){
-        for (int i = 0; i < users.length; i++) {
-            for (Location location : users[i].getLocations()) {
+        for (int i = 0; i < friends.length; i++) {
+            for (Location location : friends[i].getLocations()) {
                 map.addMarker(new MarkerOptions()
                         .position(new LatLng(location.getCoordinates()[0], location.getCoordinates()[1]))
                         .title(location.getName())

@@ -9,20 +9,20 @@ import java.util.ArrayList;
  */
 
 public class User {
-    private int id;
+    private String _id;
     private String firstName;
     private String lastName;
     private ArrayList<Location> locations;
 
-    public User(int id, String firstName, String lastName, ArrayList<Location> locations) {
-        this.id = id;
+    public User(String _id, String firstName, String lastName, ArrayList<Location> locations) {
+        this._id = _id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.locations = locations;
     }
 
-    public int getId() {
-        return id;
+    public String getId() {
+        return _id;
     }
 
     public String getFirstName() {

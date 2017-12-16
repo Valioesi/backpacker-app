@@ -8,45 +8,44 @@ import java.util.ArrayList;
  */
 
 public class Location {
-    private int id;
+    private String _id;
     private String googleId;
-    private int userId;
+    private String user;
     private boolean favorite;
-    private String name;
-    private ArrayList<String> categories;
+    private String[] categories;
     private String description;
-    private int[] coordinates;
+    private double[] coordinates;
+    private String city;
+    private String country;
+    private String name;
 
 
-    public Location(String googleId, int userId, String name, boolean favorite,  ArrayList<String> categories, String description, int[] coordinates) {
+
+    public Location(String googleId, String user, String name, boolean favorite,  String description, String[] categories, double[] coordinates, String city, String country) {
         this.googleId = googleId;
-        this.userId = userId;
-        this.favorite = favorite;
+        this.user = user;
         this.name = name;
-        this.categories = categories;
+        this.favorite = favorite;
         this.description = description;
+        this.categories = categories;
         this.coordinates = coordinates;
+        this.city = city;
+        this.country = country;
     }
 
-    public Location(String googleId, String name, boolean favorite, ArrayList<String> categories, String description, int[] coordinates) {
-        this.googleId = googleId;
-        this.favorite = favorite;
-        this.name = name;
-        this.categories = categories;
-        this.description = description;
-        this.coordinates = coordinates;
-    }
 
-    public int getId() {
-        return id;
+
+
+    public String getId() {
+        return _id;
     }
 
     public String getGoogleId() {
         return googleId;
     }
 
-    public int getUserId() {
-        return userId;
+    public String  getUserId() {
+        return user;
     }
 
     public boolean isFavorite() {
@@ -57,7 +56,7 @@ public class Location {
         return name;
     }
 
-    public ArrayList<String> getCategories() {
+    public String[] getCategories() {
         return categories;
     }
 
@@ -65,7 +64,23 @@ public class Location {
         return description;
     }
 
-    public int[] getCoordinates() {
+    public double[] getCoordinates() {
         return coordinates;
+    }
+
+    public String get_id() {
+        return _id;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public String getCountry() {
+        return country;
     }
 }

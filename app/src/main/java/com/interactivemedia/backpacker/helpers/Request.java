@@ -1,5 +1,7 @@
 package com.interactivemedia.backpacker.helpers;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -18,7 +20,7 @@ import java.net.URL;
 
 public class Request {
 
-    private static final String DOMAIN_URL = "http://192.168.0.15:3000";
+    private static final String DOMAIN_URL = "http://192.168.178.63:3000/api/v0";
     /**
      * this function can be used to perform a get request to a server
      *
@@ -33,6 +35,11 @@ public class Request {
 
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
+            //if the status code is anything else but 200, we want to return something different,
+            //which can be handled in our AsyncTasks
+            if(urlConnection.getResponseCode() != 200){
+                return "error";
+            }
             response = readStream(urlConnection.getInputStream());
             urlConnection.disconnect();
         }  catch (IOException e) {
@@ -72,6 +79,12 @@ public class Request {
             bufferedWriter.write(body);
             bufferedWriter.flush();
 
+            //if the status code is anything else but 201, we want to return something different,
+            //which can be handled in our AsyncTasks
+            if(urlConnection.getResponseCode() != 201){
+                Log.e("error in post request", urlConnection.getResponseMessage());
+                return "error";
+            }
             response = readStream(urlConnection.getInputStream());
 
         } catch (IOException e) {
