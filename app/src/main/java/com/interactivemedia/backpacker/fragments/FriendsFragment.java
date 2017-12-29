@@ -1,17 +1,24 @@
 package com.interactivemedia.backpacker.fragments;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.FriendsDetailsActivity;
+import com.interactivemedia.backpacker.helpers.CustomArrayAdapter;
+import com.interactivemedia.backpacker.helpers.Request;
+import com.interactivemedia.backpacker.models.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +28,40 @@ import java.util.List;
  *
  */
 public class FriendsFragment extends Fragment {
+
+    private static class GetFriendsTask extends AsyncTask<String, Integer, String> {
+
+        private CustomArrayAdapter adapter;
+
+        public GetFriendsTask(CustomArrayAdapter adapter) {
+            this.adapter = adapter;
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            Log.d("Test", "Started");
+            return Request.get(strings[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("JSON response: ", result);
+            if(result.equals("error")){
+                Log.d("Error: ", "Error in GET Request");
+                //Toast.makeText(getContext(), "There was an Error loading the locations of your friends", Toast.LENGTH_LONG).show();
+            } else {
+                Gson gson = new Gson();
+                User[] friends = gson.fromJson(result, User[].class);
+
+                adapter.setUsers(friends);
+                adapter.notifyDataSetChanged();
+            }
+
+        }
+    }
+
+    private User[] friends;
+    CustomArrayAdapter arrayAdapter;
 
 
     public FriendsFragment() {
@@ -53,17 +94,14 @@ public class FriendsFragment extends Fragment {
         //find ListView
         ListView lvfriends = (ListView) view.findViewById(R.id.listViewFriends);
 
-        //create dummy-list
-        List<String> testList = new ArrayList<String>();
-        testList.add("Fred");
-        testList.add("Bernd");
-        //create ArrayAdapter
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                getActivity(),
-                android.R.layout.simple_list_item_1,
-                testList );
+        friends = new User[]{};
+
+        //create adapter containing friends list
+        arrayAdapter = new CustomArrayAdapter(getContext(), R.layout.custom_list_item_multiple_choice, friends);
         //assign ArrayAdapter to friends list
         lvfriends.setAdapter(arrayAdapter);
+
+        new GetFriendsTask(arrayAdapter).execute ("/users/5a43f9e4c8a3992628bed68c/friends");
 
         //OnItemClickListener to get friends detail
         lvfriends.setOnItemClickListener(new AdapterView.OnItemClickListener() {
