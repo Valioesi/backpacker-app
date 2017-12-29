@@ -197,7 +197,7 @@ public class MapFragment extends Fragment {
                 adapter.notifyDataSetChanged();
 
                 //check if friends are not empty
-                if(friends.length != 0){
+                if(friends != null && friends.length != 0){
                     addMarkersForAllUsers();
                 }
             }

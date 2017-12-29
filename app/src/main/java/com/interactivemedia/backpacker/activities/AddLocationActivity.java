@@ -1,23 +1,28 @@
 package com.interactivemedia.backpacker.activities;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +32,7 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.gson.Gson;
 import com.interactivemedia.backpacker.R;
+import com.interactivemedia.backpacker.fragments.PictureDialogFragment;
 import com.interactivemedia.backpacker.helpers.MultiSelectionSpinner;
 import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.models.Location;
@@ -47,16 +53,21 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
 
     private static final int PLACE_PICKER_REQUEST = 1;
     private static final int IMAGE_CAPTURE_REQUEST = 2;
+    private static final int IMAGE_STORAGE_REQUEST = 3;
+    private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 4;
     private static final String[] OPTIONS_CATEGORIES = {"Bar", "Restaurant", "Beach", "Club"};
     private Place place;
     private String[] selectedCategories;
-    private ArrayList<String> picturePaths;
-    String currentPicturePath;
+    private ArrayList<String> picturePaths; //important, holds all paths of selected images -> needed for upload later
+    private String currentPicturePath;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_location);
+        //get progress bar, we want to make it visible later
+        progressBar = findViewById(R.id.progress_bar);
         picturePaths = new ArrayList<>();
 
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
@@ -72,7 +83,7 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
     /**
      * this function is called when a place was selected in place picker widget or a picture is taken
      *
-     * @param requestCode integer we have set to differentiate between actions (placepicker, camera)
+     * @param requestCode integer we have set to differentiate between actions (placepicker, camera, storage)
      * @param resultCode  integer that indicates the status code
      * @param data        data is needed to access the selected place via getPlace or the picture taken
      */
@@ -90,22 +101,51 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
             }
         } else if (requestCode == IMAGE_CAPTURE_REQUEST) {
             if (resultCode == RESULT_OK) {
-                //create new image view, add it to layout and set the bitmap
-                ImageView imageView = new ImageView(this);
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 200);
-                //layoutParams.setMarginEnd(5);
-                // layoutParams.gravity = Gravity.LEFT;
-                layoutParams.setMargins(0, 0, 10, 0);
-                imageView.setLayoutParams(layoutParams);
                 //get image from path, where it was saved
                 Bitmap picture = BitmapFactory.decodeFile(currentPicturePath);
-                imageView.setImageBitmap(picture);
-                LinearLayout layout = findViewById(R.id.image_layout);
-                layout.addView(imageView);
+                //add the picture to the Activity's view
+                createImageView(picture);
                 //add current file path to array
                 picturePaths.add(currentPicturePath);
             }
+        } else if (requestCode == IMAGE_STORAGE_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                //get path to selected image (always so fucking complicated in Android!)
+                if (data.getData() != null) {
+                    Uri selectedImageUri = data.getData();
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                    Cursor cursor = getContentResolver().query(selectedImageUri, filePathColumn, null, null, null);
+                    if (cursor != null) {
+                        cursor.moveToFirst();
+                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                        String picturePath = cursor.getString(columnIndex);
+                        Bitmap picture = BitmapFactory.decodeFile(picturePath);
+                        cursor.close();
+                        //add the picture to the Activity's view
+                        createImageView(picture);
+                        //add current file path to array
+                        picturePaths.add(picturePath);
+                    }
+                }
+            }
         }
+    }
+
+
+    /**
+     * this function creates a new ImageView, adds it to the layout and sets the given Bitmap as Image
+     *
+     * @param picture Bitmap, either from camera or from storage
+     */
+    public void createImageView(Bitmap picture) {
+        //create new image view, add it to layout and set the bitmap
+        ImageView imageView = new ImageView(this);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(100, 200);
+        layoutParams.setMargins(0, 0, 10, 0);
+        imageView.setLayoutParams(layoutParams);
+        imageView.setImageBitmap(picture);
+        LinearLayout layout = findViewById(R.id.image_layout);
+        layout.addView(imageView);
     }
 
     @Override
@@ -122,10 +162,8 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
     /**
      * this function is called on click of add picture button,
      * it calls createImageFile() and opens the camera via an intent
-     *
-     * @param view the button
      */
-    public void openCamera(View view) {
+    public void handleClickCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         //check if phone has a camera (intent can be resolved)
         if (intent.resolveActivity(getPackageManager()) != null) {
@@ -174,48 +212,126 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
     }
 
     /**
+     * this function starts the check for permission, in the permission callback we will start the intent to pick an image
+     */
+    public void getPictureFromStorage() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, IMAGE_STORAGE_REQUEST);
+    }
+
+    /**
+     * this function is called, when the option storage is clicked in the picture options dialog
+     * if the permission was already granted we call the function getPictureFromStorage, otherwise we ask for permssion
+     */
+    public void handleClickStorage() {
+        //get runtime permission for storage
+        if (Build.VERSION.SDK_INT >= 23 && this.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // Should we show an explanation?
+            if (this.shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                Log.d("Permission", "Needs an explanation");
+            } else {
+                this.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_STORAGE);
+            }
+        } else {
+            getPictureFromStorage();
+        }
+    }
+
+    /**
+     * this function is called after we ask for permission for access to external storage
+     *
+     * @param requestCode  is specified in the class
+     * @param permissions  just one string in this case: storage
+     * @param grantResults the result of the asking for permission
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // storage-related task you need to do.
+                    getPictureFromStorage();
+                } else {
+                    //TODO: handle permission denied
+                    Toast.makeText(this, "Permission was denied. Use the camera option to upload pictures.", Toast.LENGTH_LONG).show();
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
+
+    /**
+     * this function is called upon click of add picture button, opens option dialog (PictureDialogFragment)
+     *
+     * @param view the button
+     */
+    public void openDialog(View view) {
+        PictureDialogFragment dialog = new PictureDialogFragment();
+        dialog.show(getSupportFragmentManager(), "PictureDialogFragment");
+    }
+
+    /**
      * this function is called upon click of save location button
      * it starts the AsyncTask to make post request to server
      *
      * @param view the button
      */
     public void saveLocation(View view) {
-        //use geocoder to get city and country of our place
-        Geocoder geocoder = new Geocoder(this);
-        try {
-            List<Address> addresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
-            String city = addresses.get(0).getLocality() != null ? addresses.get(0).getLocality() : "No city";
-            String country = addresses.get(0).getCountryName() != null ? addresses.get(0).getCountryName() : "No country";
-            Log.d("address", addresses.get(0).toString());
+        EditText editText = findViewById(R.id.description);
+        String description = editText.getText().toString();
+        //only proceed, if the user put in a description
+        if (!description.equals("")) {
+            //show progress bar
+            progressBar.setVisibility(View.VISIBLE);
+            //use geocoder to get city and country of our place
+            Geocoder geocoder = new Geocoder(this);
+            try {
+                List<Address> addresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
+                String city = addresses.get(0).getLocality() != null ? addresses.get(0).getLocality() : "No city";
+                String country = addresses.get(0).getCountryName() != null ? addresses.get(0).getCountryName() : "No country";
+                Log.d("address", addresses.get(0).toString());
+                //create location object to parse it via gson
+                Location location = new Location(
+                        place.getId(),
+                        "5a46519c6de6a50f3c46efba",     //TODO: our user id,
+                        place.getName().toString(),
+                        true,
+                        description,
+                        selectedCategories,
+                        new double[]{place.getLatLng().latitude, place.getLatLng().longitude},
+                        city,
+                        country
+                );
+                //transform to json via gson
+                Gson gson = new Gson();
+                String locationJson = gson.toJson(location);
+                //call AsyncTask
+                new PostLocation().execute("/locations", locationJson);
+                Log.d("JSON body", locationJson);
 
-            //create location object to parse it via gson
-            EditText editText = findViewById(R.id.description);
-            String description = editText.getText().toString();
-            Location location = new Location(
-                    place.getId(),
-                    "5a32abc2bc49d32e6cddb815",     //TODO: our user id,
-                    place.getName().toString(),
-                    true,
-                    description,
-                    selectedCategories,
-                    new double[]{place.getLatLng().latitude, place.getLatLng().longitude},
-                    city,
-                    country
-            );
-            //transform to json via gson
-            Gson gson = new Gson();
-            String locationJson = gson.toJson(location);
-            //call AsyncTask
-            new PostLocation().execute("/locations", locationJson);
-            Log.d("JSON body", locationJson);
-        }catch (IOException e){
-            e.printStackTrace();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            Toast.makeText(getApplicationContext(), "Please add a description", Toast.LENGTH_LONG).show();
         }
-
 
     }
 
-      private class PostLocation extends AsyncTask<String, Integer, String> {
+
+    private class PostLocation extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... strings) {
             return Request.post(strings[0], strings[1]);
@@ -224,13 +340,51 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
         @Override
         protected void onPostExecute(String result) {
             Log.d("JSON response: ", result);
-            if(result.equals("error")){
+            if (result.equals("error")) {
                 Toast.makeText(getApplicationContext(), "There was an Error saving the location", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(getApplicationContext(), "Location saved successfully", Toast.LENGTH_LONG).show();
+                //get id of newly created location so that we can do a request to upload the pictures
+                Gson gson = new Gson();
+                Location location = gson.fromJson(result, Location.class);
+                if (location != null) {
+                    //check, if there are images to upload
+                    if (picturePaths.size() > 0) {
+                        new UploadLocation().execute("/locations/" + location.get_id() + "/images");
+                    } else {
+                        //return to previous activity
+                        finish();
+                    }
+                }
             }
 
         }
     }
 
+    private class UploadLocation extends AsyncTask<String, Integer, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            return Request.uploadPictures(strings[0], picturePaths);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            //hide progress bar again
+            progressBar.setVisibility(View.GONE);
+            Log.d("JSON response: ", result);
+            if (result.equals("error")) {
+                Toast.makeText(getApplicationContext(), "There was an Error uploading the location's pictures", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getApplicationContext(), "Pictures uploaded successfully", Toast.LENGTH_LONG).show();
+            }
+
+            //return to previous activity
+            finish();
+
+        }
+    }
+
+
 }
+
+
