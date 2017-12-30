@@ -32,10 +32,10 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation 'com.google.code.gson:gson:2.8.2'
-    implementation 'com.google.android.gms:play-services-maps:11.6.2'
-    implementation 'com.google.android.gms:play-services-places:11.6.2'
-    implementation('org.apache.httpcomponents:httpmime:4.3.6') {
-        exclude module: 'httpclient'
-    }
-    implementation 'org.apache.httpcomponents:httpclient-android:4.3.5'
+    implementation 'com.google.android.gms:play-services-maps:11.8.0'
+    implementation 'com.google.android.gms:play-services-places:11.8.0'
+    implementation 'com.google.android.gms:play-services-auth:11.8.0'
+
 }
+
+apply plugin: 'com.google.gms.google-services'
