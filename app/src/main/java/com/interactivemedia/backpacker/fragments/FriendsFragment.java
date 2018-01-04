@@ -103,7 +103,7 @@ public class FriendsFragment extends Fragment {
         //assign ArrayAdapter to friends list
         lvfriends.setAdapter(arrayAdapter);
 
-        new GetFriendsTask(arrayAdapter).execute ("/users/5a43f9e4c8a3992628bed68c/friends");
+        new GetFriendsTask(arrayAdapter).execute ("/users/5a323b82654ba50ef8d2b8c2/friends");
 
         //OnItemClickListener to get friends detail
         lvfriends.setOnItemClickListener(new AdapterView.OnItemClickListener() {

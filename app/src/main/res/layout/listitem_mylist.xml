@@ -39,7 +39,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_locationName" />
 
 
-    <ImageView
+    <ImageButton
         android:id="@+id/btn_favorite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
