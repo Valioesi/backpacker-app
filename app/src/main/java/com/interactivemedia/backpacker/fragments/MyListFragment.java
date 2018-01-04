@@ -33,6 +33,47 @@ public class MyListFragment extends Fragment {
     private Location[] mylocations;
     private FillListAdapter fillListAdapter;
 
+//    private String testJsonObject=" {\n" +
+//            "    \"_id\": \"5a4e2297c54f8939ec85f32c\",\n" +
+//            "    \"user\": {\n" +
+//            "      \"_id\": \"5a323b82654ba50ef8d2b8c2\",\n" +
+//            "      \"firstName\": \"Peter\",\n" +
+//            "      \"lastName\": \"Müller\"\n" +
+//            "    },\n" +
+//            "    \"googleId\": \"ChIJqe7nq7olv0cRUggn35PiWuU\",\n" +
+//            "    \"city\": \"Köln\",\n" +
+//            "    \"country\": \"Deutschland\",\n" +
+//            "    \"name\": \"Kölner Dom\",\n" +
+//            "    \"categories\": [],\n" +
+//            "    \"images\": [],\n" +
+//            "    \"coordinates\": [\n" +
+//            "      50.941325,\n" +
+//            "      6.9584\n" +
+//            "    ],\n" +
+//            "    \"favorite\": false,\n" +
+//            "    \"description\": \"Sehr schön hier\"\n" +
+//            "  },\n" +
+//            "  {\n" +
+//            "    \"_id\": \"5a4e22d6c54f8939ec85f32d\",\n" +
+//            "    \"user\": {\n" +
+//            "      \"_id\": \"5a323b82654ba50ef8d2b8c2\",\n" +
+//            "      \"firstName\": \"Peter\",\n" +
+//            "      \"lastName\": \"Müller\"\n" +
+//            "    },\n" +
+//            "    \"googleId\": \"ChIJ-yu74gMlv0cRpwJGueZgLUQ\",\n" +
+//            "    \"city\": \"Köln\",\n" +
+//            "    \"country\": \"Deutschland\",\n" +
+//            "    \"name\": \"VOLKSTHEATER Millowitsch\",\n" +
+//            "    \"categories\": [],\n" +
+//            "    \"images\": [],\n" +
+//            "    \"coordinates\": [\n" +
+//            "      50.936548,\n" +
+//            "      6.936866\n" +
+//            "    ],\n" +
+//            "    \"favorite\": false,\n" +
+//            "    \"description\": \"schönes Volkstheater, hab kein Wort verstanden\"\n" +
+//            "  }";
+
 
     static class ViewHolder {
         TextView nameLocation;
@@ -75,6 +116,7 @@ public class MyListFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my_list, container, false);
 
+
         ListView lvMyLocations = (ListView) view.findViewById(R.id.lv_myloc);
         mylocations = new Location[]{};
 
@@ -113,22 +155,30 @@ public class MyListFragment extends Fragment {
     private void loadLocations() {
         //call AsycTask to the locations of one user to show from server
         //TODO: instead of a defined userid we will insert the userid of the owner of the app
-        new GetLocations().execute("/locations?users=5a323b82654ba50ef8d2b8c2");
+        new GetLocations(fillListAdapter).execute("/locations?users=5a323b82654ba50ef8d2b8c2");
     }
 
     /**
      * this AsyncTask makes a call to our API to get locations, which will be rendered on the map
      */
     private class GetLocations extends AsyncTask<String, Integer, String> {
+
+        private FillListAdapter adapter;
+
+        public GetLocations(FillListAdapter adapter) {
+            this.adapter = adapter;
+        }
+
+
         @Override
         protected String doInBackground(String... strings) {
-            Log.d("DoInBackground", "Started in Class GetLocations");
+            Log.i("DoInBackground", "Started in Class GetLocations");
             return Request.get(strings[0]);
         }
 
         @Override
         protected void onPostExecute(String result) {
-            Log.d("JSON response: ", result);
+            Log.i("JSON response: ", result);
             if (result.equals("error")) {
                 Log.d("Error: ", "Error in GET Request");
                 Toast.makeText(getContext(), "There was an Error loading your locations", Toast.LENGTH_LONG).show();
@@ -148,11 +198,6 @@ public class MyListFragment extends Fragment {
         }
 
     }
-
-
-
-
-
     /**
      * this function simply opens the addLocationActivity
      */

@@ -30,4 +30,17 @@
     <string name="location_thumbnail">Thumbnail of location</string>
     <string name="no_categories">No categories specified</string>
 
+
+    <string name="lvexp_setting_heading">heading</string>
+    <string name="lvexp_setting_content">content</string>
+    <string name="credits">This application was created by \n
+        Valentin Schagerl, Julien Sanders, Jonas Scheffner and Rebecca Durm \n
+        within the context of the course \n
+        253060a Interactive Media (Prof. Dr. Simon Wiest) at\n
+        Stuttgart Media University.\n
+
+        \n \n Fall Semester 2017/2018
+        </string>
+    <string name="howTo1">This application will help you to ... </string>
+
 </resources>
