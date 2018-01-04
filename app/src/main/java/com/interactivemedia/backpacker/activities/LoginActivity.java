@@ -129,8 +129,9 @@ public class LoginActivity extends AppCompatActivity {
             String jsonBody = "{ token: " + account.getIdToken() + "}";
             // TODO: uncomment later, once endpoint is up and running
             //new SendToken().execute("/users", jsonBody);
-            Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
-            startActivity(intent);
+           // Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
+           // startActivity(intent);
+            startHomeActivity();
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
