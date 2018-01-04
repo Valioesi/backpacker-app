@@ -2,6 +2,9 @@ package com.interactivemedia.backpacker.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -31,6 +34,7 @@ import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -46,7 +50,6 @@ import com.interactivemedia.backpacker.models.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -67,6 +70,8 @@ public class MapFragment extends Fragment {
     private GoogleMap map;
     private ListView listView;
     private HashMap<String, ArrayList<User>> googleIdUsersMap;
+    private HashMap<String, Marker> googleIdMarkersMap;
+
 
     public MapFragment() {
         // Required empty public constructor
@@ -103,6 +108,7 @@ public class MapFragment extends Fragment {
         }
 
         googleIdUsersMap = new HashMap<>();
+        googleIdMarkersMap = new HashMap<>();
 
         //find mapView, call create function
         mapView = view.findViewById(R.id.map_view);
@@ -138,8 +144,8 @@ public class MapFragment extends Fragment {
                         if (booleanArray.get(index)) {
                             for (Location location : friends[index].getLocations()) {
                                 //add user to google id -> to be able to later check, if there are multiple users having the same location
-                                addUserToHashMap(location.getGoogleId(), friends[index]);
-                                setMarker(location, i);
+                                boolean multiple = addUserToHashMap(location.getGoogleId(), friends[index]);
+                                setMarker(location, i, multiple);
                             }
                         }
                     }
@@ -237,17 +243,27 @@ public class MapFragment extends Fragment {
      * this function sets one marker on the map
      *
      * @param location the location object, which holds the data needed for the marker
-     * @param index the index of the loop through the user's friends -> needed to compute color for marker
+     * @param index    the index of the loop through the user's friends -> needed to compute color for marker
+     * @param multiple boolean, which indicates, if there are multiple users for this location
      */
-    private void setMarker(Location location, int index){
+    private void setMarker(Location location, int index, boolean multiple) {
+        //if there are multiple users for this location, use a different marker
+        BitmapDescriptor icon;
+        if (multiple) {
+            Bitmap bitmap = drawableToBitmap(getResources().getDrawable(R.drawable.ic_place_multiple_36dp));
+            icon = BitmapDescriptorFactory.fromBitmap(bitmap);
+        } else {
+            icon = BitmapDescriptorFactory.defaultMarker(MarkerColors.computeColor(index));
+        }
         MarkerOptions options = new MarkerOptions()
                 .position(new LatLng(location.getCoordinates()[0], location.getCoordinates()[1]))
                 .title(location.getName())
-                .icon(BitmapDescriptorFactory
-                        .defaultMarker(MarkerColors.computeColor(index)));
+                .icon(icon);
+
         Marker marker = map.addMarker(options);
         //set tag is important, so that we can use the data from location in our info window
         marker.setTag(location);
+        addMarkerToHashMap(location.getGoogleId(), marker);
     }
 
     /**
@@ -257,8 +273,8 @@ public class MapFragment extends Fragment {
         for (int i = 0; i < friends.length; i++) {
             for (Location location : friends[i].getLocations()) {
                 //add user to google id -> to be able to later check, if there are multiple users having the same location
-                addUserToHashMap(location.getGoogleId(), friends[i]);
-                setMarker(location, i);
+                boolean multiple = addUserToHashMap(location.getGoogleId(), friends[i]);
+                setMarker(location, i, multiple);
             }
         }
     }
@@ -267,18 +283,47 @@ public class MapFragment extends Fragment {
      * this function adds a user to the googleIdHashmap
      *
      * @param googleId the key, under which the user will be stored
-     * @param user the user to be added (will be in array list in hash map)
+     * @param user     the user to be added (will be in array list in hash map)
+     * @return true, if there are multiple users for this location, false otherwise
      */
-    private void addUserToHashMap(String googleId, User user){
+    private boolean addUserToHashMap(String googleId, User user) {
         ArrayList<User> users = googleIdUsersMap.get(googleId);
+        boolean multiple = true;
         //create new array, if it does not exist, otherwise just add the user to the existing one (meaning, that there will be multiple users)
-        if(users == null){
+        if (users == null) {
             users = new ArrayList<>();
+            multiple = false;
         }
-        users.add(user);
+        //only add user, if user is not already in it, this can be deleted later, more for debuggin purposes
+        if (!users.contains(user)) {
+            users.add(user);
+        } else {
+            multiple = false;
+        }
         //now put to updated array list to our map to the appropriate key (which is the google id)
         googleIdUsersMap.put(googleId, users);
+        return multiple;
     }
+
+
+    /**
+     * this function is used to hold all existing markers in a hash map
+     * this is necessary for: if there already is a marker for a google id, it has to be removed from the map
+     *
+     * @param googleId the key, under which the marker will be stored
+     * @param marker the marker to be stored
+     */
+    private void addMarkerToHashMap(String googleId, Marker marker){
+        Marker existingMarker = googleIdMarkersMap.get(googleId);
+        //check if there is already a marker for this google Id
+        // -> if yes, then remove the existing marker from map
+        if(existingMarker != null){
+            existingMarker.remove();
+        }
+        // add new marker to hash map (if one existed, it gets replaced;
+        googleIdMarkersMap.put(googleId, marker);
+    }
+
     /**
      * this function configures the info window for the markers
      */
@@ -293,7 +338,8 @@ public class MapFragment extends Fragment {
             }
 
             //this method only adjusts not the content of the window, not border or background -> therefore enough
-            @Override @SuppressLint("InflateParams")
+            @Override
+            @SuppressLint("InflateParams")
             public View getInfoContents(final Marker marker) {
                 Log.d("check", "is this called only once?");
                 View view = getLayoutInflater().inflate(R.layout.view_info_window, null);
@@ -369,15 +415,16 @@ public class MapFragment extends Fragment {
 
 
                     //IMPORTANT! use hash map to check, if the location is used by more than one user
+
                     ArrayList<User> users = googleIdUsersMap.get(location.getGoogleId());
                     //if there are more than one users, we want to show it in the info window, otherwise not
-                    if(users.size() > 1){
+                    if (users.size() > 1) {
                         TextView textViewUsers = view.findViewById(R.id.text_view_users);
                         StringBuilder builder = new StringBuilder();
                         builder.append("Location saved by ");
                         //this approach of using prefix is used to not have a trailing comma in the end
                         String prefix = "";
-                        for(User user: users){
+                        for (User user : users) {
                             builder.append(prefix);
                             prefix = ", ";
                             builder.append(user.getFirstName());
@@ -392,6 +439,28 @@ public class MapFragment extends Fragment {
                 return view;
             }
         });
+    }
+
+
+    /**
+     * this is a helper function, which converts a drawable into a bitmap
+     * needed for creation of marker
+     *
+     * @param drawable the Drawable, we want to convert
+     * @return Bitmap, created from drawable
+     */
+    public static Bitmap drawableToBitmap(Drawable drawable) {
+
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable) drawable).getBitmap();
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
     }
 
     //we need to forward all lifecycle methods
@@ -418,6 +487,8 @@ public class MapFragment extends Fragment {
         //reload markers, because there might have been added one
         if (map != null) {
             map.clear();
+            googleIdUsersMap.clear();
+            googleIdMarkersMap.clear();
             loadLocations();
         }
     }
