@@ -26,6 +26,7 @@ import java.util.ArrayList;
 public class Request {
 
     private static final String DOMAIN_URL = "http://192.168.178.71:3000/api/v0";
+    public static final String IMAGES_URL = "http://192.168.178.71:3000/uploads/imgs";
 
     /**
      * this function can be used to perform a get request to a server
@@ -59,23 +60,58 @@ public class Request {
         return response;
     }
 
-
     /**
-     * this function can be used to perform a post request to a server
+     * this function performs a post request -> calls postOrPatch, which does the actual work
+     * this function was added to have a structure, which reuses code for both post and patch
+     * without having to change the function parameters (e.g. post(endpoint, body, patchRequest)
      *
      * @param endpoint -> String of the REST endpoint, is added to our URL
      * @param body     as string in JSON format
      * @return response as string
      */
-    public static String post(String endpoint, String body) {
+    public static String post(String endpoint, String body){
+        return postOrPatch(endpoint, body, false);
+    }
+
+    /**
+     * this function performs a patch request -> calls postOrPatch, which does the actual work
+     * this function was added to have a structure, which reuses code for both post and patch
+     * without having to change the function parameters (e.g. post(endpoint, body, patchRequest)
+     *
+     * @param endpoint -> String of the REST endpoint, is added to our URL
+     * @param body     as string in JSON format
+     * @return response as string
+     */
+    public static String patch(String endpoint, String body){
+        return postOrPatch(endpoint, body, true);
+    }
+
+
+    /**
+     * this function can be used to perform a post or patch request to a server
+     * it will be called by the two function post or patch
+     * @param endpoint -> String of the REST endpoint, is added to our URL
+     * @param body     as string in JSON format
+     * @param patchRequest boolean, which signifies, if this function will be used as patch request
+     * @return response as string
+     */
+    private static String postOrPatch(String endpoint, String body, boolean patchRequest) {
         String response = "";
         HttpURLConnection urlConnection = null;
         try {
             URL url = new URL(DOMAIN_URL + endpoint);
             urlConnection = (HttpURLConnection) url.openConnection();
+            //the following line will only be executed for a patch request, it sets the request method to patch
+            //it seems kinda hacky, but there is no way to directly set the request method to patch
+            if(patchRequest){
+                urlConnection.setRequestProperty("X-HTTP-Method-Override", "PATCH");
+                urlConnection.setRequestProperty("Content-Type",
+                        "application/merge-patch+json");
+            } else {
+                urlConnection.setRequestProperty("Content-Type",
+                        "application/json");
+            }
             urlConnection.setRequestMethod("POST");
-            urlConnection.setRequestProperty("Content-Type",
-                    "application/json");
             urlConnection.setDoInput(true);
             urlConnection.setDoOutput(true);
 
@@ -85,10 +121,12 @@ public class Request {
             bufferedWriter.write(body);
             bufferedWriter.flush();
 
-            //if the status code is anything else but 201, we want to return something different,
+            //if the status code is anything else but 201 (post) or 204 (patch), we want to return something different,
             //which can be handled in our AsyncTasks
-            if (urlConnection.getResponseCode() != 201) {
+            if (urlConnection.getResponseCode() != 201 && urlConnection.getResponseCode() != 204) {
+                Log.e("Status code", urlConnection.getResponseCode() + "");
                 Log.e("error in post request", urlConnection.getResponseMessage());
+                Log.e("Error stream", readStream(urlConnection.getErrorStream()));
                 return "error";
             }
             response = readStream(urlConnection.getInputStream());
@@ -103,6 +141,12 @@ public class Request {
         return response;
     }
 
+    /**
+     * this function is used to upload pictures to the server
+     * @param endpoint -> String of the REST endpoint, is added to our URL
+     * @param picturePaths an array list, which holds paths to the images on the phone
+     * @return response as string
+     */
     public static String uploadPictures(String endpoint, ArrayList<String> picturePaths) {
         String response = "";
         HttpURLConnection urlConnection = null;

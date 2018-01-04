@@ -13,11 +13,14 @@ public class Location {
     private String user;
     private boolean favorite;
     private String[] categories;
+    private String[] images;
     private String description;
     private double[] coordinates;
     private String city;
     private String country;
     private String name;
+    //this field is needed for our logic in map fragment to only download image once
+    private transient boolean infoWindowAlreadyShown = false;     //transient, because gson should ignore it
 
 
 
@@ -72,6 +75,11 @@ public class Location {
         return _id;
     }
 
+
+    public String[] getImages() {
+        return images;
+    }
+
     public String getUser() {
         return user;
     }
@@ -83,4 +91,14 @@ public class Location {
     public String getCountry() {
         return country;
     }
+
+
+    public boolean wasInfoWindowAlreadyShown() {
+        return infoWindowAlreadyShown;
+    }
+
+    public void setInfoWindowAlreadyShown(boolean infoWindowAlreadyShown) {
+        this.infoWindowAlreadyShown = infoWindowAlreadyShown;
+    }
+
 }

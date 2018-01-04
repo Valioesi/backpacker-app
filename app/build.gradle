@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.interactivemedia.backpacker"
-        minSdkVersion 21
+        minSdkVersion 17
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -35,7 +35,9 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:11.8.0'
     implementation 'com.google.android.gms:play-services-places:11.8.0'
     implementation 'com.google.android.gms:play-services-auth:11.8.0'
-
+    implementation ("com.github.bumptech.glide:glide:4.4.0") {
+        exclude group: "com.android.support"
+    }
 }
 
 apply plugin: 'com.google.gms.google-services'

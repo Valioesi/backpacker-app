@@ -3,6 +3,7 @@ package com.interactivemedia.backpacker.fragments;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.interactivemedia.backpacker.R;
+import com.interactivemedia.backpacker.activities.AddFriendActivity;
 import com.interactivemedia.backpacker.activities.FriendsDetailsActivity;
 import com.interactivemedia.backpacker.helpers.CustomArrayAdapter;
 import com.interactivemedia.backpacker.helpers.Request;
@@ -108,6 +110,16 @@ public class FriendsFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getActivity(), FriendsDetailsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        //set on click listener for add friend button -> open AddFriendActivity
+        FloatingActionButton button = view.findViewById(R.id.add_friend_button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), AddFriendActivity.class);
                 startActivity(intent);
             }
         });

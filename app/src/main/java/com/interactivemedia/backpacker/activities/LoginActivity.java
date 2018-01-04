@@ -3,7 +3,9 @@ package com.interactivemedia.backpacker.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -14,8 +16,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.interactivemedia.backpacker.R;
+import com.interactivemedia.backpacker.helpers.Request;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -38,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
+
         //add onClickListener for sign in button
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,20 +59,28 @@ public class LoginActivity extends AppCompatActivity {
         // the GoogleSignInAccount will be non-null.
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         //start home activity, when account is not null (user already signed in)
-        if(account != null){
-           // startHomeActivity();
-            //TODO: validate via Server
+        if (account != null) {
+            startHomeActivity();
+            //logout for testing purposes
+          /*  mGoogleSignInClient.signOut()
+                    .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            // ...
+                        }
+                    });
+                    */
+            //TODO: validate via Server, if necessary
         }
     }
 
     /**
      * this function starts the home activity (e.g. user is signed in)
      */
-    private void startHomeActivity(){
+    private void startHomeActivity() {
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
     }
-
 
 
     /**
@@ -80,9 +93,10 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * this function ic called when the result of the sign in intent kicks in
+     *
      * @param requestCode in this case we only have SING_IN_REQUEST, but might be used to differentiate between different intents
-     * @param resultCode signifies if everything worked
-     * @param data holds the intent
+     * @param resultCode  signifies if everything worked
+     * @param data        holds the intent
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -100,6 +114,7 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * handles, what happens after the attempted sign in
      * starts HomeActivity, when sign in was successful
+     *
      * @param completedTask holds information about the sign in attempt
      */
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
@@ -108,10 +123,14 @@ public class LoginActivity extends AppCompatActivity {
 
             // Signed in successfully, show authenticated UI.
             Toast.makeText(this, "Signed in successfully", Toast.LENGTH_LONG).show();
-            //TODO: validate via Server
             //save token in Shared Preferences
             saveIdTokenAsPreference(account.getIdToken());
-            startHomeActivity();
+            //let's make an api call with the token, so that the backend can check, if the user already exists in our db and can create it if necessary
+            String jsonBody = "{ token: " + account.getIdToken() + "}";
+            // TODO: uncomment later, once endpoint is up and running
+            //new SendToken().execute("/users", jsonBody);
+            Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
+            startActivity(intent);
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
@@ -122,9 +141,10 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * this function saves the id token (taken from our GoogleSignInAccount in the SharedPreference
+     *
      * @param token is a String, taken from account
      */
-    private void saveIdTokenAsPreference(String token){
+    private void saveIdTokenAsPreference(String token) {
         SharedPreferences sharedPreferences = this.getSharedPreferences(getString(R.string.shared_preference_name), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(getString(R.string.saved_token), token);
@@ -132,4 +152,29 @@ public class LoginActivity extends AppCompatActivity {
         //this will log the token saved in shared preferences
         Log.d("Preferences", sharedPreferences.getString(getString(R.string.saved_token), "key not present"));
     }
+
+    /**
+     * this AsyncTask sends the token via post request to the server
+     * if successful, the Home Activity is started
+     */
+    private class SendToken extends AsyncTask<String, Integer, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            return Request.post(strings[0], strings[1]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("JSON response: ", result);
+            if (result.equals("error")) {
+                Toast.makeText(getApplicationContext(), "There was an Error logging in", Toast.LENGTH_LONG).show();
+            } else {
+                //redirect to EditProfileActivity to give the user the option to edit his data
+                Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
+                startActivity(intent);
+            }
+
+        }
+    }
+
 }
