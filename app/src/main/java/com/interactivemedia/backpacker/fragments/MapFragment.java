@@ -203,7 +203,7 @@ public class MapFragment extends Fragment {
     private void loadLocations() {
         //call AsycnTask to get users and their saved locations to show from server
         //this will be changed later, since we are only getting our friends!
-        new GetLocations().execute("/users/5a323b82654ba50ef8d2b8c2/friends");
+        new GetLocations().execute("/users/5a4cb9154162d41ba096f01d/friends");
     }
 
     /**
@@ -318,6 +318,17 @@ public class MapFragment extends Fragment {
         //check if there is already a marker for this google Id
         // -> if yes, then remove the existing marker from map
         if(existingMarker != null){
+            //check, if the new marker does not have images -> in that case, we check, if the old one has got one
+            Location newLocation = (Location) marker.getTag();
+            if(newLocation != null && newLocation.getImages().length == 0){
+                Location existingLocation = (Location) existingMarker.getTag();
+                //if the location of the old marker has images, set those as the images of the new marker
+                if(existingLocation != null && existingLocation.getImages().length != 0){
+                    newLocation.setImages(existingLocation.getImages());
+                    marker.setTag(newLocation);
+                }
+            }
+
             existingMarker.remove();
         }
         // add new marker to hash map (if one existed, it gets replaced;

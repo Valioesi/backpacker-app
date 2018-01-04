@@ -80,6 +80,11 @@ public class Location {
         return images;
     }
 
+
+    public void setImages(String[] images) {
+        this.images = images;
+    }
+
     public String getUser() {
         return user;
     }
