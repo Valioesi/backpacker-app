@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "281227624759",
+    "project_id": "backpacker-app-1512139294560"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:281227624759:android:67709856ffb6e7dc",
+        "android_client_info": {
+          "package_name": "com.interactivemedia.backpacker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "281227624759-l6dd68h5j2jlcn8scgh4g0kcn42f107l.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "281227624759-u4bod5tdi0uk9go05tdbjelevrt6fl5m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.interactivemedia.backpacker",
+            "certificate_hash": "f139126a5d02c43ef9d849cc111bbd976267505e"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfplLy3PWk0vxnMOayJDSsBa9hFo_1agQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
