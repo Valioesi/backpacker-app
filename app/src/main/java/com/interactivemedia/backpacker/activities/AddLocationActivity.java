@@ -50,7 +50,7 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
     private static final int PLACE_PICKER_REQUEST = 1;
     private static final int IMAGE_CAPTURE_REQUEST = 2;
     private static final int IMAGE_STORAGE_REQUEST = 3;
-    private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 4;
+    private static final int PERMISSION_READ_STORAGE_REQUEST = 4;
     private static final String[] OPTIONS_CATEGORIES = {"Bar", "Restaurant", "Beach", "Club"};
     private Place place;
     private String[] selectedCategories;
@@ -81,7 +81,7 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
      *
      * @param requestCode integer we have set to differentiate between actions (placepicker, camera, storage)
      * @param resultCode  integer that indicates the status code
-     * @param data        data is needed to access the selected place via getPlace or the picture taken
+     * @param data        data is needed to access the selected place via getPlace or the picture
      */
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_PICKER_REQUEST) {
@@ -106,22 +106,15 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
             }
         } else if (requestCode == IMAGE_STORAGE_REQUEST) {
             if (resultCode == RESULT_OK) {
-                //get path to selected image (always so fucking complicated in Android!)
-                if (data.getData() != null) {
-                    Uri selectedImageUri = data.getData();
-                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                    Cursor cursor = getContentResolver().query(selectedImageUri, filePathColumn, null, null, null);
-                    if (cursor != null) {
-                        cursor.moveToFirst();
-                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                        String picturePath = cursor.getString(columnIndex);
-                        Bitmap picture = BitmapFactory.decodeFile(picturePath);
-                        cursor.close();
-                        //add the picture to the Activity's view
-                        createImageView(picture);
-                        //add current file path to array
-                        picturePaths.add(picturePath);
-                    }
+                //use storage class to get picture path
+                String picturePath = Storage.getPicturePathFromStorage(data, this);
+                if (picturePath != null) {
+                    Bitmap picture = BitmapFactory.decodeFile(picturePath);
+                    //add the picture to the Activity's view
+                    createImageView(picture);
+                    //add current file path to array
+                    picturePaths.add(picturePath);
+
                 }
             }
         }
@@ -205,7 +198,7 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
     @Override
     public void onDialogStorageClick(PictureDialogFragment dialogFragment) {
         //get runtime permission for storage
-        if (Storage.getStoragePermission(this, MY_PERMISSIONS_REQUEST_READ_STORAGE)){
+        if (Storage.getStoragePermission(this, PERMISSION_READ_STORAGE_REQUEST)) {
             getPictureFromStorage();
         }
     }
@@ -221,7 +214,7 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_READ_STORAGE: {
+            case PERMISSION_READ_STORAGE_REQUEST: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -323,7 +316,7 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
                 if (location != null) {
                     //check, if there are images to upload
                     if (picturePaths.size() > 0) {
-                        new UploadLocation().execute("/locations/" + location.get_id() + "/images");
+                        new UploadPictures().execute("/locations/" + location.get_id() + "/images");
                     } else {
                         //return to previous activity
                         finish();
@@ -334,10 +327,10 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
         }
     }
 
-    private class UploadLocation extends AsyncTask<String, Integer, String> {
+    private class UploadPictures extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... strings) {
-            return Request.uploadPictures(strings[0], picturePaths);
+            return Request.uploadPictures(strings[0], picturePaths, "POST");
         }
 
         @Override

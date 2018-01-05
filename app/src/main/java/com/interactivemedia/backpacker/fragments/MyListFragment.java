@@ -158,7 +158,7 @@ public class MyListFragment extends Fragment {
     private void loadLocations() {
         //call AsycTask to the locations of one user to show from server
         //TODO: instead of a defined userid we will insert the userid of the owner of the app
-        new GetLocations(fillListAdapter).execute("/locations?users=5a323b82654ba50ef8d2b8c2");
+        new GetLocations(fillListAdapter).execute("/locations?users=5a46519c6de6a50f3c46efba");
     }
 
     /**

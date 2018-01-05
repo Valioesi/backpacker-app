@@ -1,15 +1,18 @@
 package com.interactivemedia.backpacker.fragments;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import com.interactivemedia.backpacker.R;
+import com.interactivemedia.backpacker.activities.EditProfileActivity;
 import com.interactivemedia.backpacker.helpers.ExpandableListSettingsAdapter;
 import com.interactivemedia.backpacker.helpers.StackOverflowXmlParser;
 import com.interactivemedia.backpacker.helpers.Entry;
@@ -25,12 +28,8 @@ import java.util.HashMap;
 import java.util.List;
 
 
-
-
-
 /**
  * A simple {@link Fragment} subclass.
- *
  */
 public class SettingsFragment extends Fragment {
 
@@ -41,7 +40,7 @@ public class SettingsFragment extends Fragment {
     private List<String> listDataHeader;
     private HashMap<String, List<String>> listHash;
 
-    private static final String URL="http://stackoverflow.com/feeds/tag?tagnames=android&sort=newest";
+    private static final String URL = "http://stackoverflow.com/feeds/tag?tagnames=android&sort=newest";
     //XmlPullParser xpp=getResources().getXml(R.xml.user_documentation);
 
 
@@ -52,6 +51,7 @@ public class SettingsFragment extends Fragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment.
+     *
      * @return A new instance of fragment SettingsFragment.
      */
     // TODO: Rename and change types and number of parameters
@@ -72,8 +72,8 @@ public class SettingsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
 
-        txt = (TextView)view.findViewById(R.id.textView2);
-        listView = (ExpandableListView)view.findViewById(R.id.lvexp_settings);
+        txt = (TextView) view.findViewById(R.id.textView2);
+        listView = (ExpandableListView) view.findViewById(R.id.lvexp_settings);
 //        //initialize Data:
 //        listDataHeader=new ArrayList<>();
 //        listHash = new HashMap<String, List<String>>();
@@ -104,26 +104,38 @@ public class SettingsFragment extends Fragment {
 //        listAdapter = new ExpandableListSettingsAdapter(getContext(), listDataHeader, listHash);
 //        listView.setAdapter(listAdapter);
 
-            new DownloadXmlTask().execute(URL);
+        new DownloadXmlTask().execute(URL);
 
+
+        //create on click listener for open profile button
+        Button button = view.findViewById(R.id.button_open_profile);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openProfile();
+            }
+        });
         return view;
     }
 
-
-
-
-
+    /**
+     * this function starts the EditProfileActivity
+     */
+    private void openProfile() {
+        Intent intent = new Intent(getContext(), EditProfileActivity.class);
+        startActivity(intent);
+    }
 
 
     //Implementation of AsyncTask used to download XML feed from stackoverflow.com
-    private class DownloadXmlTask extends AsyncTask <String, Void, String> {
+    private class DownloadXmlTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
             return loadXmlFromNetwork(urls[0]);
         }
 
         @Override
-        protected void onPostExecute(String result){
+        protected void onPostExecute(String result) {
             txt.setText(result);
         }
     }
@@ -135,11 +147,11 @@ public class SettingsFragment extends Fragment {
     //Returns an HTML string that is displays in the UI by the AsyncMethod onPOstExecute()
 
     private String loadXmlFromNetwork(String url) {
-        InputStream stream=null;
+        InputStream stream = null;
 
         //Instantiate the parser
         StackOverflowXmlParser stackOverflowXmlParser = new StackOverflowXmlParser();
-        List <Entry> entries=null;
+        List<Entry> entries = null;
 
         String title = null;
         String linkurl = null;

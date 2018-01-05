@@ -25,8 +25,9 @@ import java.util.ArrayList;
 
 public class Request {
 
-    private static final String DOMAIN_URL = "http://192.168.178.71:3000/api/v0";
-    public static final String IMAGES_URL = "http://192.168.178.71:3000/uploads/imgs";
+    public static final String DOMAIN_URL = "http://192.168.178.71:3000";
+    private static final String API_URL = DOMAIN_URL + "/api/v0";
+    public static final String IMAGES_URL = DOMAIN_URL + "/uploads/imgs";
 
     /**
      * this function can be used to perform a get request to a server
@@ -38,7 +39,7 @@ public class Request {
         String response = "";
         HttpURLConnection urlConnection = null;
         try {
-            URL url = new URL(DOMAIN_URL + endpoint);
+            URL url = new URL(API_URL + endpoint);
 
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
@@ -69,7 +70,7 @@ public class Request {
      * @param body     as string in JSON format
      * @return response as string
      */
-    public static String post(String endpoint, String body){
+    public static String post(String endpoint, String body) {
         return postOrPatch(endpoint, body, false);
     }
 
@@ -82,7 +83,7 @@ public class Request {
      * @param body     as string in JSON format
      * @return response as string
      */
-    public static String patch(String endpoint, String body){
+    public static String patch(String endpoint, String body) {
         return postOrPatch(endpoint, body, true);
     }
 
@@ -90,8 +91,9 @@ public class Request {
     /**
      * this function can be used to perform a post or patch request to a server
      * it will be called by the two function post or patch
-     * @param endpoint -> String of the REST endpoint, is added to our URL
-     * @param body     as string in JSON format
+     *
+     * @param endpoint     -> String of the REST endpoint, is added to our URL
+     * @param body         as string in JSON format
      * @param patchRequest boolean, which signifies, if this function will be used as patch request
      * @return response as string
      */
@@ -99,11 +101,11 @@ public class Request {
         String response = "";
         HttpURLConnection urlConnection = null;
         try {
-            URL url = new URL(DOMAIN_URL + endpoint);
+            URL url = new URL(API_URL + endpoint);
             urlConnection = (HttpURLConnection) url.openConnection();
             //the following line will only be executed for a patch request, it sets the request method to patch
             //it seems kinda hacky, but there is no way to directly set the request method to patch
-            if(patchRequest){
+            if (patchRequest) {
                 urlConnection.setRequestProperty("X-HTTP-Method-Override", "PATCH");
                 urlConnection.setRequestProperty("Content-Type",
                         "application/merge-patch+json");
@@ -143,15 +145,17 @@ public class Request {
 
     /**
      * this function is used to upload pictures to the server
-     * @param endpoint -> String of the REST endpoint, is added to our URL
-     * @param picturePaths an array list, which holds paths to the images on the phone
+     *
+     * @param endpoint      -> String of the REST endpoint, is added to our URL
+     * @param picturePaths  an array list, which holds paths to the images on the phone
+     * @param requestMethod string, which indicates the HTTP method
      * @return response as string
      */
-    public static String uploadPictures(String endpoint, ArrayList<String> picturePaths) {
+    public static String uploadPictures(String endpoint, ArrayList<String> picturePaths, String requestMethod) {
         String response = "";
         HttpURLConnection urlConnection = null;
         try {
-            URL url = new URL(DOMAIN_URL + endpoint);
+            URL url = new URL(API_URL + endpoint);
 
             //stuff we need for multipart request
             String crlf = "\r\n";
@@ -163,7 +167,7 @@ public class Request {
             urlConnection.setDoOutput(true);
             urlConnection.setDoInput(true);
 
-            urlConnection.setRequestMethod("POST");
+            urlConnection.setRequestMethod(requestMethod);
             urlConnection.setRequestProperty("Connection", "Keep-Alive");
             urlConnection.setRequestProperty("Cache-Control", "no-cache");
             urlConnection.setRequestProperty(
@@ -207,6 +211,7 @@ public class Request {
             //which can be handled in our AsyncTasks
             if (urlConnection.getResponseCode() != 202) {
                 Log.e("Error uploading images", urlConnection.getResponseMessage());
+                Log.e("Error message", readStream(urlConnection.getErrorStream()));
                 return "error";
             }
             response = readStream(urlConnection.getInputStream());

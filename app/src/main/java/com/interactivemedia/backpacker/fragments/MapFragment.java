@@ -360,7 +360,7 @@ public class MapFragment extends Fragment {
                 TextView textViewDescription = view.findViewById(R.id.text_view_description);
 
                 //get image view
-                final ImageView imageView = view.findViewById(R.id.image_view_location);
+                ImageView imageView = view.findViewById(R.id.image_view_location);
 
                 //we have already set the location as tag, when we added the marker
                 //now we can get our needed data

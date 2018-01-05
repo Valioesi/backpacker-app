@@ -2,9 +2,14 @@ package com.interactivemedia.backpacker.helpers;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import java.io.File;
@@ -54,4 +59,23 @@ public class Storage {
 
     }
 
+
+    public static String getPicturePathFromStorage(Intent data, Activity activity){
+        if (data.getData() != null) {
+            Uri selectedImageUri = data.getData();
+            //get path to selected image (always so fucking complicated in Android!)
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+            Cursor cursor = activity.getContentResolver().query(selectedImageUri, filePathColumn, null, null, null);
+            if (cursor != null) {
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                String picturePath = cursor.getString(columnIndex);
+                cursor.close();
+                return picturePath;
+            } else {
+                return null;
+            }
+        }
+        return null;
+    }
 }

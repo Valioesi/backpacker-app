@@ -13,12 +13,14 @@ public class User {
     private String firstName;
     private String lastName;
     private ArrayList<Location> locations;
+    private String avatar;
 
-    public User(String _id, String firstName, String lastName, ArrayList<Location> locations) {
+    public User(String _id, String firstName, String lastName, ArrayList<Location> locations, String avatar) {
         this._id = _id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.locations = locations;
+        this.avatar = avatar;
     }
 
     public String getId() {
@@ -31,6 +33,10 @@ public class User {
 
     public String getLastName() {
         return lastName;
+    }
+
+    public String getAvatar(){
+        return avatar;
     }
 
     public ArrayList<Location> getLocations() {
