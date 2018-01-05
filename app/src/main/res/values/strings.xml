@@ -30,6 +30,7 @@
     <string name="location_thumbnail">Thumbnail of location</string>
     <string name="no_categories">No categories specified</string>
 
+    <string name="connection_error">Sorry, no connection to the XML file available</string>
 
     <string name="lvexp_setting_heading">heading</string>
     <string name="lvexp_setting_content">content</string>
@@ -42,5 +43,6 @@
         \n \n Fall Semester 2017/2018
         </string>
     <string name="howTo1">This application will help you to ... </string>
+    <string name="xml_error">No XML connection possible</string>
 
 </resources>

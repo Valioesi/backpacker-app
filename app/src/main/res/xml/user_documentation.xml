@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen>
+    <document>
+        <chapter infoclass-1="documentation-description" prodclass-1="backpacker-app">
+            <heading>Description of the App</heading>
+            <descriptive infoclass-1="documentation-how-to" prodclass-1="backpacker-app" >
+                <heading>Aim of the App</heading>
+                <descriptive_body>
+                    <paragraph>This app will help you to remember all the places you have visited during you backpacking adventure. </paragraph>
+                    <paragraph>Additionally, you can share the locations you liked the most with the people you meet along the way.  </paragraph>
+                </descriptive_body>
+            </descriptive>
+            <descriptive infoclass-1="documentation-how-to" prodclass-1="backpacker-app">
+                <heading>Features</heading>
+                <descriptive_body>
+                    <list>
+                        <listintro>This app includes the following features: </listintro>
+                        <item>
+                            <paragraph>Save you locations in a list. You can mark them as your favorite place</paragraph>
+                        </item>
+                        <item>
+                            <paragraph>Connect with friends you meet during your trip. By connecting you exchange your favorite places with the picutres and descriptions included. </paragraph>
+                        </item>
+                        <item>
+                            <paragraph>Show your locations and your friends locations on a map. </paragraph>
+                        </item>
+                    </list>
+                </descriptive_body>
+            </descriptive>
+        </chapter>
+        <chapter infoclass-1="documentation-how-to" prodclass-1="backpacker-app">
+            <heading>How to use the different features</heading>
+            <task infoclass-1="documentation-description" prodclass-1="backpacker-app">
+                <heading>Add a location to you list</heading>
+                <task_body>
+                    <action>
+                        <step>Open section "Map" or "My List" <inlinemediaobject objectname ="Icons/drawables/ic_my_friends.jpg"/></step>
+                    </action>
+                    <action>
+                        <step>Click on the icon "Add location" <inlinemediaobject objectname ="Icons/drawables/ic_add_location.jpg"/>. </step>
+                    </action>
+                    <action>
+                        <step>Type in the place you'd like to add to your list. </step>
+                    </action>
+                    <action>
+                        <step>Assign the place to a category and add a description. Optionally, you can add a picture too. </step>
+                    </action>
+                    <action>
+                        <step>Click "Save Location". </step>
+                    </action>
+                    <result>
+                        <paragraph>Now you can edit your locations (e. g. setting them as a favorite) by clicking on the icon "My List".
+                        </paragraph>
+                    </result>
+                </task_body>
+            </task>
+            <task infoclass-1="documentation-description" prodclass-1="backpacker-app">
+                <heading>Add a friend</heading>
+                <task_body>
+                    <action>
+                        <step>Open section "My friends" <inlinemediaobject objectname="Icons/drawables/ic_my_friends.jpg"/></step>
+                    </action>
+                    <action>
+                        <step>Click on the icon "Add friend" <inlinemediaobject objectname ="Icons/drawables/ic_add_friend.jpg"/>.  </step>
+                    </action>
+                    <action>
+                        <step>Put your phone next to your friend's phone. Notice that both of your phones need to be unlocked.</step>
+                    </action>
+                    <result>
+                        <paragraph>Via NFC a connection to your friend's phone will be initialized and the data will be exchanged.
+                        </paragraph>
+                    </result>
+                </task_body>
+            </task>
+            <task infoclass-1="documentation-description" prodclass-1="backpacker-app">
+                <heading>Delete a friend</heading>
+                <task_body>
+                    <action>
+                        <step>Open section "My friends"<inlinemediaobject objectname="Icons/drawables/ic_my_friends.jpg"/>. </step>
+                    </action>
+                    <action>
+                        <step>Click on a friend you want to delete from your friend list. </step>
+                    </action>
+                    <action>
+                        <step>Click on "Delete Friend" and confirm your decision. </step>
+                    </action>
+                    <result>
+                        <paragraph>You are no longer connected with your friend.
+                        </paragraph>
+                    </result>
+                </task_body>
+            </task>
+        </chapter>
+    </document>
+
+</PreferenceScreen>
