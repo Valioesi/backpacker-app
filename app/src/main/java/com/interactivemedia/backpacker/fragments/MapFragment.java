@@ -145,7 +145,7 @@ public class MapFragment extends Fragment {
                             for (Location location : friends[index].getLocations()) {
                                 //add user to google id -> to be able to later check, if there are multiple users having the same location
                                 boolean multiple = addUserToHashMap(location.getGoogleId(), friends[index]);
-                                setMarker(location, i, multiple);
+                                setMarker(location, index, multiple);
                             }
                         }
                     }
