@@ -1,6 +1,5 @@
 package com.interactivemedia.backpacker.activities;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -10,7 +9,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -34,22 +32,20 @@ import com.google.gson.Gson;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.fragments.PictureDialogFragment;
 import com.interactivemedia.backpacker.helpers.MultiSelectionSpinner;
+import com.interactivemedia.backpacker.helpers.Storage;
 import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.models.Location;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * this activity deals with the adding of a location to the user's list
  * it uses place picker to select a location
  */
-public class AddLocationActivity extends AppCompatActivity implements MultiSelectionSpinner.OnMultipleItemsSelectedListener {
+public class AddLocationActivity extends AppCompatActivity implements MultiSelectionSpinner.OnMultipleItemsSelectedListener, PictureDialogFragment.PictureDialogListener {
 
     private static final int PLACE_PICKER_REQUEST = 1;
     private static final int IMAGE_CAPTURE_REQUEST = 2;
@@ -160,17 +156,23 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
     }
 
     /**
-     * this function is called on click of add picture button,
+     * this function is called upon click on take picture via camera
      * it calls createImageFile() and opens the camera via an intent
+     * <p>
+     * The dialog fragment receives a reference to this Activity through the
+     * Fragment.onAttach() callback, which it uses to call the following methods
+     * defined by the PictureDialogFragment.PictureDialogListener interface
      */
-    public void handleClickCamera() {
+    @Override
+    public void onDialogCameraClick(PictureDialogFragment dialog) {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         //check if phone has a camera (intent can be resolved)
         if (intent.resolveActivity(getPackageManager()) != null) {
             // Create the File where the photo should go
             File imageFile = null;
             try {
-                imageFile = createImageFile();
+                imageFile = Storage.createImageFile(getExternalFilesDir(Environment.DIRECTORY_PICTURES));
+                currentPicturePath = imageFile.getAbsolutePath();
             } catch (IOException ex) {
                 Log.e("Image", "Error creating file");
             }
@@ -189,29 +191,6 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
 
 
     /**
-     * this function creates a file on the phone, where the image will be saved later
-     * taken from: https://developer.android.com/training/camera/photobasics.html#TaskPath
-     *
-     * @return the created file
-     * @throws IOException if file cannot be created
-     */
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.GERMANY).format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        currentPicturePath = image.getAbsolutePath();
-        return image;
-    }
-
-    /**
      * this function starts the check for permission, in the permission callback we will start the intent to pick an image
      */
     public void getPictureFromStorage() {
@@ -223,16 +202,10 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
      * this function is called, when the option storage is clicked in the picture options dialog
      * if the permission was already granted we call the function getPictureFromStorage, otherwise we ask for permssion
      */
-    public void handleClickStorage() {
+    @Override
+    public void onDialogStorageClick(PictureDialogFragment dialogFragment) {
         //get runtime permission for storage
-        if (Build.VERSION.SDK_INT >= 23 && this.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            // Should we show an explanation?
-            if (this.shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                Log.d("Permission", "Needs an explanation");
-            } else {
-                this.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_STORAGE);
-            }
-        } else {
+        if (Storage.getStoragePermission(this, MY_PERMISSIONS_REQUEST_READ_STORAGE)){
             getPictureFromStorage();
         }
     }
