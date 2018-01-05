@@ -25,8 +25,8 @@ import java.util.ArrayList;
 
 public class Request {
 
-    private static final String DOMAIN_URL = "http://192.168.192.56:3000/api/v0";
-    public static final String IMAGES_URL = "http://192.168.192.56:3000/uploads/imgs";
+    private static final String DOMAIN_URL = "http://192.168.178.71:3000/api/v0";
+    public static final String IMAGES_URL = "http://192.168.178.71:3000/uploads/imgs";
 
     /**
      * this function can be used to perform a get request to a server

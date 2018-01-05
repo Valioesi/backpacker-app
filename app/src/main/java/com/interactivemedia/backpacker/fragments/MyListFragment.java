@@ -14,7 +14,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.AddLocationActivity;
 import com.interactivemedia.backpacker.helpers.FillListAdapter;
@@ -183,7 +186,26 @@ public class MyListFragment extends Fragment {
                 Log.d("Error: ", "Error in GET Request");
                 Toast.makeText(getContext(), "There was an Error loading your locations", Toast.LENGTH_LONG).show();
             } else {
-                Gson gson = new Gson();
+                //we need to handle the conversion from json string to User Object, because user in this json is in format
+                //user : { id: ..., firstName: ..., lastName:..}    instead of just user: id
+                //therefore we want to ignore user in the deserialization process
+                //IMPORTANT! this might need to be changed later to a different approach, if the user data is needed here
+                //a different approach could be a second Location class
+
+                //we use the gson builder to add an exclusion strategy, which leads to gson excluding the field user
+                GsonBuilder gsonBuilder = new GsonBuilder();
+                gsonBuilder.addDeserializationExclusionStrategy(new ExclusionStrategy() {
+                    @Override
+                    public boolean shouldSkipField(FieldAttributes f) {
+                        return f.getName().equals("user");      //exclusion happening here!
+                    }
+
+                    @Override
+                    public boolean shouldSkipClass(Class<?> clazz) {
+                        return false;
+                    }
+                });
+                Gson gson = gsonBuilder.create();
                 mylocations = gson.fromJson(result, Location[].class);
 
                 fillListAdapter.setLocations(mylocations);
