@@ -107,7 +107,7 @@ public class SettingsFragment extends Fragment {
 //        listAdapter = new ExpandableListSettingsAdapter(getContext(), listDataHeader, listHash);
 //        listView.setAdapter(listAdapter);
 
-        new DownloadXmlTask().execute(XML_URL);
+      //  new DownloadXmlTask().execute(URL);
 
 
         //create on click listener for open profile button

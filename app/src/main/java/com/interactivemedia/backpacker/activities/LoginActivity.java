@@ -33,7 +33,6 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-        Log.d("server client id", getString(R.string.server_client_id));
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.server_client_id))
                 .requestEmail()
@@ -60,16 +59,16 @@ public class LoginActivity extends AppCompatActivity {
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         //start home activity, when account is not null (user already signed in)
         if (account != null) {
-            startHomeActivity();
+           // startHomeActivity();
             //logout for testing purposes
-          /*  mGoogleSignInClient.signOut()
+            mGoogleSignInClient.signOut()
                     .addOnCompleteListener(this, new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             // ...
                         }
                     });
-                    */
+
             //TODO: validate via Server, if necessary
         }
     }
@@ -126,12 +125,9 @@ public class LoginActivity extends AppCompatActivity {
             //save token in Shared Preferences
             saveIdTokenAsPreference(account.getIdToken());
             //let's make an api call with the token, so that the backend can check, if the user already exists in our db and can create it if necessary
-            String jsonBody = "{ token: " + account.getIdToken() + "}";
+            String jsonBody = "{ \"access_token\": \"" + account.getIdToken() + "\" }";
             // TODO: uncomment later, once endpoint is up and running
-            //new SendToken().execute("/users", jsonBody);
-           // Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
-           // startActivity(intent);
-            startHomeActivity();
+            new SendToken().execute("/users", jsonBody);
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
@@ -151,7 +147,7 @@ public class LoginActivity extends AppCompatActivity {
         editor.putString(getString(R.string.saved_token), token);
         editor.apply();
         //this will log the token saved in shared preferences
-        Log.d("Preferences", sharedPreferences.getString(getString(R.string.saved_token), "key not present"));
+        Log.i("Preferences", sharedPreferences.getString(getString(R.string.saved_token), "key not present"));
     }
 
     /**
