@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
+
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.fragments.FriendsFragment;
 import com.interactivemedia.backpacker.fragments.MapFragment;
@@ -14,7 +16,6 @@ import com.interactivemedia.backpacker.fragments.MyListFragment;
 import com.interactivemedia.backpacker.fragments.SettingsFragment;
 
 public class HomeActivity extends AppCompatActivity {
-
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -42,6 +43,7 @@ public class HomeActivity extends AppCompatActivity {
             transaction.replace(R.id.frame_layout, selectedFragment);
             transaction.commit();
             return true;
+
         }
     };
 
@@ -68,5 +70,6 @@ public class HomeActivity extends AppCompatActivity {
             }
         }).start();*/
     }
+
 
 }

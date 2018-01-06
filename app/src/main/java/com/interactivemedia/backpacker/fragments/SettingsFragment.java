@@ -23,9 +23,12 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 
 
 /**
@@ -40,7 +43,7 @@ public class SettingsFragment extends Fragment {
     private List<String> listDataHeader;
     private HashMap<String, List<String>> listHash;
 
-    private static final String URL = "http://stackoverflow.com/feeds/tag?tagnames=android&sort=newest";
+    private static final String XML_URL = "http://stackoverflow.com/feeds/tag?tagnames=android&sort=newest";
     //XmlPullParser xpp=getResources().getXml(R.xml.user_documentation);
 
 
@@ -104,7 +107,7 @@ public class SettingsFragment extends Fragment {
 //        listAdapter = new ExpandableListSettingsAdapter(getContext(), listDataHeader, listHash);
 //        listView.setAdapter(listAdapter);
 
-        new DownloadXmlTask().execute(URL);
+        new DownloadXmlTask().execute(XML_URL);
 
 
         //create on click listener for open profile button
@@ -131,7 +134,12 @@ public class SettingsFragment extends Fragment {
     private class DownloadXmlTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
-            return loadXmlFromNetwork(urls[0]);
+            try {
+                return loadXmlFromNetwork(urls[0]);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return getResources().getString(R.string.connection_error);
+            }
         }
 
         @Override
@@ -146,7 +154,7 @@ public class SettingsFragment extends Fragment {
     //Processes the entries list and combines the feed data with HTML markup.
     //Returns an HTML string that is displays in the UI by the AsyncMethod onPOstExecute()
 
-    private String loadXmlFromNetwork(String url) {
+    private String loadXmlFromNetwork(String urlString) throws IOException {
         InputStream stream = null;
 
         //Instantiate the parser
@@ -158,6 +166,20 @@ public class SettingsFragment extends Fragment {
         String summary = null;
 
         StringBuilder builder = new StringBuilder();
+
+        try {
+            stream = downloadUrl(urlString);
+            entries = stackOverflowXmlParser.parse(stream);
+            // Makes sure that the InputStream is closed after the app is
+            // finished using it.
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } finally {
+            if (stream != null) {
+                stream.close();
+            }
+        }
+
 
         // StackOverflowXmlParser returns a List (called "entries") of Entry objects.
         // Each Entry object represents a single post in the XML feed.
@@ -172,4 +194,22 @@ public class SettingsFragment extends Fragment {
         return builder.toString();
 
     }
+
+    // Given a string representation of a URL, sets up a connection and gets
+    // an input stream.
+    private InputStream downloadUrl(String urlString) throws IOException {
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000 /* milliseconds */);
+            conn.setConnectTimeout(15000 /* milliseconds */);
+            conn.setRequestMethod("GET");
+            conn.setDoInput(true);
+            // Starts the query
+            conn.connect();
+            return conn.getInputStream();
+    }
+
+
+
+
 }

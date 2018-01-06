@@ -47,5 +47,6 @@
     <string name="button_change_picture">Change profile picture</string>
     <string name="description_profile_picture">Profile picture</string>
     <string name="edit_profile_button">Edit profile</string>
+    <string name="des_locationDescription">Description of the location you added</string>
 
 </resources>

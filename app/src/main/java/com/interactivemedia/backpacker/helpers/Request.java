@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 public class Request {
 
-    public static final String DOMAIN_URL = "http://192.168.178.71:3000";
+    public static final String DOMAIN_URL = "http://192.168.192.56:3000";
     private static final String API_URL = DOMAIN_URL + "/api/v0";
     public static final String IMAGES_URL = DOMAIN_URL + "/uploads/imgs";
 
@@ -118,6 +118,7 @@ public class Request {
             urlConnection.setDoOutput(true);
 
             OutputStream outputStream = urlConnection.getOutputStream();
+            Log.d("OutputStream", String.valueOf(outputStream));
 
             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
             bufferedWriter.write(body);
@@ -256,6 +257,7 @@ public class Request {
         }
         return response.toString();
     }
+
 }
 
 
