@@ -121,6 +121,7 @@ public class Request {
             Log.d("OutputStream", String.valueOf(outputStream));
 
             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+            Log.d("BufferedWriter", String.valueOf(bufferedWriter));
             bufferedWriter.write(body);
             bufferedWriter.flush();
 
