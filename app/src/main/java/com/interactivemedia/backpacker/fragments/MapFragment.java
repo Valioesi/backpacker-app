@@ -203,7 +203,7 @@ public class MapFragment extends Fragment {
     private void loadLocations() {
         //call AsycnTask to get users and their saved locations to show from server
         //this will be changed later, since we are only getting our friends!
-        new GetLocations().execute("/users/5a4cb9154162d41ba096f01d/friends");
+        new GetLocations().execute("/users/5a4df067c54f8939ec85f329/friends");
     }
 
     /**
