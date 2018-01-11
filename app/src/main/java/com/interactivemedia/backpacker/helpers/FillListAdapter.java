@@ -119,15 +119,12 @@ public class FillListAdapter extends ArrayAdapter<Location>{
         imageViewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ConstraintLayout vwParentRow=(ConstraintLayout) v.getParent();
-                ImageView imageViewButton = (ImageView)vwParentRow.getChildAt(3);
-
                 if (!isFavorite) {
-                    imageViewButton.setBackgroundResource(R.drawable.ic_favorite_black_24dp);
+                    v.setBackgroundResource(R.drawable.ic_favorite_black_24dp);
                     isFavorite=true;
                     new ChangeFavorite(isFavorite, googleId).execute("/locations/"+locationid);
                 } else {
-                    imageViewButton.setBackgroundResource(R.drawable.ic_favorite_border_black_24dp);
+                    v.setBackgroundResource(R.drawable.ic_favorite_border_black_24dp);
                     isFavorite=false;
                     new ChangeFavorite(isFavorite, googleId).execute("/locations/"+locationid);
                 }
@@ -195,7 +192,11 @@ public class FillListAdapter extends ArrayAdapter<Location>{
             if (result == null) {
                 Toast.makeText(getContext(), "There was an Error setting your location to favorite", Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(getContext(), "Location set as favorite", Toast.LENGTH_LONG).show();
+                if (isFavorite) {
+                    Toast.makeText(getContext(), "Location set as favorite", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getContext(), "Location unset as favorite", Toast.LENGTH_LONG).show();
+                }
             }
         }
     }
