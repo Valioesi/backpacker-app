@@ -223,7 +223,7 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
     private class PatchProfile extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... strings) {
-            return Request.patch(strings[0], strings[1]);
+            return Request.patch(getApplicationContext(), strings[0], strings[1]);
         }
 
         @Override
@@ -254,7 +254,7 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
     private class GetProfile extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... strings) {
-            return Request.get(strings[0]);
+            return Request.get(getApplicationContext(), strings[0]);
         }
 
         @Override
@@ -313,7 +313,7 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
             //to use the upload pictures function we need to turn picture string to array list containing it
             ArrayList<String> arrayList = new ArrayList<>();
             arrayList.add(currentPicturePath);
-            return Request.uploadPictures(strings[0], arrayList, "PUT");
+            return Request.uploadPictures(getApplicationContext(), strings[0], arrayList, "PUT");
         }
 
         @Override

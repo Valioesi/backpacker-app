@@ -185,7 +185,7 @@ public class FillListAdapter extends ArrayAdapter<Location>{
             //return Request.changeFavorites(strings[0], isFavorite, locationid, "PATCH");
             String json= "{\"googleId\":\"" +  googleId + "\",\"favorite\":"+ isFavorite + "}";
             Log.e("SendBack Json", json);
-            return Request.patch(strings[0], json);
+            return Request.patch(getContext(), strings[0], json);
         }
 
 

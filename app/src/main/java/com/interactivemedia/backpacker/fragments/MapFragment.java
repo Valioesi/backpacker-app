@@ -212,7 +212,7 @@ public class MapFragment extends Fragment {
     private class GetLocations extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... strings) {
-            return Request.get(strings[0]);
+            return Request.get(getContext(), strings[0]);
         }
 
         @Override

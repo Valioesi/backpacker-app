@@ -300,7 +300,7 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
     private class PostLocation extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... strings) {
-            return Request.post(strings[0], strings[1]);
+            return Request.post(getApplicationContext(), strings[0], strings[1]);
         }
 
         @Override
@@ -330,7 +330,7 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
     private class UploadPictures extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... strings) {
-            return Request.uploadPictures(strings[0], picturePaths, "POST");
+            return Request.uploadPictures(getApplicationContext(), strings[0], picturePaths, "POST");
         }
 
         @Override

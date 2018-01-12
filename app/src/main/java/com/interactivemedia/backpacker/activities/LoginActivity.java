@@ -19,6 +19,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.interactivemedia.backpacker.R;
+import com.interactivemedia.backpacker.helpers.Preferences;
 import com.interactivemedia.backpacker.helpers.Request;
 
 public class LoginActivity extends AppCompatActivity {
@@ -35,7 +36,6 @@ public class LoginActivity extends AppCompatActivity {
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.server_client_id))
-                .requestEmail()
                 .build();
 
         // Build a GoogleSignInClient with the options specified by gso.
@@ -120,14 +120,14 @@ public class LoginActivity extends AppCompatActivity {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
-            // Signed in successfully, show authenticated UI.
-            Toast.makeText(this, "Signed in successfully", Toast.LENGTH_LONG).show();
             //save token in Shared Preferences
-            saveIdTokenAsPreference(account.getIdToken());
+            Preferences.saveIdToken(this, account.getIdToken());
             //let's make an api call with the token, so that the backend can check, if the user already exists in our db and can create it if necessary
-            String jsonBody = "{ \"access_token\": \"" + account.getIdToken() + "\" }";
+            String jsonBody = "{ \"firstName\": \"" + account.getGivenName() + "\", \"lastName\": \"" + account.getFamilyName() + "\"}";
+            Log.d("User json", jsonBody);
             // TODO: uncomment later, once endpoint is up and running
-            new SendToken().execute("/users", jsonBody);
+           // new PostUser().execute("/users", jsonBody);
+            startHomeActivity();
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
@@ -136,28 +136,15 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * this function saves the id token (taken from our GoogleSignInAccount in the SharedPreference
-     *
-     * @param token is a String, taken from account
-     */
-    private void saveIdTokenAsPreference(String token) {
-        SharedPreferences sharedPreferences = this.getSharedPreferences(getString(R.string.shared_preference_name), Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(getString(R.string.saved_token), token);
-        editor.apply();
-        //this will log the token saved in shared preferences
-        Log.i("Preferences", sharedPreferences.getString(getString(R.string.saved_token), "key not present"));
-    }
 
     /**
      * this AsyncTask sends the token via post request to the server
      * if successful, the Home Activity is started
      */
-    private class SendToken extends AsyncTask<String, Integer, String> {
+    private class PostUser extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... strings) {
-            return Request.post(strings[0], strings[1]);
+            return Request.post(getApplicationContext(), strings[0], strings[1]);
         }
 
         @Override
@@ -166,6 +153,7 @@ public class LoginActivity extends AppCompatActivity {
             if (result.equals("error")) {
                 Toast.makeText(getApplicationContext(), "There was an Error logging in", Toast.LENGTH_LONG).show();
             } else {
+                Toast.makeText(getApplicationContext(), "Signed in successfully", Toast.LENGTH_LONG).show();
                 //redirect to EditProfileActivity to give the user the option to edit his data
                 Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
                 startActivity(intent);

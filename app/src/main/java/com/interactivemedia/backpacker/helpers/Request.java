@@ -1,5 +1,6 @@
 package com.interactivemedia.backpacker.helpers;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.io.BufferedInputStream;
@@ -25,17 +26,19 @@ import java.util.ArrayList;
 
 public class Request {
 
-    public static final String DOMAIN_URL = "http://192.168.192.56:3000";
+   // public static final String DOMAIN_URL = "http://10.60.60.143:3000";   //Uni
+    public static final String DOMAIN_URL = "http://192.168.178.25:3000";   //Vali Stuttgart
     private static final String API_URL = DOMAIN_URL + "/api/v0";
     public static final String IMAGES_URL = DOMAIN_URL + "/uploads/imgs";
 
     /**
      * this function can be used to perform a get request to a server
      *
+     * @param context      application context, needed to get shared preferences
      * @param endpoint -> String of the REST endpoint, is added to our URL
      * @return the server response as String
      */
-    public static String get(String endpoint) {
+    public static String get(Context context, String endpoint) {
         String response = "";
         HttpURLConnection urlConnection = null;
         try {
@@ -43,6 +46,7 @@ public class Request {
 
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
+            urlConnection.setRequestProperty("access_token", Preferences.getIdToken(context));
             //if the status code is anything else but 200, we want to return something different,
             //which can be handled in our AsyncTasks
             if (urlConnection.getResponseCode() != 200) {
@@ -66,12 +70,13 @@ public class Request {
      * this function was added to have a structure, which reuses code for both post and patch
      * without having to change the function parameters (e.g. post(endpoint, body, patchRequest)
      *
+     * @param context      application context, needed to get shared preferences
      * @param endpoint -> String of the REST endpoint, is added to our URL
      * @param body     as string in JSON format
      * @return response as string
      */
-    public static String post(String endpoint, String body) {
-        return postOrPatch(endpoint, body, false);
+    public static String post(Context context, String endpoint, String body) {
+        return postOrPatch(context, endpoint, body, false);
     }
 
     /**
@@ -79,12 +84,13 @@ public class Request {
      * this function was added to have a structure, which reuses code for both post and patch
      * without having to change the function parameters (e.g. post(endpoint, body, patchRequest)
      *
+     * @param context      application context, needed to get shared preferences
      * @param endpoint -> String of the REST endpoint, is added to our URL
      * @param body     as string in JSON format
      * @return response as string
      */
-    public static String patch(String endpoint, String body) {
-        return postOrPatch(endpoint, body, true);
+    public static String patch(Context context, String endpoint, String body) {
+        return postOrPatch(context, endpoint, body, true);
     }
 
 
@@ -92,12 +98,13 @@ public class Request {
      * this function can be used to perform a post or patch request to a server
      * it will be called by the two function post or patch
      *
+     * @param context      application context, needed to get shared preferences
      * @param endpoint     -> String of the REST endpoint, is added to our URL
      * @param body         as string in JSON format
      * @param patchRequest boolean, which signifies, if this function will be used as patch request
      * @return response as string
      */
-    private static String postOrPatch(String endpoint, String body, boolean patchRequest) {
+    private static String postOrPatch(Context context, String endpoint, String body, boolean patchRequest) {
         String response = "";
         HttpURLConnection urlConnection = null;
         try {
@@ -113,12 +120,12 @@ public class Request {
                 urlConnection.setRequestProperty("Content-Type",
                         "application/json");
             }
+            urlConnection.setRequestProperty("access_token", Preferences.getIdToken(context));
             urlConnection.setRequestMethod("POST");
             urlConnection.setDoInput(true);
             urlConnection.setDoOutput(true);
 
             OutputStream outputStream = urlConnection.getOutputStream();
-            Log.d("OutputStream", String.valueOf(outputStream));
 
             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
             bufferedWriter.write(body);
@@ -147,12 +154,13 @@ public class Request {
     /**
      * this function is used to upload pictures to the server
      *
+     * @param context      application context, needed to get shared preferences
      * @param endpoint      -> String of the REST endpoint, is added to our URL
      * @param picturePaths  an array list, which holds paths to the images on the phone
      * @param requestMethod string, which indicates the HTTP method
      * @return response as string
      */
-    public static String uploadPictures(String endpoint, ArrayList<String> picturePaths, String requestMethod) {
+    public static String uploadPictures(Context context, String endpoint, ArrayList<String> picturePaths, String requestMethod) {
         String response = "";
         HttpURLConnection urlConnection = null;
         try {
@@ -173,6 +181,7 @@ public class Request {
             urlConnection.setRequestProperty("Cache-Control", "no-cache");
             urlConnection.setRequestProperty(
                     "Content-Type", "multipart/form-data;boundary=" + boundary);
+            urlConnection.setRequestProperty("access_token", Preferences.getIdToken(context));
 
             //start content wrapper
             DataOutputStream request = new DataOutputStream(

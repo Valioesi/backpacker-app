@@ -31,7 +31,7 @@ import java.util.List;
  */
 public class FriendsFragment extends Fragment {
 
-    private static class GetFriendsTask extends AsyncTask<String, Integer, String> {
+    private class GetFriendsTask extends AsyncTask<String, Integer, String> {
 
         private CustomArrayAdapter adapter;
 
@@ -42,7 +42,7 @@ public class FriendsFragment extends Fragment {
         @Override
         protected String doInBackground(String... strings) {
             Log.d("Test", "Started");
-            return Request.get(strings[0]);
+            return Request.get(getContext(), strings[0]);
         }
 
         @Override
@@ -103,7 +103,7 @@ public class FriendsFragment extends Fragment {
         //assign ArrayAdapter to friends list
         lvfriends.setAdapter(arrayAdapter);
 
-        new GetFriendsTask(arrayAdapter).execute ("/users/5a323b82654ba50ef8d2b8c2/friends");
+        new GetFriendsTask(arrayAdapter).execute ("/users/5a4cb9154162d41ba096f01d/friends");
 
         //OnItemClickListener to get friends detail
         lvfriends.setOnItemClickListener(new AdapterView.OnItemClickListener() {
