@@ -23,6 +23,7 @@ import android.widget.CheckedTextView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +41,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.AddLocationActivity;
 import com.interactivemedia.backpacker.helpers.CustomArrayAdapter;
@@ -64,7 +66,7 @@ public class MapFragment extends Fragment {
 
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     private MapView mapView;
-    private User[] friends;
+    private ArrayList<User> friends;
     private DrawerLayout drawer;
     private CustomArrayAdapter adapter;
     private GoogleMap map;
@@ -114,7 +116,7 @@ public class MapFragment extends Fragment {
         mapView = view.findViewById(R.id.map_view);
         mapView.onCreate(mapViewBundle);
 
-        friends = new User[]{};
+        friends = new ArrayList<>();
 
         //find list view, create adapter containing friend list and set adapter of list view
         listView = view.findViewById(R.id.filter_list);
@@ -139,12 +141,12 @@ public class MapFragment extends Fragment {
                 } else {
                     //get all of the checked items
                     SparseBooleanArray booleanArray = listView.getCheckedItemPositions();
-                    for (int index = 0; index < friends.length; index++) {
+                    for (int index = 0; index < friends.size(); index++) {
                         //if the position is checked in the listview, we want to display the markers of this user
                         if (booleanArray.get(index)) {
-                            for (Location location : friends[index].getLocations()) {
+                            for (Location location : friends.get(index).getLocations()) {
                                 //add user to google id -> to be able to later check, if there are multiple users having the same location
-                                boolean multiple = addUserToHashMap(location.getGoogleId(), friends[index]);
+                                boolean multiple = addUserToHashMap(location.getGoogleId(), friends.get(index));
                                 setMarker(location, index, multiple);
                             }
                         }
@@ -182,7 +184,7 @@ public class MapFragment extends Fragment {
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 map = googleMap;
-                loadLocations();
+                loadLocationsOfUser();
             }
         });
 
@@ -197,19 +199,59 @@ public class MapFragment extends Fragment {
         startActivity(intent);
     }
 
+
     /**
-     * this function calls the async task to get locations from server
+     * this function starts the async task to load locations of logged in user,
+     * the process to load locations of friends will be started in onPostExecute of the async task
      */
-    private void loadLocations() {
-        //call AsycnTask to get users and their saved locations to show from server
-        //this will be changed later, since we are only getting our friends!
-        new GetLocations().execute("/users/5a4df067c54f8939ec85f329/friends");
+    private void loadLocationsOfUser(){
+        new GetLocationsOfUser().execute("/users/5a4cb9154162d41ba096f01d");
     }
 
     /**
-     * this AsyncTask makes a call to our API to get locations, which will be rendered on the map
+     * this function calls the async task to get locations from server
      */
-    private class GetLocations extends AsyncTask<String, Integer, String> {
+    private void loadLocationsOfFriends() {
+        //call AsycnTask to get users and their saved locations to show from server
+        //this will be changed later, since we are only getting our friends!
+        new GetLocationsOfFriends().execute("/users/5a4cb9154162d41ba096f01d/friends");
+    }
+
+
+
+    /**
+     * this AsyncTask makes a call to our API to get locations of the logged in user, which will be rendered on the map
+     * the task to get locations of friends will be started in the onPostExecute
+     */
+    private class GetLocationsOfUser extends AsyncTask<String, Integer, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            return Request.get(getContext(), strings[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (result == null) {
+                Log.d("Error: ", "Error in GET Request");
+                Toast.makeText(getContext(), "There was an Error loading your locations", Toast.LENGTH_LONG).show();
+            } else {
+                Log.d("JSON response: ", result);
+                Gson gson = new Gson();
+                User user = gson.fromJson(result, User.class);
+
+                friends.add(user);
+
+                //now load locations of friends
+                loadLocationsOfFriends();
+            }
+
+        }
+    }
+
+    /**
+     * this AsyncTask makes a call to our API to get friends and their locations, which will be rendered on the map
+     */
+    private class GetLocationsOfFriends extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... strings) {
             return Request.get(getContext(), strings[0]);
@@ -223,13 +265,16 @@ public class MapFragment extends Fragment {
             } else {
                 Log.d("JSON response: ", result);
                 Gson gson = new Gson();
-                friends = gson.fromJson(result, User[].class);
+                //type token is used to load into array list, see: https://stackoverflow.com/questions/12384064/gson-convert-from-json-to-a-typed-arraylistt
+                ArrayList<User> users = gson.fromJson(result, new TypeToken<ArrayList<User>>(){}.getType());
+
+                friends.addAll(users);
 
                 adapter.setUsers(friends);
                 adapter.notifyDataSetChanged();
 
                 //check if friends are not empty
-                if (friends != null && friends.length != 0) {
+                if (friends != null && friends.size() != 0) {
                     addMarkersForAllUsers();
                     configureInfoWindow();
                 }
@@ -270,10 +315,10 @@ public class MapFragment extends Fragment {
      * this function loops through all users and adds their locations to the map
      */
     private void addMarkersForAllUsers() {
-        for (int i = 0; i < friends.length; i++) {
-            for (Location location : friends[i].getLocations()) {
+        for (int i = 0; i < friends.size(); i++) {
+            for (Location location : friends.get(i).getLocations()) {
                 //add user to google id -> to be able to later check, if there are multiple users having the same location
-                boolean multiple = addUserToHashMap(location.getGoogleId(), friends[i]);
+                boolean multiple = addUserToHashMap(location.getGoogleId(), friends.get(i));
                 setMarker(location, i, multiple);
             }
         }
@@ -388,6 +433,7 @@ public class MapFragment extends Fragment {
                     //download first image of images array via Picasso library
                     //but only, if an image exists for this location
                     if (location.getImages().length != 0) {
+
                         String imageUri = Request.IMAGES_URL + "/location/" + location.getImages()[0] + ".jpg";
                         //we have to set a request listener to reload the info window (because it is not a live view, just an image)
                         //only set callback once
@@ -500,7 +546,9 @@ public class MapFragment extends Fragment {
             map.clear();
             googleIdUsersMap.clear();
             googleIdMarkersMap.clear();
-            loadLocations();
+            friends.clear();
+            adapter.clear();
+            loadLocationsOfUser();
         }
     }
 

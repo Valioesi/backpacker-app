@@ -13,12 +13,15 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.AddFriendNfcActivity;
 import com.interactivemedia.backpacker.activities.FriendsDetailsActivity;
 import com.interactivemedia.backpacker.helpers.CustomArrayAdapter;
 import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.models.User;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,7 +51,9 @@ public class FriendsFragment extends Fragment {
             } else {
                 Log.d("JSON response: ", result);
                 Gson gson = new Gson();
-                User[] friends = gson.fromJson(result, User[].class);
+
+                //type token is used to load into array list, see: https://stackoverflow.com/questions/12384064/gson-convert-from-json-to-a-typed-arraylistt
+                friends = gson.fromJson(result, new TypeToken<ArrayList<User>>(){}.getType());
 
                 adapter.setUsers(friends);
                 adapter.notifyDataSetChanged();
@@ -57,7 +62,7 @@ public class FriendsFragment extends Fragment {
         }
     }
 
-    private User[] friends;
+    private ArrayList<User> friends;
     CustomArrayAdapter arrayAdapter;
 
 
@@ -91,7 +96,7 @@ public class FriendsFragment extends Fragment {
         //find ListView
         ListView lvfriends = (ListView) view.findViewById(R.id.listViewFriends);
 
-        friends = new User[]{};
+        friends = new ArrayList<>();
 
         //create adapter containing friends list
         arrayAdapter = new CustomArrayAdapter(getContext(), R.layout.custom_list_item_multiple_choice, friends);

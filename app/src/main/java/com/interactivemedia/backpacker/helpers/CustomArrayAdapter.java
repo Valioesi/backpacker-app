@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.models.User;
 
+import java.util.ArrayList;
+
 
 /**
  * Created by Vali on 05.12.2017.
@@ -27,9 +29,9 @@ public class CustomArrayAdapter extends ArrayAdapter<User>{
 
     private Context context;
     private int layoutResourceId;
-    private User[] users;
+    private ArrayList<User> users;
 
-    public CustomArrayAdapter(Context context, int layoutResourceId, User[] users){
+    public CustomArrayAdapter(Context context, int layoutResourceId, ArrayList<User> users){
         super(context, layoutResourceId);
         this.context = context;
         this.layoutResourceId = layoutResourceId;
@@ -57,7 +59,7 @@ public class CustomArrayAdapter extends ArrayAdapter<User>{
             holder = (UserHolder) row.getTag();
         }
 
-        User user = users[position];
+        User user = users.get(position);
         String name = user.getFirstName() + " " + user.getLastName();
         holder.checkedTextView.setText(name);
 
@@ -70,12 +72,12 @@ public class CustomArrayAdapter extends ArrayAdapter<User>{
     @Override
     public int getCount(){
         if(users != null){
-            return users.length;
+            return users.size();
         }
         return 0;
     }
 
-    public void setUsers(User[] users){
+    public void setUsers(ArrayList<User> users){
         this.users = users;
     }
 

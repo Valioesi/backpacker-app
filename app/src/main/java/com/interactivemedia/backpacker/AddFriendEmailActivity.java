@@ -7,9 +7,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.interactivemedia.backpacker.activities.HomeActivity;
 import com.interactivemedia.backpacker.helpers.Preferences;
@@ -67,10 +69,20 @@ public class AddFriendEmailActivity extends AppCompatActivity {
                 Log.d("JSON response: ", result);
                 Gson gson = new Gson();
                 newFriend = gson.fromJson(result, User.class);
-                //show name of found user
-                TextView textView = findViewById(R.id.text_view_user);
+                //get text views
+                TextView textViewName = findViewById(R.id.text_view_name);
+                TextView textViewLocations = findViewById(R.id.text_view_number_locations);
+
+                //...and display user info
                 String name = newFriend.getFirstName() + " " + newFriend.getLastName();
-                textView.setText(name);
+                textViewName.setText(name);
+                String locationInfo = newFriend.getLocations().size() + " Locations";
+                textViewLocations.setText(locationInfo);
+
+                //load profile picture into image view
+                ImageView imageView = findViewById(R.id.image_view_profile_picture);
+                Glide.with(getApplicationContext()).load(Request.DOMAIN_URL + newFriend.getAvatar()).into(imageView);
+
             }
         }
 

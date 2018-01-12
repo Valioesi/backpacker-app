@@ -50,7 +50,7 @@
     <string name="edit_profile_button">Edit profile</string>
     <string name="des_locationDescription">Description of the location you added</string>
     <string name="search_for_user_label">Search for user</string>
-    <string name="search_for_user_hint">Type in mail...</string>
+    <string name="search_for_user_hint">Type in Email address…</string>
     <string name="search_user_button">Search user</string>
     <string name="share_locations_button">Share locations with user</string>
 
