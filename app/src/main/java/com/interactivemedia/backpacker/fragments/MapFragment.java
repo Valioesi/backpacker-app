@@ -217,11 +217,11 @@ public class MapFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String result) {
-            Log.d("JSON response: ", result);
-            if (result.equals("error")) {
+            if (result == null) {
                 Log.d("Error: ", "Error in GET Request");
                 Toast.makeText(getContext(), "There was an Error loading the locations of your friends", Toast.LENGTH_LONG).show();
             } else {
+                Log.d("JSON response: ", result);
                 Gson gson = new Gson();
                 friends = gson.fromJson(result, User[].class);
 

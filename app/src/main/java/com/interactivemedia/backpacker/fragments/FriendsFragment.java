@@ -10,20 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.interactivemedia.backpacker.R;
-import com.interactivemedia.backpacker.activities.AddFriendActivity;
+import com.interactivemedia.backpacker.activities.AddFriendNfcActivity;
 import com.interactivemedia.backpacker.activities.FriendsDetailsActivity;
 import com.interactivemedia.backpacker.helpers.CustomArrayAdapter;
 import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.models.User;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,11 +42,11 @@ public class FriendsFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String result) {
-            Log.d("JSON response: ", result);
-            if(result.equals("error")){
+            if(result == null){
                 Log.d("Error: ", "Error in GET Request");
                 //Toast.makeText(getContext(), "There was an Error loading the locations of your friends", Toast.LENGTH_LONG).show();
             } else {
+                Log.d("JSON response: ", result);
                 Gson gson = new Gson();
                 User[] friends = gson.fromJson(result, User[].class);
 
@@ -114,12 +109,12 @@ public class FriendsFragment extends Fragment {
             }
         });
 
-        //set on click listener for add friend button -> open AddFriendActivity
+        //set on click listener for add friend button -> open AddFriendNfcActivity
         FloatingActionButton button = view.findViewById(R.id.add_friend_button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AddFriendActivity.class);
+                Intent intent = new Intent(getActivity(), AddFriendNfcActivity.class);
                 startActivity(intent);
             }
         });

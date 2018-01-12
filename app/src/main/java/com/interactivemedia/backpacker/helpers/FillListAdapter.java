@@ -192,8 +192,7 @@ public class FillListAdapter extends ArrayAdapter<Location>{
 
         @Override
         protected void onPostExecute(String result) {
-            Log.d("JSON response: ", result);
-            if (result.equals("error")) {
+            if (result == null) {
                 Toast.makeText(getContext(), "There was an Error setting your location to favorite", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(getContext(), "Location set as favorite", Toast.LENGTH_LONG).show();

@@ -10,21 +10,24 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.interactivemedia.backpacker.AddFriendEmailActivity;
 import com.interactivemedia.backpacker.R;
 
 import static android.nfc.NdefRecord.createMime;
 
-public class AddFriendActivity extends AppCompatActivity {
+public class AddFriendNfcActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_friend);
+        setContentView(R.layout.activity_add_friend_nfc);
         NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         //check if nfc is available
         if (nfcAdapter == null) {  //if that is the case we return to the previous activity --> later implement fallback
             Toast.makeText(this, "NFC is not available", Toast.LENGTH_LONG).show();
-            finish();
+            //redirect to fallback activity to add friend via email
+            Intent intent = new Intent(this, AddFriendEmailActivity.class);
+            startActivity(intent);
         } else {
             //create ndef message that contains, what we want to send to the other device
             String text = "this is the text, we want to send";

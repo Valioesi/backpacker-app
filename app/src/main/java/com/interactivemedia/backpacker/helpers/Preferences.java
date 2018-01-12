@@ -16,11 +16,21 @@ public class Preferences {
     /**
      * this function gets the id token from the shared preferences
      * @param context application context, needed to call appropriate functions
-     * @return id token as a string
+     * @return id token as a string if available, otherwise null
      */
     public static String getIdToken(Context context){
-        return getPreferences(context).getString(context.getString(R.string.saved_token), "key not present");
+        return getPreferences(context).getString(context.getString(R.string.saved_token), null);
     }
+
+    /**
+     * this function gets the user id (same as google id) from the shared preferences
+     * @param context application context, needed to call appropriate functions
+     * @return user id (google id) as string if available, otherwise null
+     */
+    public static String getUserId(Context context){
+        return getPreferences(context).getString(context.getString(R.string.saved_id), null);
+    }
+
 
     /**
      * this function saves the id token (taken from our GoogleSignInAccount in the SharedPreference
@@ -35,6 +45,21 @@ public class Preferences {
         editor.apply();
         //this will log the token saved in shared preferences
         Log.i("Preferences", sharedPreferences.getString(context.getString(R.string.saved_token), "key not present"));
+    }
+
+    /**
+     * this function saves the google id (taken from our GoogleSignInAccount in the SharedPreference
+     *
+     * @param context application context, needed to call appropriate functions
+     * @param id google id as a String, taken from account
+     */
+    public static void saveUserId(Context context, String id) {
+        SharedPreferences sharedPreferences = getPreferences(context);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(context.getString(R.string.saved_id), id);
+        editor.apply();
+        //this will log the id saved in shared preferences
+        Log.i("Preferences", sharedPreferences.getString(context.getString(R.string.saved_id), "id not present"));
     }
 
     /**

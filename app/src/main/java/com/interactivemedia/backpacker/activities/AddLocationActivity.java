@@ -305,10 +305,10 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
 
         @Override
         protected void onPostExecute(String result) {
-            Log.d("JSON response: ", result);
-            if (result.equals("error")) {
+            if (result == null) {
                 Toast.makeText(getApplicationContext(), "There was an Error saving the location", Toast.LENGTH_LONG).show();
             } else {
+                Log.d("JSON response: ", result);
                 Toast.makeText(getApplicationContext(), "Location saved successfully", Toast.LENGTH_LONG).show();
                 //get id of newly created location so that we can do a request to upload the pictures
                 Gson gson = new Gson();
@@ -337,10 +337,10 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
         protected void onPostExecute(String result) {
             //hide progress bar again
             progressBar.setVisibility(View.GONE);
-            Log.d("JSON response: ", result);
-            if (result.equals("error")) {
+            if (result == null) {
                 Toast.makeText(getApplicationContext(), "There was an Error uploading the location's pictures", Toast.LENGTH_LONG).show();
             } else {
+                Log.d("JSON response: ", result);
                 Toast.makeText(getApplicationContext(), "Pictures uploaded successfully", Toast.LENGTH_LONG).show();
             }
 

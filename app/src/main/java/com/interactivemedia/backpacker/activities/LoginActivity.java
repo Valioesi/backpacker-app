@@ -1,11 +1,8 @@
 package com.interactivemedia.backpacker.activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -16,7 +13,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.helpers.Preferences;
@@ -59,16 +55,16 @@ public class LoginActivity extends AppCompatActivity {
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         //start home activity, when account is not null (user already signed in)
         if (account != null) {
-           // startHomeActivity();
+            startHomeActivity();
             //logout for testing purposes
-            mGoogleSignInClient.signOut()
+           /* mGoogleSignInClient.signOut()
                     .addOnCompleteListener(this, new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             // ...
                         }
                     });
-
+            */
             //TODO: validate via Server, if necessary
         }
     }
@@ -120,13 +116,14 @@ public class LoginActivity extends AppCompatActivity {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
-            //save token in Shared Preferences
+            //save token and google id in Shared Preferences
             Preferences.saveIdToken(this, account.getIdToken());
+            Preferences.saveUserId(this, account.getId());
             //let's make an api call with the token, so that the backend can check, if the user already exists in our db and can create it if necessary
             String jsonBody = "{ \"firstName\": \"" + account.getGivenName() + "\", \"lastName\": \"" + account.getFamilyName() + "\"}";
             Log.d("User json", jsonBody);
             // TODO: uncomment later, once endpoint is up and running
-           // new PostUser().execute("/users", jsonBody);
+            // new PostUser().execute("/users", jsonBody);
             startHomeActivity();
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
@@ -138,21 +135,22 @@ public class LoginActivity extends AppCompatActivity {
 
 
     /**
-     * this AsyncTask sends the token via post request to the server
+     * this AsyncTask sends a post request to the users endpoint to create a new user, if it does not exists
      * if successful, the Home Activity is started
      */
     private class PostUser extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... strings) {
-            return Request.post(getApplicationContext(), strings[0], strings[1]);
+            //return Request.post(getApplicationContext(), strings[0], strings[1]);
+            return Request.get(getApplicationContext(), "/users");
         }
 
         @Override
         protected void onPostExecute(String result) {
-            Log.d("JSON response: ", result);
-            if (result.equals("error")) {
+            if (result == null) {
                 Toast.makeText(getApplicationContext(), "There was an Error logging in", Toast.LENGTH_LONG).show();
             } else {
+                Log.d("JSON response: ", result);
                 Toast.makeText(getApplicationContext(), "Signed in successfully", Toast.LENGTH_LONG).show();
                 //redirect to EditProfileActivity to give the user the option to edit his data
                 Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);

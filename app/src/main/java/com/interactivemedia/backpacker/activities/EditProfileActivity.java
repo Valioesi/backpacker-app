@@ -228,11 +228,11 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
 
         @Override
         protected void onPostExecute(String result) {
-            Log.d("JSON response: ", result);
-            if (result.equals("error")) {
+            if (result == null) {
                 Log.d("Error: ", "Error in GET Request");
                 Toast.makeText(getApplicationContext(), "There was an Error saving your profile", Toast.LENGTH_LONG).show();
             } else {
+                Log.d("JSON response: ", result);
                 Toast.makeText(getApplicationContext(), "Successfully saved your profile", Toast.LENGTH_LONG).show();
                 //check, if there is a picture to upload
                 if (currentPicturePath != null) {
@@ -259,14 +259,14 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
 
         @Override
         protected void onPostExecute(String result) {
-            Log.d("JSON response: ", result);
-            if (result.equals("error")) {
+            if (result == null) {
                 Log.d("Error: ", "Error in GET Request");
                 Toast.makeText(getApplicationContext(), "There was an Error loading your profile", Toast.LENGTH_LONG).show();
                 //redirect to home activity
                 redirectToHome();
 
             } else {
+                Log.d("JSON response: ", result);
                 //we use the gson builder to add an exclusion strategy, which leads to gson excluding the field locations
                 //this needs to be done, because the result contains only location ids, while the User class contains an ArrayList of Locations
                 GsonBuilder gsonBuilder = new GsonBuilder();
@@ -320,10 +320,10 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
         protected void onPostExecute(String result) {
             //hide progress bar again
             progressBar.setVisibility(View.GONE);
-            Log.d("JSON response: ", result);
-            if (result.equals("error")) {
+            if (result == null) {
                 Toast.makeText(getApplicationContext(), "There was an Error uploading your profile picture", Toast.LENGTH_LONG).show();
             } else {
+                Log.d("JSON response: ", result);
                 Toast.makeText(getApplicationContext(), "Profile picture uploaded successfully", Toast.LENGTH_LONG).show();
             }
 
