@@ -128,6 +128,7 @@ public class Request {
             OutputStream outputStream = urlConnection.getOutputStream();
 
             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+            Log.d("BufferedWriter", String.valueOf(bufferedWriter));
             bufferedWriter.write(body);
             bufferedWriter.flush();
 
