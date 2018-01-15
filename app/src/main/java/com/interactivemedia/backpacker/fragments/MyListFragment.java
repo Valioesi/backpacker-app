@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -19,6 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.AddLocationActivity;
+import com.interactivemedia.backpacker.activities.LocationDetailsActivity;
 import com.interactivemedia.backpacker.helpers.FillListAdapter;
 import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.models.Location;
@@ -91,21 +93,15 @@ public class MyListFragment extends Fragment {
             }
         });
 
-//        lvMyLocations.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Toast.makeText(getContext(), "Stop Clicking me", Toast.LENGTH_SHORT).show();
-//                if (!isFavorite) {
-//                    imageViewButton.setBackgroundResource(R.drawable.ic_favorite_black_24dp);
-//                    isFavorite =true;
-//                } else {
-//                    imageViewButton.setBackgroundResource(R.drawable.ic_favorite_border_black_24dp);
-//                    isFavorite=false;
-//                }
-//
-//            }
-//        });
-
+        lvMyLocations.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //start details activity
+                Intent intent = new Intent(getContext(), LocationDetailsActivity.class);
+                intent.putExtra("location", mylocations[i].get_id());
+                startActivity(intent);
+            }
+        });
 
 
 

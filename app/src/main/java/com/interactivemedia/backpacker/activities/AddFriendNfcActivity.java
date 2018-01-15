@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.interactivemedia.backpacker.AddFriendEmailActivity;
 import com.interactivemedia.backpacker.R;
 
 import static android.nfc.NdefRecord.createMime;

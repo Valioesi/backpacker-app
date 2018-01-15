@@ -44,12 +44,15 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.AddLocationActivity;
+import com.interactivemedia.backpacker.activities.LocationDetailsActivity;
 import com.interactivemedia.backpacker.helpers.CustomArrayAdapter;
 import com.interactivemedia.backpacker.helpers.MarkerColors;
+import com.interactivemedia.backpacker.helpers.Preferences;
 import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.models.Location;
 import com.interactivemedia.backpacker.models.User;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -73,7 +76,7 @@ public class MapFragment extends Fragment {
     private ListView listView;
     private HashMap<String, ArrayList<User>> googleIdUsersMap;
     private HashMap<String, Marker> googleIdMarkersMap;
-
+    private String userId;
 
     public MapFragment() {
         // Required empty public constructor
@@ -108,6 +111,9 @@ public class MapFragment extends Fragment {
         if (savedInstanceState != null) {
             mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
         }
+
+        //get the logged in user's id from preferences
+        userId = Preferences.getUserId(getContext());
 
         googleIdUsersMap = new HashMap<>();
         googleIdMarkersMap = new HashMap<>();
@@ -418,16 +424,7 @@ public class MapFragment extends Fragment {
                     if (location.getCategories().length == 0) {
                         textViewCategories.setText(R.string.no_categories);
                     } else {
-                        //transform categories array into string
-                        StringBuilder builder = new StringBuilder();
-                        //this approach of using prefix is used to not have a trailing comma in the end
-                        String prefix = "";
-                        for (String category : location.getCategories()) {
-                            builder.append(prefix);
-                            prefix = ", ";
-                            builder.append(category);
-                        }
-                        textViewCategories.setText(builder.toString());
+                        textViewCategories.setText(location.categoriesToString());
                     }
 
                     //download first image of images array via Picasso library
@@ -494,6 +491,23 @@ public class MapFragment extends Fragment {
 
 
                 return view;
+            }
+        });
+
+
+        //set on click listener for info window to open location details activity
+        map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                Intent intent = new Intent(getContext(), LocationDetailsActivity.class);
+                Location location = (Location) marker.getTag();
+
+                ArrayList<String> locationIds = new ArrayList<>();
+                locationIds.add(location.get_id());
+
+                //we have the google id of the location, now we can use that to get the other locations with that google id
+           //     ArrayList<Marker> markers = googleIdMarkersMap.get(location.getGoogleId());
+
             }
         });
     }

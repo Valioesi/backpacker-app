@@ -48,10 +48,10 @@ public class Preferences {
     }
 
     /**
-     * this function saves the google id (taken from our GoogleSignInAccount in the SharedPreference
+     * this function saves the user id (received as result of post /users) in the SharedPreference
      *
      * @param context application context, needed to call appropriate functions
-     * @param id google id as a String, taken from account
+     * @param id id as a String
      */
     public static void saveUserId(Context context, String id) {
         SharedPreferences sharedPreferences = getPreferences(context);

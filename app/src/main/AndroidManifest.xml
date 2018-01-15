@@ -59,7 +59,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.EditProfileActivity" />
-        <activity android:name=".AddFriendEmailActivity"></activity>
+        <activity android:name=".activities.AddFriendEmailActivity" />
+        <activity
+            android:name=".activities.LocationDetailsActivity"
+            android:label="@string/title_activity_location_details"
+            android:theme="@style/WanderlustTheme.NoActionBar" />
     </application>
 
 </manifest>

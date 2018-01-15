@@ -1,7 +1,5 @@
 package com.interactivemedia.backpacker.models;
 
-import java.util.ArrayList;
-
 /**
  * Created by Vali on 01.12.2017.
  * This is model for a location. We will use this to parse our JSON to objects via GSON library.
@@ -85,9 +83,6 @@ public class Location {
         this.images = images;
     }
 
-    public String getUser() {
-        return user;
-    }
 
     public String getCity() {
         return city;
@@ -106,4 +101,20 @@ public class Location {
         this.infoWindowAlreadyShown = infoWindowAlreadyShown;
     }
 
+    /**
+     * this function transforms categories array into an appropriate string
+     * @return categories formatted in one single String
+     */
+    public String categoriesToString(){
+        //transform categories array into string
+        StringBuilder builder = new StringBuilder();
+        //this approach of using prefix is used to not have a trailing comma in the end
+        String prefix = "";
+        for (String category : this.getCategories()) {
+            builder.append(prefix);
+            prefix = ", ";
+            builder.append(category);
+        }
+        return builder.toString();
+    }
 }

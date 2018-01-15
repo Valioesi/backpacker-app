@@ -1,4 +1,4 @@
-package com.interactivemedia.backpacker;
+package com.interactivemedia.backpacker.activities;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.HomeActivity;
 import com.interactivemedia.backpacker.helpers.Preferences;
 import com.interactivemedia.backpacker.helpers.Request;
@@ -37,7 +38,7 @@ public class AddFriendEmailActivity extends AppCompatActivity {
     public void searchUser(View view) {
         EditText editText = findViewById(R.id.edit_text_email);
         String email = editText.getText().toString();
-        new FindUser().doInBackground("/users?email=" + email);
+        new FindUser().execute("/users?email=" + email);
     }
 
     /**
@@ -50,7 +51,7 @@ public class AddFriendEmailActivity extends AppCompatActivity {
         String userId = Preferences.getUserId(this);
         if(userId != null){
             //userId is the id of the logged in user, newFriend is the found user
-            new AddFriend().doInBackground("/users/" + userId + "/friends/" + newFriend.getId());
+            new AddFriend().execute("/users/" + userId + "/friends/" + newFriend.getId());
         }
     }
 
