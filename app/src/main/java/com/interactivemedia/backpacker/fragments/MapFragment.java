@@ -211,7 +211,8 @@ public class MapFragment extends Fragment {
      * the process to load locations of friends will be started in onPostExecute of the async task
      */
     private void loadLocationsOfUser(){
-        new GetLocationsOfUser().execute("/users/5a4cb9154162d41ba096f01d");
+//        new GetLocationsOfUser().execute("/users/5a4cb9154162d41ba096f01d");
+        new GetLocationsOfUser().execute("/users/" + userId);
     }
 
     /**
@@ -220,7 +221,7 @@ public class MapFragment extends Fragment {
     private void loadLocationsOfFriends() {
         //call AsycnTask to get users and their saved locations to show from server
         //this will be changed later, since we are only getting our friends!
-        new GetLocationsOfFriends().execute("/users/5a4cb9154162d41ba096f01d/friends");
+        new GetLocationsOfFriends().execute("/users/" + userId + "/friends");
     }
 
 

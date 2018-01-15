@@ -29,6 +29,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.fragments.PictureDialogFragment;
+import com.interactivemedia.backpacker.helpers.Preferences;
 import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.helpers.Storage;
 import com.interactivemedia.backpacker.models.User;
@@ -49,7 +50,7 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
     private static final int IMAGE_STORAGE_REQUEST = 3;
     private static final int PERMISSION_READ_STORAGE_REQUEST = 4;
     private String currentPicturePath;
-    private User user;
+    private String userId;
     private ProgressBar progressBar;
     private ConstraintLayout contentLayout;
 
@@ -63,8 +64,8 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
         progressBar = findViewById(R.id.progress_bar);
         contentLayout = findViewById(R.id.content_layout);  //to hide it later
 
-
-        new GetProfile().execute("/users/5a46519c6de6a50f3c46efba");     //TODO: use /users/me endpoint
+        userId = Preferences.getUserId(this);
+        new GetProfile().execute("/users/" + userId);
     }
 
 
@@ -217,7 +218,7 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
         String lastName = editTextLastName.getText().toString();
         String jsonBody = "{ \"firstName\": \"" + firstName + "\", \"lastName\": \"" + lastName + "\" }";
         Log.d("jsonbody", jsonBody);
-        new PatchProfile().execute("/users/" + user.getId(), jsonBody);
+        new PatchProfile().execute("/users/" + userId, jsonBody);
     }
 
     private class PatchProfile extends AsyncTask<String, Integer, String> {
@@ -236,7 +237,7 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
                 Toast.makeText(getApplicationContext(), "Successfully saved your profile", Toast.LENGTH_LONG).show();
                 //check, if there is a picture to upload
                 if (currentPicturePath != null) {
-                    new UploadPicture().execute("/users/" + user.getId() + "/avatar");
+                    new UploadPicture().execute("/users/" + userId + "/avatar");
                 } else {
                     //hide progress bar again
                     progressBar.setVisibility(View.GONE);
@@ -282,7 +283,7 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
                     }
                 });
                 Gson gson = gsonBuilder.create();
-                user = gson.fromJson(result, User.class);
+                User user = gson.fromJson(result, User.class);
                 if (user != null) {
                     //set the texts of the edit texts with the first and last name of user
                     editTextFirstName = findViewById(R.id.edit_text_first_name);

@@ -156,9 +156,9 @@ public class Request {
             bufferedWriter.write(body);
             bufferedWriter.flush();
 
-            //if the status code is anything else but 201 (post) or 204 (patch), we want to return something different,
+            //if the status code is anything else but a 2-something, we want to return something different,
             //which can be handled in our AsyncTasks
-            if (urlConnection.getResponseCode() != 201 && urlConnection.getResponseCode() != 204) {
+            if (urlConnection.getResponseCode() % 100 == 2) {
                 Log.e("Status code", urlConnection.getResponseCode() + "");
                 Log.e("error in post request", urlConnection.getResponseMessage());
                 Log.e("Error stream", readStream(urlConnection.getErrorStream()));
