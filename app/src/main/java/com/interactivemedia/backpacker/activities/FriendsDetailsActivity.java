@@ -2,12 +2,16 @@ package com.interactivemedia.backpacker.activities;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.view.View;
@@ -17,6 +21,7 @@ import android.content.DialogInterface;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
@@ -32,6 +37,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.TreeSet;
 
 public class FriendsDetailsActivity extends AppCompatActivity {
 
@@ -46,21 +52,40 @@ public class FriendsDetailsActivity extends AppCompatActivity {
     private String country;
 
 
+    private ImageView profilePicture;
+    private TextView noLocations;
+    private ConstraintLayout locationInfo;
+
+    TreeSet sortedCountryList;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends_details);
 
-
+        //Get information out of IntentExtras
         Intent intent = getIntent();
         final String friendId = intent.getStringExtra("userId");
         String firstName=intent.getStringExtra("firstName");
         String lastName=intent.getStringExtra("lastName");
         String friendName = firstName + " " + lastName;
+        String imageUri = intent.getStringExtra("avatar");
 
 
+        //Set Text in TextView
         TextView tv_friendName = findViewById(R.id.tv_friendName);
         tv_friendName.setText(friendName);
+
+        //Find ImageView
+        profilePicture = findViewById(R.id.iv_avatar);
+
+        //Set profile picture of friend.
+        if(imageUri!= null){
+            Glide.with(getApplicationContext()).load(Request.DOMAIN_URL + imageUri).into(profilePicture);
+        }
+
+
 
         friendsLocations=new ArrayList<>();
 
@@ -79,37 +104,6 @@ public class FriendsDetailsActivity extends AppCompatActivity {
         spinnerCountry = findViewById(R.id.SpinnerCountry);
 
 
-//*********************************************************************************
-
-//
-//
-//        //get list of countrys for spnCountry
-//        //taken from: https://stackoverflow.com/questions/22121253/where-to-get-list-of-countries-for-spinner-in-android
-//        Locale[] locales = Locale.getAvailableLocales();
-//        ArrayList<String> countries = new ArrayList<String>();
-//        for (Locale locale : locales) {
-//            String country = locale.getDisplayCountry();
-//            if (country.trim().length() > 0 && !countries.contains(country)) {
-//                countries.add(country);
-//            }
-//        }
-//
-//        Collections.sort(countries);
-//        for (String country : countries) {
-//            //System.out.println(country);
-//        }
-//
-//        //StringAdapter for Spinner
-//        ArrayAdapter<String> countryAdapter = new ArrayAdapter<String>(this,
-//                android.R.layout.simple_spinner_item, countries);
-//
-//        countryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//
-//        //assign ArrayAdapter to country list
-//        spnCountry.setAdapter(countryAdapter);
-
-
-
         //create "remove friend" button with onClickListener
         Button btn = (Button) findViewById(R.id.btnRemovefriend);
         btn.setOnClickListener(new OnClickListener() {
@@ -123,38 +117,10 @@ public class FriendsDetailsActivity extends AppCompatActivity {
 
     }
 
-    private void fillSpinner() {
-        countries = new ArrayList<>();
-        HashSet hashCountryList = new HashSet<>();
-
-        for (int i = 0; i < friendsLocations.size(); i++) {
-            for (Location singleLocation : friendsLocations) {
-                country = singleLocation.getCountry();
-                Log.e ("ForEach Location", country);
-                hashCountryList.add(country);
-            }
-        }
-
-        countries.clear();
-        countries.addAll(hashCountryList);
-
-        Collections.sort(countries);
-
-        Log.e("FillLocationListAdapter", String.valueOf(countries));
-
-        countries.add("Country 1");
-        countries.add("Country 2");
-        countries.add("Country to see whether adapter works");
-        //countries = FillLocationListsAdapter.sortedCountries;
-        Log.d("FriendsDetails", String.valueOf(countries));
-        countryAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, countries);
-        countryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCountry.setAdapter(countryAdapter);
 
 
-        countryAdapter.addAll(countries);
-        countryAdapter.notifyDataSetChanged();
-    }
+
+
 
 
     //remove friend confirmation dialog
@@ -178,6 +144,7 @@ public class FriendsDetailsActivity extends AppCompatActivity {
             }
         };
 
+        //Show "warning" Dialog, if user is sure about deleting friend.
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure?")
                 .setPositiveButton("Yes", dialogClickListener)
@@ -188,19 +155,13 @@ public class FriendsDetailsActivity extends AppCompatActivity {
 
 
 
-
-
-
-
-
-
-
-
     //initializes Request to load Locations of a friend.
     private void loadLocations(String userId) {
         new GetLocationOfFriend().execute("/locations?users=" + userId);
         //new GetLocationOfFriend().execute("/users/" + userId + "/friends");
     }
+
+
 
     private class GetLocationOfFriend extends AsyncTask<String, Integer, String> {
         @Override
@@ -244,8 +205,15 @@ public class FriendsDetailsActivity extends AppCompatActivity {
                 adapter.setLocations(friendsLocations);
                 adapter.notifyDataSetChanged();
 
+
+                //If friend has locations, fill the spinner with information
                 if (friendsLocations!=null && friendsLocations.size()>0){
                     fillSpinner();
+                }
+
+                //If friend has no locations saved, call function to set different layouts visible
+                else {
+                    setLayouts();
                 }
 
 
@@ -259,7 +227,71 @@ public class FriendsDetailsActivity extends AppCompatActivity {
 
     }
 
+    //set layout with spinner to invisible
+    private void setLayouts() {
+        ConstraintLayout locationInfo = findViewById(R.id.layout_locationInfo);
+        noLocations = findViewById(R.id.noLocations);
 
+        locationInfo.setVisibility(View.GONE);
+        noLocations.setVisibility(View.VISIBLE);
+
+    }
+
+    //Fill Spinner with values from Friend's Location
+    private void fillSpinner() {
+        countries = new ArrayList<>();
+        HashSet hashCountryList = new HashSet<>();
+        sortedCountryList = new TreeSet();
+
+        for (int i = 0; i < friendsLocations.size(); i++) {
+            for (Location singleLocation : friendsLocations) {
+                country = singleLocation.getCountry();
+                Log.e ("ForEach Location", country);
+                hashCountryList.add(country);
+            }
+            hashCountryList.add("- All locations -");
+        }
+
+        //Hashset into TreeSet to sort it.
+        sortedCountryList.addAll(hashCountryList);
+
+
+
+        //countries = FillLocationListsAdapter.sortedCountries;
+        countryAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, countries);
+        countryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCountry.setAdapter(countryAdapter);
+
+        countries.clear();
+        countries.addAll(sortedCountryList);
+        countryAdapter.notifyDataSetChanged();
+
+
+        //what happens when user a country in the spinner is chosen --> Start Filtering friends location
+        spinnerCountry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                adapter.setLocations(friendsLocations);
+                //Log.d("onitem", String.valueOf(friendsLocations));
+                Log.d ("ONITMEClick", countries.get(position));
+                adapter.getFilter().filter(countries.get(position), new Filter.FilterListener(){
+
+                    @Override
+                    public void onFilterComplete(int count) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+    }
+
+    //delete friend after pushing the button --> Send request to backend.
     private void deleteFriend(String userId) {
         //TODO: here you have to exchange the value with the userId ("me")
         String meId = "5a323b82654ba50ef8d2b8c2";

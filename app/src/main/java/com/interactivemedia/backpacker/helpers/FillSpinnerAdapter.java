@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
@@ -87,5 +89,6 @@ public class FillSpinnerAdapter extends ArrayAdapter<Location> {
     public void setLocations(Location[] locations){
         this.locations = locations;
     }
+
 
 }

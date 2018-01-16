@@ -4,19 +4,26 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.models.Location;
+import com.interactivemedia.backpacker.models.User;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -31,12 +38,10 @@ public class FillLocationListsAdapter extends ArrayAdapter<ArrayList<Location>> 
     private int layoutResourceId;
     private ArrayList<Location> locations;
     private String adapterCallSource;
-    private ArrayList countriesOfLocation;
-    private HashSet hashCountryList;
-    private ArrayList<String> sortedCountries;
-    private String country;
+    private String selectedCountry;
 
-    ImageView imageViewButton;
+
+    private ImageView imageViewButton;
     private boolean isFavorite;
 
 
@@ -54,6 +59,8 @@ public class FillLocationListsAdapter extends ArrayAdapter<ArrayList<Location>> 
     public View getView(int position, View convertView, ViewGroup viewGroup) {
         View row = convertView;
         LocationsHolder holder;
+
+
 
 
 
@@ -135,27 +142,6 @@ public class FillLocationListsAdapter extends ArrayAdapter<ArrayList<Location>> 
         }
 
 
-//
-//        //Only relevant for Activity FriendsDetailsActivity
-//        if (adapterCallSource=="FriendsDetailsActivity"){
-//            countriesOfLocation = new ArrayList<>();
-//            hashCountryList = new HashSet<>();
-//
-//
-//            for (Location singleLocation : locations){
-//                country = singleLocation.getCountry();
-//                Log.e ("ForEach Location", country);
-//                hashCountryList.add(country);
-//            }
-//            countriesOfLocation.clear();
-//            countriesOfLocation.addAll(hashCountryList);
-//
-//            Collections.sort(countriesOfLocation);
-//
-//            sortedCountries=sortCountries(countriesOfLocation);
-//            Log.e("FillLocationListAdapter", String.valueOf(sortedCountries));
-//        }
-//
 
         return row;
     }
@@ -172,17 +158,6 @@ public class FillLocationListsAdapter extends ArrayAdapter<ArrayList<Location>> 
     public void setLocations(ArrayList<Location> locations){
         this.locations = locations;
     }
-
-//
-//    public Filter getFilter(){
-//        CountryFilter countryFilter = null;
-//        if(countryFilter==null){
-//            countryFilter = new CountryFilter();
-//        }
-//        return countryFilter;
-//    }
-
-
 
 
 
@@ -224,7 +199,6 @@ public class FillLocationListsAdapter extends ArrayAdapter<ArrayList<Location>> 
         }
 
 
-
         @Override
         protected void onPostExecute(String result) {
             if (result == null) {
@@ -239,46 +213,77 @@ public class FillLocationListsAdapter extends ArrayAdapter<ArrayList<Location>> 
         }
     }
 
-//
-//    /**
-//     * https://www.codeproject.com/Tips/894233/Using-Spinner-Control-for-Filtering-ListView-Andro
-//     */
-//    private class CountryFilter extends Filter {
-//
-//        @Override
-//        protected FilterResults performFiltering(CharSequence constraint) {
-//            FilterResults results=new FilterResults();
-//
-//            //checks match for the countryName and adds to the filterlist
-//            if (country.length()>0){
-//                ArrayList<Location> filterList = new ArrayList<>();
-//                for (int i=0; i<locations.length; i++){
-//
-//                    if ((locations[i].getCountry()==country){
-//                        Location location = locations[i];
-//                        filterList.add(location);
-//                    }
-//                }
-//
-//                results.count=filterList.size();
-//                results.values = filterList;
-//            }
+
+    /**
+     * https://www.codeproject.com/Tips/894233/Using-Spinner-Control-for-Filtering-ListView-Andro
+     */
+    private class CountryFilter extends Filter {
+
+
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            FilterResults results = new FilterResults();
+            String countryName = constraint.toString();
+            Log.d("Filter", countryName);
+
+            //checks match for the countryName and adds to the filtered list
+            if (constraint != null || constraint.length() != 0) {
+                ArrayList<Location> filteredFriendsLocations = new ArrayList<Location>();
+                for (int i = 0; i < locations.size(); i++) {
+
+                    if (locations.get(i).getCountry().equals(countryName)) {
+                        Location location = locations.get(i);
+                        Log.d("Location of Filter", String.valueOf(location));
+                        filteredFriendsLocations.add(location);
+                    }
+                }
+
+                results.count = filteredFriendsLocations.size();
+                results.values = filteredFriendsLocations;
+            }
+
+            // There is always a value selected in the spinner. The value "**All locations**" is shown as first element.
+            // all values are shown.
+            if(countryName.equals("- All locations -")){
+                results.count=locations.size();
+                results.values=locations;
+
+            }
+
+//            //if not sorted
 //            else {
-//                results.count=sortedCountries.size();
-//                results.values = sortedCountries;
+//                results.count = locations.size();
+//                results.values = locations;
 //            }
-//            return results;
-//        }
-//
-//
-//        //publishes the matches found
-//
-//        @Override
-//        protected void publishResults(CharSequence constraint, FilterResults results) {
-//
-//            locations = (Location[]) results.values;
-//            notifyDataSetChanged();
-//
-//        }
-//    }
+
+
+            return results;
+        }
+
+
+        //publishes the matches found
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+
+            locations=(ArrayList<Location>)results.values;
+            notifyDataSetChanged();
+
+        }
+    }
+
+
+
+
+
+    public Filter getFilter(){
+        CountryFilter countryFilter = null;
+        if(countryFilter==null){
+            countryFilter = new CountryFilter();
+        }
+        return countryFilter;
+    }
+
+
+
 }

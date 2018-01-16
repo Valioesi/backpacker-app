@@ -157,20 +157,18 @@ public class FriendsFragment extends Fragment {
                 //type token is used to load into array list, see: https://stackoverflow.com/questions/12384064/gson-convert-from-json-to-a-typed-arraylistt
                 ArrayList<User> friends = gson.fromJson(result, new TypeToken<ArrayList<User>>(){}.getType());
 
-                //TODO: Set Profile Image
-                for (User friend : friends){
-                    Log.e("ForEach in ArrayList", friend.getFirstName());
-                        //we want to force glide to not use the cache to load the picture
-                        //otherwise it might happen, that the old picture is loaded
-                        //RequestOptions requestOptions = new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true);
-                        //Glide.with(getContext()).load(Request.DOMAIN_URL + friend.getAvatar()).apply(requestOptions).into(iv_avatar);
-                }
 
                 myFriends.addAll(friends);
 
                 adapter.setFriends(myFriends);
                 adapter.notifyDataSetChanged();
+
+
+
+
             }
         }
-    }
+
+
+}
 }

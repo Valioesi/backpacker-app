@@ -44,7 +44,7 @@ public class FillMyFriendsListAdapter extends ArrayAdapter<Location>{
     private ArrayList<User> friends;
     private ArrayList<Location> location;
 
-    ImageView imageView;
+    ImageView iv_avatar;
 
 
     public FillMyFriendsListAdapter(Context context, int layoutResourceId, ArrayList<User> friends){
@@ -91,24 +91,47 @@ public class FillMyFriendsListAdapter extends ArrayAdapter<Location>{
         final String firstName = friend.getFirstName();
         final String lastName = friend.getLastName();
         final String userId=friend.getId();
+        final String avatar=friend.getAvatar();
         String friendName = firstName + " " + lastName;
 
 
         holder.friendName.setText(friendName);
 
+        //Set profile picture of friend.
+        if(friend.getAvatar()!= null){
+            Glide.with(getContext()).load(Request.DOMAIN_URL + avatar).into(holder.profilePicture);
+        }
 
-        view.setOnClickListener(new View.OnClickListener(){
+
+//        //The Friends Details Activity is only accessed via FriendsFragment.
+//        //That's why there is no need to do a second request in the FriendsDetailsActivity. We can simply hand over the information from this request
+//        //read it in the FriendsDetailsActivity by getting the extras of the Input.
+//        //if the FriendsDetailsActivity was accessable from other activities or fragments it will be more useful to
+//        //simply hand the userId.
+//        view.setOnClickListener(new View.OnClickListener(){
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getContext(), FriendsDetailsActivity.class);
+//                intent.putExtra("userId", userId);
+//                intent.putExtra("firstName", firstName);
+//                intent.putExtra("lastName", lastName);
+//                intent.putExtra("avatar", avatar);
+//                context.startActivity(intent);
+//            }
+//        });
+
+
+        view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), FriendsDetailsActivity.class);
                 intent.putExtra("userId", userId);
                 intent.putExtra("firstName", firstName);
                 intent.putExtra("lastName", lastName);
+                intent.putExtra("avatar", avatar);
                 context.startActivity(intent);
             }
         });
-
-
 
         return view;
     }
@@ -128,4 +151,7 @@ public class FillMyFriendsListAdapter extends ArrayAdapter<Location>{
     public void setLocation(ArrayList<Location> locations){
         this.location = locations;
     }
+
+
+
 }
