@@ -18,13 +18,16 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.AddLocationActivity;
+import com.interactivemedia.backpacker.helpers.FillLocationListsAdapter;
 import com.interactivemedia.backpacker.activities.LocationDetailsActivity;
 import com.interactivemedia.backpacker.helpers.FillListAdapter;
 import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.models.Location;
 
+import java.util.ArrayList;
 
 
 /**
@@ -34,9 +37,9 @@ import com.interactivemedia.backpacker.models.Location;
 public class MyListFragment extends Fragment {
 
 
-    private Location[] mylocations;
-    private FillListAdapter fillListAdapter;
-
+    private ArrayList<Location> mylocations;
+    private FillLocationListsAdapter fillListAdapter;
+    private String adapterCallSource = "MyListFragment";
 
     public MyListFragment() {
         // Required empty public constructor
@@ -53,13 +56,6 @@ public class MyListFragment extends Fragment {
         return new MyListFragment();
     }
 
-    /**
-     * Fills Parts of listitem_mylist.xml with dummy texts from a hardCoded String Array
-     * Sources: https://stackoverflow.com/questions/28772909/listview-with-custom-adapter-in-fragment
-     *
-     * @param savedInstanceState
-     */
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,10 +70,10 @@ public class MyListFragment extends Fragment {
 
 
         ListView lvMyLocations = view.findViewById(R.id.lv_myloc);
-        mylocations = new Location[]{};
+        mylocations = new ArrayList<>();
 
         //Create Adapter containing location list
-        fillListAdapter = new FillListAdapter(getContext(), R.layout.listitem_mylist, mylocations);
+        fillListAdapter = new FillLocationListsAdapter(getContext(), R.layout.listitem_locations, mylocations, adapterCallSource);
         lvMyLocations.setAdapter(fillListAdapter);
 
         //Loads locations by calling AsyncTask
@@ -112,7 +108,7 @@ public class MyListFragment extends Fragment {
     private void loadLocations() {
         //call AsycTask to the locations of one user to show from server
         //TODO: instead of a defined userid we will insert the userid of the owner of the app
-        new GetLocations(fillListAdapter).execute("/locations?users=5a46519c6de6a50f3c46efba");
+        new GetLocations(fillListAdapter).execute("/locations?users=5a323b82654ba50ef8d2b8c2");
     }
 
 
@@ -124,9 +120,9 @@ public class MyListFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
     private class GetLocations extends AsyncTask<String, Integer, String> {
 
-        FillListAdapter adapter;
+        FillLocationListsAdapter adapter;
 
-        GetLocations(FillListAdapter adapter) {
+        GetLocations(FillLocationListsAdapter adapter) {
             this.adapter = adapter;
         }
 
@@ -164,7 +160,7 @@ public class MyListFragment extends Fragment {
                     }
                 });
                 Gson gson = gsonBuilder.create();
-                mylocations = gson.fromJson(result, Location[].class);
+                mylocations = gson.fromJson(result, new TypeToken<ArrayList<Location>>(){}.getType());
 
                 fillListAdapter.setLocations(mylocations);
                 fillListAdapter.notifyDataSetChanged();

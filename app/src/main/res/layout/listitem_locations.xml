@@ -7,7 +7,7 @@
     android:descendantFocusability="blocksDescendants">
 
     <TextView
-        android:id="@+id/tv_locationName"
+        android:id="@+id/tv_firstName"
         android:layout_width="wrap_content"
         android:layout_height="22dp"
         android:layout_marginStart="24dp"
@@ -25,7 +25,7 @@
         android:text="@string/des_countryName"
         android:textSize="14sp"
         app:layout_constraintStart_toEndOf="@+id/tv_cityName"
-        app:layout_constraintTop_toBottomOf="@+id/tv_locationName" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_firstName" />
 
     <TextView
         android:id="@+id/tv_cityName"
@@ -35,7 +35,7 @@
         android:text="@string/des_cityName"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_locationName" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_firstName" />
 
 
     <ImageView
@@ -48,7 +48,7 @@
         android:contentDescription="@string/des_buttonFav"
         app:layout_constraintBottom_toBottomOf="@+id/tv_countryName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_locationName"
+        app:layout_constraintTop_toTopOf="@+id/tv_firstName"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/ic_favorite_border_black_24dp"
         tools:ignore="VectorDrawableCompat" />

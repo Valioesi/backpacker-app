@@ -36,7 +36,6 @@ import java.util.List;
  */
 public class SettingsFragment extends Fragment {
 
-    private TextView txt;
 
     private ExpandableListView listView;
     private ExpandableListSettingsAdapter listAdapter;
@@ -75,39 +74,36 @@ public class SettingsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
 
-        txt = (TextView) view.findViewById(R.id.textView2);
         listView = (ExpandableListView) view.findViewById(R.id.lvexp_settings);
-//        //initialize Data:
-//        listDataHeader=new ArrayList<>();
-//        listHash = new HashMap<String, List<String>>();
-//
-//
-//        listDataHeader.add("How To Use The App");
-//        listDataHeader.add("Credits");
-//
-//
-//
-//        List<String> howTo = new ArrayList<>();
-//        howTo.add(getString(R.string.howTo1));
-//
-//
-//        List<String> credits = new ArrayList<>();
-//        credits.add(getString(R.string.credits));
-//
-//
-//
-//
-//        //Adds Childs to Headings
-//        listHash.put(listDataHeader.get(0), howTo);
-//        listHash.put(listDataHeader.get(1), credits);
-//
-//
-//
-//        //Sets adapter
-//        listAdapter = new ExpandableListSettingsAdapter(getContext(), listDataHeader, listHash);
-//        listView.setAdapter(listAdapter);
+        //initialize Data:
+        listDataHeader=new ArrayList<>();
+        listHash = new HashMap<String, List<String>>();
 
-      //  new DownloadXmlTask().execute(URL);
+
+        listDataHeader.add("How To Use The App");
+        listDataHeader.add("Credits");
+
+
+
+        List<String> howTo = new ArrayList<>();
+        howTo.add(getString(R.string.howTo1));
+
+
+        List<String> credits = new ArrayList<>();
+        credits.add(getString(R.string.credits));
+
+
+
+
+        //Adds Childs to Headings
+        listHash.put(listDataHeader.get(0), howTo);
+        listHash.put(listDataHeader.get(1), credits);
+
+
+
+        //Sets adapter
+        listAdapter = new ExpandableListSettingsAdapter(getContext(), listDataHeader, listHash);
+        listView.setAdapter(listAdapter);
 
 
         //create on click listener for open profile button
@@ -128,87 +124,6 @@ public class SettingsFragment extends Fragment {
         Intent intent = new Intent(getContext(), EditProfileActivity.class);
         startActivity(intent);
     }
-
-
-    //Implementation of AsyncTask used to download XML feed from stackoverflow.com
-    private class DownloadXmlTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... urls) {
-            try {
-                return loadXmlFromNetwork(urls[0]);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return getResources().getString(R.string.connection_error);
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            txt.setText(result);
-        }
-    }
-
-    //Instantiates a StackOverflowXMLParser, creates variables for List of Entry Objects to hold the values;
-    //Calls downloadURL() which fetches the feed and returns it as an InputStream
-    //Uses StackOverflowXMLParser to parse the InputStream. StackOverflowParser populates a list of entries with data from the fead.
-    //Processes the entries list and combines the feed data with HTML markup.
-    //Returns an HTML string that is displays in the UI by the AsyncMethod onPOstExecute()
-
-    private String loadXmlFromNetwork(String urlString) throws IOException {
-        InputStream stream = null;
-
-        //Instantiate the parser
-        StackOverflowXmlParser stackOverflowXmlParser = new StackOverflowXmlParser();
-        List<Entry> entries = null;
-
-        String title = null;
-        String linkurl = null;
-        String summary = null;
-
-        StringBuilder builder = new StringBuilder();
-
-        try {
-            stream = downloadUrl(urlString);
-            entries = stackOverflowXmlParser.parse(stream);
-            // Makes sure that the InputStream is closed after the app is
-            // finished using it.
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-        } finally {
-            if (stream != null) {
-                stream.close();
-            }
-        }
-
-
-        // StackOverflowXmlParser returns a List (called "entries") of Entry objects.
-        // Each Entry object represents a single post in the XML feed.
-        // This section processes the entries list to combine each entry with HTML markup.
-        // Each entry is displayed in the UI as a link that optionally includes
-        // a text summary.
-        for (Entry entry : entries) {
-            builder.append(entry.link);
-            builder.append("\n" + entry.title + "\n");
-            builder.append(entry.summary);
-        }
-        return builder.toString();
-
-    }
-
-    // Given a string representation of a URL, sets up a connection and gets
-    // an input stream.
-    private InputStream downloadUrl(String urlString) throws IOException {
-            URL url = new URL(urlString);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(10000 /* milliseconds */);
-            conn.setConnectTimeout(15000 /* milliseconds */);
-            conn.setRequestMethod("GET");
-            conn.setDoInput(true);
-            // Starts the query
-            conn.connect();
-            return conn.getInputStream();
-    }
-
 
 
 

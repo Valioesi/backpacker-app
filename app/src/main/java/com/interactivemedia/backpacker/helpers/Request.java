@@ -27,7 +27,9 @@ import java.util.ArrayList;
 public class Request {
 
     // public static final String DOMAIN_URL = "http://10.60.60.143:3000";   //Uni
-    public static final String DOMAIN_URL = "http://192.168.178.25:3000";   //Vali Stuttgart
+    // public static final String DOMAIN_URL = "http://192.168.178.25:3000";   //Vali Stuttgart
+    // public static final String DOMAIN_URL="http://192.168.178.50:3000"; //Rebecca Stuttgart
+    public static final String DOMAIN_URL="http://10.60.41.89:3000";
     private static final String API_URL = DOMAIN_URL + "/api/v0";
     public static final String IMAGES_URL = DOMAIN_URL + "/uploads/imgs";
 
@@ -52,6 +54,39 @@ public class Request {
             //if the status code is anything else but 200, we want to return something different,
             //which can be handled in our AsyncTasks
             if (urlConnection.getResponseCode() != 200) {
+                Log.e("Error stream", readStream(urlConnection.getErrorStream()));
+                return null;
+            }
+            return readStream(urlConnection.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+
+            }
+        }
+        return null;
+    }
+
+    /**
+     * this function can be used to perform a delete request to a server
+     *
+     * @param context  application context, needed to get shared preferences
+     * @param endpoint -> String of the REST endpoint, is added to our URL
+     * @return the server response as String
+     */
+    public static String delete(Context context, String endpoint) {
+        HttpURLConnection urlConnection = null;
+        try {
+            URL url = new URL(API_URL + endpoint);
+
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("DELETE");
+            urlConnection.setRequestProperty("access_token", Preferences.getIdToken(context));
+            //if the status code is anything else but 200, we want to return something different,
+            //which can be handled in our AsyncTasks
+            if (urlConnection.getResponseCode() % 100 == 2) {
                 Log.e("Error stream", readStream(urlConnection.getErrorStream()));
                 return null;
             }
