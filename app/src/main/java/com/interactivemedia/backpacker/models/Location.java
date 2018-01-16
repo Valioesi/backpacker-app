@@ -5,7 +5,7 @@ package com.interactivemedia.backpacker.models;
  * This is model for a location. We will use this to parse our JSON to objects via GSON library.
  */
 
-public class Location {
+public class Location  {
     private String _id;
     private String googleId;
     private String user;

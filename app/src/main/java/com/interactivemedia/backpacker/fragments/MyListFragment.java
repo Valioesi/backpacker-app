@@ -23,7 +23,6 @@ import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.AddLocationActivity;
 import com.interactivemedia.backpacker.helpers.FillLocationListsAdapter;
 import com.interactivemedia.backpacker.activities.LocationDetailsActivity;
-import com.interactivemedia.backpacker.helpers.FillListAdapter;
 import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.models.Location;
 
@@ -94,7 +93,7 @@ public class MyListFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //start details activity
                 Intent intent = new Intent(getContext(), LocationDetailsActivity.class);
-                intent.putExtra("location", mylocations[i].get_id());
+                intent.putExtra("location", mylocations.get(i).get_id());
                 startActivity(intent);
             }
         });
