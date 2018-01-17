@@ -190,7 +190,7 @@ public class MapFragment extends Fragment {
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 map = googleMap;
-                loadLocationsOfUser();
+                //loadLocationsOfUser();
             }
         });
 
@@ -432,7 +432,8 @@ public class MapFragment extends Fragment {
                     //but only, if an image exists for this location
                     if (location.getImages().length != 0) {
 
-                        String imageUri = Request.IMAGES_URL + "/location/" + location.getImages()[0] + ".jpg";
+                        String imageUri = Request.IMAGES_URL + "/locatio" +
+                                "n/" + location.getImages()[0] + ".jpg";
                         //we have to set a request listener to reload the info window (because it is not a live view, just an image)
                         //only set callback once
                         //therefore we check if the window was already shown, ergo this code has already been executed
@@ -563,7 +564,7 @@ public class MapFragment extends Fragment {
             googleIdMarkersMap.clear();
             friends.clear();
             adapter.clear();
-            loadLocationsOfUser();
+            //loadLocationsOfUser();
         }
     }
 

@@ -28,8 +28,8 @@ public class Request {
 
     // public static final String DOMAIN_URL = "http://10.60.60.143:3000";   //Uni
     // public static final String DOMAIN_URL = "http://192.168.178.25:3000";   //Vali Stuttgart
-     public static final String DOMAIN_URL="http://192.168.178.50:3000"; //Rebecca Stuttgart
-    // public static final String DOMAIN_URL="http://10.60.41.89:3000";
+     //public static final String DOMAIN_URL="http://192.168.178.50:3000"; //Rebecca Stuttgart
+    public static final String DOMAIN_URL="http://10.60.61.200:3000";
     private static final String API_URL = DOMAIN_URL + "/api/v0";
     public static final String IMAGES_URL = DOMAIN_URL + "/uploads/imgs";
 

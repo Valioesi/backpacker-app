@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.ExclusionStrategy;
@@ -26,6 +27,8 @@ import com.interactivemedia.backpacker.activities.LocationDetailsActivity;
 import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.models.Location;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 
@@ -39,6 +42,8 @@ public class MyListFragment extends Fragment {
     private ArrayList<Location> mylocations;
     private FillLocationListsAdapter fillListAdapter;
     private String adapterCallSource = "MyListFragment";
+    private ListView lvMyLocations;
+    private TextView tv_noOwnLocations;
 
     public MyListFragment() {
         // Required empty public constructor
@@ -67,8 +72,10 @@ public class MyListFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my_list, container, false);
 
+        //find Layout Components
+        tv_noOwnLocations=view.findViewById(R.id.noOwnLocations);
+        lvMyLocations = view.findViewById(R.id.lv_myloc);
 
-        ListView lvMyLocations = view.findViewById(R.id.lv_myloc);
         mylocations = new ArrayList<>();
 
         //Create Adapter containing location list
@@ -159,19 +166,19 @@ public class MyListFragment extends Fragment {
                     }
                 });
                 Gson gson = gsonBuilder.create();
-                mylocations = gson.fromJson(result, new TypeToken<ArrayList<Location>>(){}.getType());
+                mylocations = gson.fromJson(result, new TypeToken<ArrayList<Location>>() {
+                }.getType());
 
                 fillListAdapter.setLocations(mylocations);
                 fillListAdapter.notifyDataSetChanged();
 
-                //TODO: Check if locations are empty.
-                //check if friends are not empty
-//                if (mylocations != null && mylocations.length != 0) {
-//                    addMarkersForAllUsers();
-//                    configureInfoWindow();
+                //check if locations are empty and set different Layout componentes
+                if (mylocations == null && mylocations.size() == 0) {
+                    setLayout();
+                }
             }
-        }
 
+        }
     }
     /**
      * this function simply opens the addLocationActivity
@@ -182,7 +189,10 @@ public class MyListFragment extends Fragment {
     }
 
 
+    private void setLayout() {
+        //set visibility of ListView gone and of TextView visible to see the message
+        lvMyLocations.setVisibility(View.GONE);
 
-
-
-}
+        tv_noOwnLocations.setVisibility(View.VISIBLE);
+    }
+    }

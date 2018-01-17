@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-
+        startHomeActivity();
         //add onClickListener for sign in button
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,15 +59,15 @@ public class LoginActivity extends AppCompatActivity {
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         //start home activity, when account is not null (user already signed in)
         if (account != null) {
-            //startHomeActivity();
+            startHomeActivity();
             //logout for testing purposes
-            mGoogleSignInClient.signOut()
-                    .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            // ...
-                        }
-                    });
+//                 mGoogleSignInClient.signOut()
+//                    .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<Void> task) {
+//                            // ...
+//                        }
+//                    });
             //TODO: validate via Server, if necessary
         }
     }
@@ -127,8 +127,8 @@ public class LoginActivity extends AppCompatActivity {
                     "\", \"googleId\": \"" + account.getId() + "\"}";
             Log.d("User json", jsonBody);
             // TODO: uncomment later, once endpoint is up and running
-            new PostUser().execute("/users", jsonBody);
-            //startHomeActivity();
+           // new PostUser().execute("/users", jsonBody);
+            startHomeActivity();
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.

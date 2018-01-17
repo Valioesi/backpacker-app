@@ -70,4 +70,6 @@
     <string name="label_AddFriendEmailActivity">share your locations with a friend via email</string>
     <string name="label_FriendsDetailsActivity">details of this friend</string>
     <string name="label_activity_location_details">details of this location</string>
+    <string name="des_noOwnLocation">You have not saved any locations yet</string>
+    <string name="des_noFriends">You have not added friends to your list</string>
 </resources>

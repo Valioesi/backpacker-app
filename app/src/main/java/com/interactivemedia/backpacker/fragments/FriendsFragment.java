@@ -9,15 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
@@ -25,7 +20,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.AddFriendNfcActivity;
-import com.interactivemedia.backpacker.activities.FriendsDetailsActivity;
 import com.interactivemedia.backpacker.helpers.FillMyFriendsListAdapter;
 import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.models.User;
@@ -41,6 +35,9 @@ public class FriendsFragment extends Fragment {
     private ArrayList<User> myFriends;
     private FillMyFriendsListAdapter fillMyFriendsListAdapter;
     private ImageView iv_avatar;
+
+    private TextView tv_noFriends;
+    private ListView lvfriends;
 
     public FriendsFragment() {
         // Required empty public constructor
@@ -70,7 +67,10 @@ public class FriendsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_friends, container, false);
 
         //find ListView
-        ListView lvfriends = (ListView) view.findViewById(R.id.listViewFriends);
+        lvfriends = (ListView) view.findViewById(R.id.listViewFriends);
+
+        //find TextView for showing if there are no friends
+        tv_noFriends = view.findViewById(R.id.noFriends);
 
         myFriends = new ArrayList<User>();
 
@@ -164,11 +164,20 @@ public class FriendsFragment extends Fragment {
                 adapter.notifyDataSetChanged();
 
 
-
+                //check if locations are empty and set different Layout componentes
+                if (myFriends == null && myFriends.size() != 0) {
+                    setLayout();
+                }
 
             }
         }
 
 
 }
+
+    private void setLayout() {
+        //set visibility of ListView gone and of TextView visible to see the message
+        lvfriends.setVisibility(View.GONE);
+        tv_noFriends.setVisibility(View.VISIBLE);
+    }
 }

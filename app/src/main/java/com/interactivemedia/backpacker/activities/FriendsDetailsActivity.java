@@ -225,7 +225,7 @@ public class FriendsDetailsActivity extends AppCompatActivity {
 
     //set layout with spinner to invisible
     private void setLayouts() {
-        ConstraintLayout locationInfo = findViewById(R.id.layout_locationInfo);
+        locationInfo = findViewById(R.id.layout_locationInfo);
         noLocations = findViewById(R.id.noLocations);
 
         locationInfo.setVisibility(View.GONE);
