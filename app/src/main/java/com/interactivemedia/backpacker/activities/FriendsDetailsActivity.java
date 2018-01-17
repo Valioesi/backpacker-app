@@ -29,6 +29,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.helpers.FillLocationListsAdapter;
+import com.interactivemedia.backpacker.helpers.Preferences;
 import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.models.Location;
 
@@ -121,13 +122,13 @@ public class FriendsDetailsActivity extends AppCompatActivity {
 
     //remove friend confirmation dialog
     //taken from: http://www.androidhub4you.com/2012/09/alert-dialog-box-or-confirmation-box-in.html
-    public void alertMessage(final String userId) {
+    public void alertMessage(final String friendId) {
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         // Yes button clicked
-                        deleteFriend(userId);
+                        deleteFriend(friendId);
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
@@ -152,9 +153,8 @@ public class FriendsDetailsActivity extends AppCompatActivity {
 
 
     //initializes Request to load Locations of a friend.
-    private void loadLocations(String userId) {
-        new GetLocationOfFriend().execute("/locations?users=" + userId);
-        //new GetLocationOfFriend().execute("/users/" + userId + "/friends");
+    private void loadLocations(String friendId) {
+        new GetLocationOfFriend().execute("/locations?users=" + friendId);
     }
 
 
@@ -171,7 +171,7 @@ public class FriendsDetailsActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             if (result == null) {
                 Log.d("Error: ", "Error in GET Request");
-                Toast.makeText(getApplicationContext(), "There was an Error loading your locations", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "There was an error loading your friend's locations", Toast.LENGTH_LONG).show();
             } else {
                 Log.i("JSON response: ", result);
                 //we need to handle the conversion from json string to User Object, because user in this json is in format
@@ -213,12 +213,6 @@ public class FriendsDetailsActivity extends AppCompatActivity {
                     setLayouts();
                 }
 
-
-                //TODO: Check if locations are empty.
-                //check if friends are not empty
-        //                if (mylocations != null && mylocations.length != 0) {
-        //                    addMarkersForAllUsers();
-        //                    configureInfoWindow();
             }
         }
 
@@ -289,10 +283,10 @@ public class FriendsDetailsActivity extends AppCompatActivity {
     }
 
     //delete friend after pushing the button --> Send request to backend.
-    private void deleteFriend(String userId) {
-        //TODO: here you have to exchange the value with the userId ("me")
-        String meId = "5a323b82654ba50ef8d2b8c2";
-        new DeleteFriend(adapter).execute("/" +meId+"/friends/"+userId);
+    private void deleteFriend(String friendId) {
+        String userId= Preferences.getUserId(this);
+        //String meId = "5a323b82654ba50ef8d2b8c2";
+        new DeleteFriend(adapter).execute("/users/" +userId+"/friends/"+friendId);
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -314,10 +308,11 @@ public class FriendsDetailsActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             if (result == null) {
                 Log.d("Error: ", "Error in DELETE Request");
-                Toast.makeText(getApplicationContext(), "There was an Error deleting your friend", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "There was an error deleting your friend", Toast.LENGTH_LONG).show();
             } else {
                 Log.i("JSON response: ", result);
                 Toast.makeText(getApplicationContext(), "Friend deleted successfully", Toast.LENGTH_LONG).show();
+                finish();
             }
         }
     }

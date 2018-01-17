@@ -24,6 +24,7 @@ import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.AddLocationActivity;
 import com.interactivemedia.backpacker.helpers.FillLocationListsAdapter;
 import com.interactivemedia.backpacker.activities.LocationDetailsActivity;
+import com.interactivemedia.backpacker.helpers.Preferences;
 import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.models.Location;
 
@@ -112,7 +113,8 @@ public class MyListFragment extends Fragment {
     private void loadLocations() {
         //call AsycTask to the locations of one user to show from server
         //TODO: instead of a defined userid we will insert the userid of the owner of the app
-        new GetLocations(fillListAdapter).execute("/locations?users=5a323b82654ba50ef8d2b8c2");
+        String userId= Preferences.getUserId(getContext());
+        new GetLocations(fillListAdapter).execute("/locations?users=" + userId);
     }
 
 
