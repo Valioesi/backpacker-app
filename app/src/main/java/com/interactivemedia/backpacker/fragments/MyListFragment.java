@@ -27,8 +27,6 @@ import com.interactivemedia.backpacker.activities.LocationDetailsActivity;
 import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.models.Location;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 
@@ -41,7 +39,6 @@ public class MyListFragment extends Fragment {
 
     private ArrayList<Location> mylocations;
     private FillLocationListsAdapter fillListAdapter;
-    private String adapterCallSource = "MyListFragment";
     private ListView lvMyLocations;
     private TextView tv_noOwnLocations;
 
@@ -79,6 +76,7 @@ public class MyListFragment extends Fragment {
         mylocations = new ArrayList<>();
 
         //Create Adapter containing location list
+        String adapterCallSource = "MyListFragment";
         fillListAdapter = new FillLocationListsAdapter(getContext(), R.layout.listitem_locations, mylocations, adapterCallSource);
         lvMyLocations.setAdapter(fillListAdapter);
 
@@ -172,7 +170,7 @@ public class MyListFragment extends Fragment {
                 fillListAdapter.setLocations(mylocations);
                 fillListAdapter.notifyDataSetChanged();
 
-                //check if locations are empty and set different Layout componentes
+                //check if locations are empty and set different Layout components
                 if (mylocations == null && mylocations.size() == 0) {
                     setLayout();
                 }

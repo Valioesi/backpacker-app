@@ -1,5 +1,6 @@
 package com.interactivemedia.backpacker.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -34,7 +34,6 @@ public class FriendsFragment extends Fragment {
 
     private ArrayList<User> myFriends;
     private FillMyFriendsListAdapter fillMyFriendsListAdapter;
-    private ImageView iv_avatar;
 
     private TextView tv_noFriends;
     private ListView lvfriends;
@@ -67,12 +66,12 @@ public class FriendsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_friends, container, false);
 
         //find ListView
-        lvfriends = (ListView) view.findViewById(R.id.listViewFriends);
+        lvfriends = view.findViewById(R.id.listViewFriends);
 
         //find TextView for showing if there are no friends
         tv_noFriends = view.findViewById(R.id.noFriends);
 
-        myFriends = new ArrayList<User>();
+        myFriends = new ArrayList<>();
 
         //create adapter containing friends list
         fillMyFriendsListAdapter = new FillMyFriendsListAdapter(getContext(), R.layout.listitem_friends, myFriends);
@@ -113,6 +112,7 @@ public class FriendsFragment extends Fragment {
     }
 
 
+    @SuppressLint("StaticFieldLeak")
     private class GetFriends extends AsyncTask<String, Integer, String> {
         private FillMyFriendsListAdapter adapter;
 

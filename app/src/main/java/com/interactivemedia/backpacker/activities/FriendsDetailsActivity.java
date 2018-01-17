@@ -1,5 +1,6 @@
 package com.interactivemedia.backpacker.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.constraint.ConstraintLayout;
@@ -37,8 +38,6 @@ import java.util.TreeSet;
 
 public class FriendsDetailsActivity extends AppCompatActivity {
 
-    //With the String adapterCallSource you can handle the functions in the Adapter, e.G. you can't see and interactive with the favorite button
-    private String adapterCallSource = "FriendsDetailsActivity";
     private ArrayList<Location> friendsLocations;
     private FillLocationListsAdapter adapter;
     private ArrayAdapter<String> countryAdapter;
@@ -87,6 +86,7 @@ public class FriendsDetailsActivity extends AppCompatActivity {
 
         //find list view, create adapter containing friend list and set adapter of list view
         lv_favoritePlaces = findViewById(R.id.lvFavoritePlaces);
+        String adapterCallSource = "FriendsDetailsActivity";
         adapter = new FillLocationListsAdapter(getApplicationContext(), R.layout.listitem_locations, friendsLocations, adapterCallSource);
         lv_favoritePlaces.setAdapter(adapter);
 
@@ -101,7 +101,7 @@ public class FriendsDetailsActivity extends AppCompatActivity {
 
 
         //create "remove friend" button with onClickListener
-        Button btn = (Button) findViewById(R.id.btnRemoveFriend);
+        Button btn = findViewById(R.id.btnRemoveFriend);
         btn.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -159,6 +159,7 @@ public class FriendsDetailsActivity extends AppCompatActivity {
 
 
 
+    @SuppressLint("StaticFieldLeak")
     private class GetLocationOfFriend extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... strings) {
@@ -254,7 +255,7 @@ public class FriendsDetailsActivity extends AppCompatActivity {
 
 
         //countries = FillLocationListsAdapter.sortedCountries;
-        countryAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, countries);
+        countryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, countries);
         countryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCountry.setAdapter(countryAdapter);
 
@@ -294,11 +295,12 @@ public class FriendsDetailsActivity extends AppCompatActivity {
         new DeleteFriend(adapter).execute("/" +meId+"/friends/"+userId);
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class DeleteFriend extends AsyncTask <String, Integer, String> {
 
         FillLocationListsAdapter adapter;
 
-        public DeleteFriend(FillLocationListsAdapter adapter) {
+        DeleteFriend(FillLocationListsAdapter adapter) {
             this.adapter=adapter;
         }
 
