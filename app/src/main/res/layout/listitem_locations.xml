@@ -10,10 +10,10 @@
         android:id="@+id/tv_firstName"
         android:layout_width="wrap_content"
         android:layout_height="22dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="@dimen/margin_normal"
+        android:layout_marginTop="@dimen/margin_normal"
         android:text="@string/des_LocationName"
-        android:textSize="14sp"
+        android:textSize="@dimen/heading2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -22,28 +22,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="@string/des_countryName"
-        android:textSize="14sp"
+        android:textSize="@dimen/floatingText"
         app:layout_constraintStart_toEndOf="@+id/tv_cityName"
-        app:layout_constraintTop_toBottomOf="@+id/tv_firstName" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_firstName"
+        android:layout_marginBottom="@dimen/margin_normal"/>
 
     <TextView
         android:id="@+id/tv_cityName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="@dimen/margin_normal"
+        android:layout_marginTop="8dp"
         android:text="@string/des_cityName"
-        android:textSize="14sp"
+        android:textSize="@dimen/floatingText"
         app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="@dimen/margin_normal"
         app:layout_constraintTop_toBottomOf="@+id/tv_firstName" />
 
 
     <ImageView
         android:id="@+id/iv_favorite"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="@dimen/margin_normal"
         android:layout_marginTop="8dp"
         android:contentDescription="@string/des_buttonFav"
         app:layout_constraintBottom_toBottomOf="@+id/tv_countryName"
@@ -53,18 +57,6 @@
         app:srcCompat="@drawable/ic_favorite_border_black_24dp"
         tools:ignore="VectorDrawableCompat" />
 
-    <TextView
-        android:id="@+id/tv_location_des"
-        android:layout_width="325dp"
-        android:layout_height="49dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/des_locationDescription"
-        android:textSize="10sp"
-        android:textStyle="italic"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_countryName"
-        tools:ignore="SmallSp" />
 
 
 </android.support.constraint.ConstraintLayout>

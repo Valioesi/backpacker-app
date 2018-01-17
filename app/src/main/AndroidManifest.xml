@@ -30,7 +30,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyA9yABz8sHgpRXtGuwzkgbEMY4HbqLpUwg" />
 
-        <activity android:name=".activities.AddLocationActivity" />
+        <activity android:name=".activities.AddLocationActivity"
+            android:label="@string/label_AddLocationActivity"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -42,29 +43,35 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".activities.LoginActivity">
+        <activity
+            android:name=".activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.AddFriendNfcActivity">
+        <activity
+            android:name=".activities.AddFriendNfcActivity"
+            android:label="@string/label_AddFriendNfcActivity">
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:mimeType="application/vnd.com.interactivemedia.backpacker" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.EditProfileActivity" />
-        <activity android:name=".activities.AddFriendEmailActivity" />
+        <activity
+            android:name=".activities.EditProfileActivity"
+            android:label="@string/label_EditProfileActivity"/>
+        <activity
+            android:name=".activities.AddFriendEmailActivity"
+            android:label="@string/label_AddFriendEmailActivity"/>
         <activity
             android:name=".activities.LocationDetailsActivity"
-            android:label="@string/title_activity_location_details"
+            android:label="@string/label_activity_location_details"
             android:theme="@style/WanderlustTheme.NoActionBar" />
-        <activity android:name=".activities.FriendsDetailsActivity"/>
+        <activity
+            android:name=".activities.FriendsDetailsActivity"
+            android:label="@string/label_FriendsDetailsActivity"/>
     </application>
 
 </manifest>

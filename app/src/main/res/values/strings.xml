@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Backpacker</string>
+    <string name="app_name">wanderlust</string>
     <string name="title_map">Map</string>
     <string name="title_list">My list</string>
     <string name="title_friends">My friends</string>
@@ -9,7 +9,7 @@
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="des_buttonFav">Is Button Favorite?</string>
-    <string name="des_LocationName">Name of Location, City</string>
+    <string name="des_LocationName">Name of Location</string>
     <string name="des_countryName">Country</string>
     <string name="des_cityName">City Name</string>
     <string name="des_toggleFavorite">ToggleButton for favorite locations</string>
@@ -24,7 +24,7 @@
     <string name="saved_token">id_token</string>
     <string name="saved_id">user_id</string>
     <string name="server_client_id">281227624759-l6dd68h5j2jlcn8scgh4g0kcn42f107l.apps.googleusercontent.com</string>
-    <string name="nfc_info">Put your phone next to the phone of your new friend.  His or her phone needs to be unlocked.</string>
+    <string name="nfc_info">Put your phone next to the phone of your new friend. \n His or her phone needs to be unlocked.</string>
     <string name="first_name_label">First name</string>
     <string name="last_name_label">Last name</string>
     <string name="button_save_profile">Save profile</string>
@@ -57,11 +57,17 @@
     <string name="des_avatar">Profil Image of Friend</string>
     <string name="button_deleteFriend">Remove Friend</string>
     <string name="des_favoritePlaces">Favorite Places in</string>
-    <string name="title_activity_location_details">LocationDetailsActivity</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
     <string name="tab_text_3">Tab 3</string>
     <string name="des_noLocation">Your Friend has not saved any locations</string>
-
+    <string name="des_marker_MapFilter">icon to show color assigned to specific person</string>
+    <string name="slogan">for a more personal way of backpacking</string>
+    <string name="label_AddLocationActivity">add a location</string>
+    <string name="label_AddFriendNfcActivity">add a friend</string>
+    <string name="label_EditProfileActivity">edit your profile</string>
+    <string name="label_AddFriendEmailActivity">share your locations with a friend via email</string>
+    <string name="label_FriendsDetailsActivity">details of this friend</string>
+    <string name="label_activity_location_details">details of this location</string>
 </resources>

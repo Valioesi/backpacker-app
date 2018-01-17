@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -31,11 +30,8 @@ import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.helpers.FillLocationListsAdapter;
 import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.models.Location;
-import com.interactivemedia.backpacker.models.User;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.TreeSet;
 
@@ -105,7 +101,7 @@ public class FriendsDetailsActivity extends AppCompatActivity {
 
 
         //create "remove friend" button with onClickListener
-        Button btn = (Button) findViewById(R.id.btnRemovefriend);
+        Button btn = (Button) findViewById(R.id.btnRemoveFriend);
         btn.setOnClickListener(new OnClickListener() {
 
             @Override

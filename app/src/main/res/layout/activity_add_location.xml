@@ -5,21 +5,20 @@
     android:layout_height="match_parent"
     tools:context="com.interactivemedia.backpacker.activities.AddLocationActivity"
     android:orientation="vertical"
-    android:padding="15dp"
-    >
+    android:padding="@dimen/activity_horizontal_margin"    >
 
     <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:id="@+id/progress_bar"
+        android:layout_width="81dp"
+        android:layout_height="152dp"
         android:layout_gravity="center"
-        android:visibility="gone"
-        android:id="@+id/progress_bar"/>
+        android:visibility="gone" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/text_view_location"
-        android:textSize="12pt"
+        android:textSize="@dimen/heading1"
         android:layout_marginBottom="25dp"/>
 
     <TextView
@@ -27,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/label_categories"
-
+        android:textSize="@dimen/place_autocomplete_prediction_secondary_text"
         />
 
     <com.interactivemedia.backpacker.helpers.MultiSelectionSpinner
@@ -40,6 +39,7 @@
         android:id="@+id/label_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/place_autocomplete_prediction_secondary_text"
         android:text="@string/label_description" />
 
     <EditText
@@ -47,6 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:textSize="@dimen/floatingText"
         android:inputType="textMultiLine"
         android:hint="@string/hint_description"
         android:layout_marginBottom="20dp"/>
@@ -56,13 +57,16 @@
         android:id="@+id/label_picture"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/label_select_picture" />
+        android:text="@string/label_select_picture"
+        android:textSize="@dimen/place_autocomplete_prediction_secondary_text"
+        />
 
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/add_picture"
+        android:textColor="@color/colorPrimary"
         android:onClick="openDialog"/>
 
     <HorizontalScrollView
@@ -79,10 +83,11 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/save_location"
+        android:layout_marginTop="160dp"
         android:backgroundTint="@color/colorPrimary"
-        android:textColor="@android:color/white"
-        android:onClick="saveLocation"/>
+        android:onClick="saveLocation"
+        android:text="@string/save_location"
+        android:textColor="@android:color/white" />
 
 
 </LinearLayout>

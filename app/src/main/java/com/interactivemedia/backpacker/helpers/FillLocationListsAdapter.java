@@ -75,7 +75,7 @@ public class FillLocationListsAdapter extends ArrayAdapter<ArrayList<Location>> 
             holder.nameLocation= row.findViewById(R.id.tv_firstName);
             holder.nameCountry= row.findViewById(R.id.tv_countryName);
             holder.nameCity=  row.findViewById(R.id.tv_cityName);
-            holder.description=row.findViewById(R.id.tv_location_des);
+            //holder.description=row.findViewById(R.id.tv_location_des);
             holder.iv_favorite= row.findViewById(R.id.iv_favorite);
 
             row.setTag(holder);
@@ -89,7 +89,7 @@ public class FillLocationListsAdapter extends ArrayAdapter<ArrayList<Location>> 
         String nameLocation = location.getName() + " ";
         String nameCity=location.getCity() + "," ;
         String nameCountry=location.getCountry();
-        String description=location.getDescription();
+        //String description=location.getDescription();
         final Boolean isFavoriteBackend=location.isFavorite();
         final String googleId=location.getGoogleId();
         final String locationid=location.get_id();
@@ -97,7 +97,7 @@ public class FillLocationListsAdapter extends ArrayAdapter<ArrayList<Location>> 
         holder.nameLocation.setText(nameLocation);
         holder.nameCity.setText(nameCity);
         holder.nameCountry.setText(nameCountry);
-        holder.description.setText(description);
+        //holder.description.setText(description);
 
 
 
@@ -165,7 +165,7 @@ public class FillLocationListsAdapter extends ArrayAdapter<ArrayList<Location>> 
         TextView nameLocation;
         TextView nameCountry;
         TextView nameCity;
-        TextView description;
+        //TextView description;
         ImageView iv_favorite;
     }
 

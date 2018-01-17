@@ -4,18 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="10dp"
+    android:padding="@dimen/margin_normal"
     tools:context="com.interactivemedia.backpacker.activities.AddFriendEmailActivity">
 
 
     <EditText
         android:id="@+id/edit_text_email"
+        android:textSize="@dimen/heading2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/search_for_user_hint"
         android:inputType="textEmailAddress" />
 
     <Button
+        android:textColor="@color/colorPrimary"
         android:id="@+id/button_search_user"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,9 +37,10 @@
         <ImageView
             android:id="@+id/image_view_profile_picture"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
+            android:layout_height="178dp"
             android:contentDescription="@string/description_profile_picture"
-            android:src="@drawable/ic_image_grey_180dp" />
+            android:src="@drawable/ic_image_grey_180dp"
+            tools:layout_editor_absoluteY="2dp" />
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="wrap_content"
@@ -70,9 +73,13 @@
 
 
     <Button
-        android:id="@+id/button_share_locations"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_double"
+        android:layout_marginBottom="@dimen/margin_normal"
+        android:backgroundTint="@color/colorPrimary"
+        android:textColor="@android:color/white"
+        android:id="@+id/button_share_locations"
         android:onClick="shareLocations"
         android:text="@string/share_locations_button"
         app:layout_constraintBottom_toBottomOf="parent" />
