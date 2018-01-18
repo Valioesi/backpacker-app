@@ -33,7 +33,7 @@ public class HomeActivity extends AppCompatActivity {
                 case R.id.navigation_friends:
                     selectedFragment = FriendsFragment.newInstance();
                     break;
-                case R.id.navigation_settings:
+                case R.id.navigation_more:
                     selectedFragment = SettingsFragment.newInstance();
                     break;
             }
