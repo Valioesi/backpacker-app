@@ -45,6 +45,7 @@ import com.google.gson.reflect.TypeToken;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.AddLocationActivity;
 import com.interactivemedia.backpacker.activities.LocationDetailsActivity;
+import com.interactivemedia.backpacker.activities.LoginActivity;
 import com.interactivemedia.backpacker.helpers.CustomArrayAdapter;
 import com.interactivemedia.backpacker.helpers.MarkerColors;
 import com.interactivemedia.backpacker.helpers.Preferences;
@@ -223,7 +224,8 @@ public class MapFragment extends Fragment {
     private void loadLocationsOfFriends() {
         //call AsycnTask to get users and their saved locations to show from server
         //this will be changed later, since we are only getting our friends!
-        new GetLocationsOfFriends().execute("/users/" + userId + "/friends");
+
+    //    new GetLocationsOfFriends().execute("/users/" + userId + "/friends");
     }
 
 
@@ -244,7 +246,11 @@ public class MapFragment extends Fragment {
             if (result == null) {
                 Log.d("Error: ", "Error in GET Request");
                 Toast.makeText(getContext(), "There was an Error loading your locations", Toast.LENGTH_LONG).show();
-            } else {
+            } else if (result.equals("401")){
+                //unauthorized -> we need new token -> redirect to Login Activity
+                Intent intent = new Intent(getContext(), LoginActivity.class);
+                startActivity(intent);
+            }else {
                 Log.d("JSON response: ", result);
                 Gson gson = new Gson();
                 User user = gson.fromJson(result, User.class);
@@ -273,6 +279,10 @@ public class MapFragment extends Fragment {
             if (result == null) {
                 Log.d("Error: ", "Error in GET Request");
                 Toast.makeText(getContext(), "There was an Error loading the locations of your friends", Toast.LENGTH_LONG).show();
+            } else if (result.equals("401")){
+                //unauthorized -> we need new token -> redirect to Login Activity
+                Intent intent = new Intent(getContext(), LoginActivity.class);
+                startActivity(intent);
             } else {
                 Log.d("JSON response: ", result);
                 Gson gson = new Gson();

@@ -72,4 +72,5 @@
     <string name="showCredits">Show Credits</string>
     <string name="welcome">Welcome!</string>
     <string name="des_homeImage">logo Wanderlust</string>
+    <string name="no_user_found">No user was found</string>
 </resources>

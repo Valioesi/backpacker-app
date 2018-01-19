@@ -308,6 +308,10 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
         protected void onPostExecute(String result) {
             if (result == null) {
                 Toast.makeText(getApplicationContext(), "There was an Error saving the location", Toast.LENGTH_LONG).show();
+            } else if (result.equals("401")){
+                //unauthorized -> we need new token -> redirect to Login Activity
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
             } else {
                 Log.d("JSON response: ", result);
                 Toast.makeText(getApplicationContext(), "Location saved successfully", Toast.LENGTH_LONG).show();
@@ -340,6 +344,10 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
             progressBar.setVisibility(View.GONE);
             if (result == null) {
                 Toast.makeText(getApplicationContext(), "There was an Error uploading the location's pictures", Toast.LENGTH_LONG).show();
+            } else if (result.equals("401")){
+                //unauthorized -> we need new token -> redirect to Login Activity
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
             } else {
                 Log.d("JSON response: ", result);
                 Toast.makeText(getApplicationContext(), "Pictures uploaded successfully", Toast.LENGTH_LONG).show();

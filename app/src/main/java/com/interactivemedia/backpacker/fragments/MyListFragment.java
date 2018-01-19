@@ -22,6 +22,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.AddLocationActivity;
+import com.interactivemedia.backpacker.activities.LoginActivity;
 import com.interactivemedia.backpacker.helpers.FillLocationListsAdapter;
 import com.interactivemedia.backpacker.activities.LocationDetailsActivity;
 import com.interactivemedia.backpacker.helpers.Preferences;
@@ -150,7 +151,11 @@ public class MyListFragment extends Fragment {
             if (result == null) {
                 Log.d("Error: ", "Error in GET Request");
                 Toast.makeText(getContext(), "There was an Error loading your locations", Toast.LENGTH_LONG).show();
-            } else {
+            } else if (result.equals("401")){
+                //unauthorized -> we need new token -> redirect to Login Activity
+                Intent intent = new Intent(getContext(), LoginActivity.class);
+                startActivity(intent);
+            }else {
                 Log.i("JSON locations: ", result);
                 //we need to handle the conversion from json string to User Object, because user in this json is in format
                 //user : { id: ..., firstName: ..., lastName:..}    instead of just user: id

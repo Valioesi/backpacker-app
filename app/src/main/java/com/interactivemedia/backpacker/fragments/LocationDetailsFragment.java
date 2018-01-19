@@ -1,6 +1,7 @@
 package com.interactivemedia.backpacker.fragments;
 
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,7 @@ import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.interactivemedia.backpacker.R;
+import com.interactivemedia.backpacker.activities.LoginActivity;
 import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.models.Location;
 import com.interactivemedia.backpacker.models.User;
@@ -99,6 +101,10 @@ public class LocationDetailsFragment extends Fragment {
             if (result == null) {
                 Log.d("Error: ", "Error in GET Request");
                 Toast.makeText(getContext(), "There was an Error loading the location", Toast.LENGTH_LONG).show();
+            } else if (result.equals("401")){
+                //unauthorized -> we need new token -> redirect to Login Activity
+                Intent intent = new Intent(getContext(), LoginActivity.class);
+                startActivity(intent);
             } else {
                 Log.d("JSON response: ", result);
                 //we use the gson builder to add an exclusion strategy, which leads to gson excluding the field user
@@ -184,6 +190,10 @@ public class LocationDetailsFragment extends Fragment {
             if (result == null) {
                 Log.d("Error: ", "Error in GET Request");
                 Toast.makeText(getContext(), "There was an Error loading the location", Toast.LENGTH_LONG).show();
+            } else if (result.equals("401")){
+                //unauthorized -> we need new token -> redirect to Login Activity
+                Intent intent = new Intent(getContext(), LoginActivity.class);
+                startActivity(intent);
             } else {
                 Log.d("JSON response: ", result);
                 Gson gson = new Gson();

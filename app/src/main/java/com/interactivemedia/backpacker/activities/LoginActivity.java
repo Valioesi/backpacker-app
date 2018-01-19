@@ -29,6 +29,7 @@ public class LoginActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private static final int SIGN_IN_REQUEST = 1;
     private ProgressBar progressBar;
+    private boolean neverSignedIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,28 +55,28 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        //check if there is already a user id saved in preferences and set boolean accordingly
+        //we need this to either redirect to Edit Profile or Home
+        if (Preferences.getUserId(this) == null) {
+            neverSignedIn = true;
+        } else {
+            neverSignedIn = false;
+        }
+
         progressBar = findViewById(R.id.progress_bar_login);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        // Check for existing Google Sign In account, if the user is already signed in
-        // the GoogleSignInAccount will be non-null.
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        //start home activity, when account is not null (user already signed in)
-        if (account != null) {
-            startHomeActivity();
-            //logout for testing purposes
-           /* mGoogleSignInClient.signOut()
-                    .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            // ...
-                        }
-                    });*/
-            //TODO: validate via Server, if necessary
-        }
+        //use silent sign in to sign in, if the user had already signed in in the past
+        //we use the silent sign in approach to be able to refresh the token
+        mGoogleSignInClient.silentSignIn().addOnCompleteListener(this, new OnCompleteListener<GoogleSignInAccount>() {
+            @Override
+            public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
+                handleSilentSignInResult(task);
+            }
+        });
     }
 
     /**
@@ -86,6 +87,31 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+    /**
+     * handles, what happens after the attempted silent sign in
+     * We want to refresh our ID token.
+     *
+     * @param completedTask holds information about the sign in attempt
+     */
+    private void handleSilentSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            //save token in Shared Preferences
+            Preferences.saveIdToken(this, account.getIdToken());
+            startHomeActivity();
+            finish();
+        } catch (ApiException e) {
+            // The ApiException status code indicates the detailed failure reason.
+            // Please refer to the GoogleSignInStatusCodes class reference for more information.
+            Log.w("Sign in", "silent signInResult:failed code=" + e.getStatusCode());
+
+            //if code is 4, we need to sign in
+            if(e.getStatusCode() != 4){
+                Toast.makeText(this, "There was an error signing in", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 
     /**
      * this function is called in onClickListener of sign in button, starts the sign in intent
@@ -164,6 +190,10 @@ public class LoginActivity extends AppCompatActivity {
             progressBar.setVisibility(View.GONE);
             if (result == null) {
                 Toast.makeText(getApplicationContext(), "There was an Error logging in", Toast.LENGTH_LONG).show();
+            } else if (result.equals("401")){
+                //unauthorized -> we need new token -> redirect to Login Activity
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
             } else {
                 Log.d("JSON response: ", result);
                 //use JsonObject instead of Gson to not have to define an exclusion strategy
@@ -173,9 +203,15 @@ public class LoginActivity extends AppCompatActivity {
                 Preferences.saveUserId(getApplicationContext(), user.getId());
 
                 Toast.makeText(getApplicationContext(), "Signed in successfully", Toast.LENGTH_LONG).show();
-                //redirect to EditProfileActivity to give the user the option to edit his data
-                Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
-                startActivity(intent);
+
+                if (neverSignedIn) {
+                    //redirect to EditProfileActivity to give the user the option to edit his data
+                    Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
+                    startActivity(intent);
+                } else {
+                    startHomeActivity();
+                }
+
                 finish();
             }
 

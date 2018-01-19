@@ -50,12 +50,17 @@ public class Request {
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.setRequestProperty("access_token", Preferences.getIdToken(context));
-            //if the status code is anything else but 200, we want to return something different,
+            //if the status code is anything else but 2xx, we want to return something different,
             //which can be handled in our AsyncTasks
-            if (urlConnection.getResponseCode() != 200) {
+            if (urlConnection.getResponseCode() / 100 == 4 || urlConnection.getResponseCode() / 100 == 5) {
                 Log.e("Error stream", readStream(urlConnection.getErrorStream()));
                 return null;
             }
+
+            if (urlConnection.getResponseCode() == 401) {
+                return "401";
+            }
+
             return readStream(urlConnection.getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
@@ -85,10 +90,14 @@ public class Request {
             urlConnection.setRequestProperty("access_token", Preferences.getIdToken(context));
             //if the status code is anything else but 200, we want to return something different,
             //which can be handled in our AsyncTasks
-            if (urlConnection.getResponseCode() / 100 != 2) {
+            if (urlConnection.getResponseCode() / 100 == 4 || urlConnection.getResponseCode() / 100 == 5) {
                 Log.e("Error stream", readStream(urlConnection.getErrorStream()));
                 return null;
             }
+            if (urlConnection.getResponseCode() == 401) {
+                return "401";
+            }
+
             return readStream(urlConnection.getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
@@ -190,12 +199,16 @@ public class Request {
 
             //if the status code is anything else but a 2-something, we want to return something different,
             //which can be handled in our AsyncTasks
-            if (urlConnection.getResponseCode() / 100 != 2) {
+            if (urlConnection.getResponseCode() / 100 == 4 || urlConnection.getResponseCode() / 100 == 5) {
                 Log.e("Status code", urlConnection.getResponseCode() + "");
                 Log.e("error in post request", urlConnection.getResponseMessage());
                 Log.e("Error stream", readStream(urlConnection.getErrorStream()));
                 return null;
             }
+            if (urlConnection.getResponseCode() == 401) {
+                return "401";
+            }
+
             return readStream(urlConnection.getInputStream());
 
         } catch (IOException e) {
@@ -274,12 +287,16 @@ public class Request {
             //flush output buffer
             request.flush();
             request.close();
-            //if the status code is anything else but 202, we want to return something different,
+            //if the status code is anything else but 2xx, we want to return something different,
             //which can be handled in our AsyncTasks
-            if (urlConnection.getResponseCode() != 202) {
+            if (urlConnection.getResponseCode() / 100 == 4 || urlConnection.getResponseCode() / 100 == 5) {
                 Log.e("Error uploading images", urlConnection.getResponseMessage());
                 Log.e("Error message", readStream(urlConnection.getErrorStream()));
                 return null;
+            }
+
+            if (urlConnection.getResponseCode() == 401) {
+                return "401";
             }
             return readStream(urlConnection.getInputStream());
 

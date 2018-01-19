@@ -20,6 +20,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.AddFriendNfcActivity;
+import com.interactivemedia.backpacker.activities.LoginActivity;
 import com.interactivemedia.backpacker.helpers.FillMyFriendsListAdapter;
 import com.interactivemedia.backpacker.helpers.Preferences;
 import com.interactivemedia.backpacker.helpers.Request;
@@ -121,6 +122,10 @@ public class FriendsFragment extends Fragment {
             if (result == null) {
                 Log.d("Error: ", "Error in GET Request");
                 //Toast.makeText(getContext(), "There was an Error loading the locations of your friends", Toast.LENGTH_LONG).show();
+            } else if (result.equals("401")){
+                //unauthorized -> we need new token -> redirect to Login Activity
+                Intent intent = new Intent(getContext(), LoginActivity.class);
+                startActivity(intent);
             } else {
                 Log.d("JSON response: ", result);
 

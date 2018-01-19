@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,12 +23,14 @@ import com.interactivemedia.backpacker.models.User;
 public class AddFriendEmailActivity extends AppCompatActivity {
 
     private User newFriend;
-
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_friend_email);
+        progressBar = findViewById(R.id.progress_bar);
+
     }
 
     /**
@@ -38,7 +41,10 @@ public class AddFriendEmailActivity extends AppCompatActivity {
     public void searchUser(View view) {
         EditText editText = findViewById(R.id.edit_text_email);
         String email = editText.getText().toString();
-        new FindUser().execute("/users?email=" + email);
+        //show progess bar
+        progressBar.setVisibility(View.VISIBLE);
+        String query = "?email=" + email;
+        new FindUser().execute("/users" + query);
     }
 
     /**
@@ -66,6 +72,10 @@ public class AddFriendEmailActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             if (result == null) {
                 Toast.makeText(getApplicationContext(), "There was an Error while searching the user", Toast.LENGTH_LONG).show();
+            } else if (result.equals("401")){
+                //unauthorized -> we need new token -> redirect to Login Activity
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
             } else {
                 Log.d("JSON response: ", result);
                 Gson gson = new Gson();
@@ -74,15 +84,23 @@ public class AddFriendEmailActivity extends AppCompatActivity {
                 TextView textViewName = findViewById(R.id.text_view_name);
                 TextView textViewLocations = findViewById(R.id.text_view_number_locations);
 
-                //...and display user info
-                String name = newFriend.getFirstName() + " " + newFriend.getLastName();
-                textViewName.setText(name);
-                String locationInfo = newFriend.getLocations().size() + " Locations";
-                textViewLocations.setText(locationInfo);
-
-                //load profile picture into image view
-                ImageView imageView = findViewById(R.id.image_view_profile_picture);
-                Glide.with(getApplicationContext()).load(Request.DOMAIN_URL + newFriend.getAvatar()).into(imageView);
+                //hide progress bar
+                progressBar.setVisibility(View.GONE);
+                //if there is no user found, then display appropriate text
+                if(newFriend == null || newFriend.getId() == null){
+                    findViewById(R.id.text_view_no_user).setVisibility(View.VISIBLE);
+                }else{
+                    //...and display user info
+                    String name = newFriend.getFirstName() + " " + newFriend.getLastName();
+                    textViewName.setText(name);
+                    //load profile picture into image view
+                    ImageView imageView = findViewById(R.id.image_view_profile_picture);
+                    if(newFriend.getAvatar() != null){
+                        Glide.with(getApplicationContext()).load(Request.DOMAIN_URL + newFriend.getAvatar()).into(imageView);
+                    } else {
+                        imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_image_grey_180dp));
+                    }
+                }
 
             }
         }
@@ -101,6 +119,10 @@ public class AddFriendEmailActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             if (result == null) {
                 Toast.makeText(getApplicationContext(), "There was an Error sharing your locations", Toast.LENGTH_LONG).show();
+            } else if (result.equals("401")){
+                //unauthorized -> we need new token -> redirect to Login Activity
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
             } else {
                 Log.d("JSON response: ", result);
                 Toast.makeText(getApplicationContext(), "Successfully shared your locations with " + newFriend.getFirstName(), Toast.LENGTH_LONG).show();

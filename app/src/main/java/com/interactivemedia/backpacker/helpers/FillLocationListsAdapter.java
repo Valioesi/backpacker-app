@@ -2,6 +2,7 @@ package com.interactivemedia.backpacker.helpers;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.text.Layout;
@@ -20,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.interactivemedia.backpacker.R;
+import com.interactivemedia.backpacker.activities.LoginActivity;
 import com.interactivemedia.backpacker.models.Location;
 import com.interactivemedia.backpacker.models.User;
 
@@ -203,6 +205,10 @@ public class FillLocationListsAdapter extends ArrayAdapter<ArrayList<Location>> 
         protected void onPostExecute(String result) {
             if (result == null) {
                 Toast.makeText(getContext(), "There was an Error setting your location to favorite", Toast.LENGTH_LONG).show();
+            } else if (result.equals("401")){
+                //unauthorized -> we need new token -> redirect to Login Activity
+                Intent intent = new Intent(getContext(), LoginActivity.class);
+                getContext().startActivity(intent);
             } else {
                 if (isFavorite) {
                     Toast.makeText(getContext(), "Location set as favorite", Toast.LENGTH_LONG).show();

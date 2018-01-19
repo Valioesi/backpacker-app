@@ -33,7 +33,6 @@
             />
 
         <Button
-            android:textColor="@color/colorPrimary"
             android:id="@+id/button_change_picture"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,7 +40,9 @@
             android:onClick="openDialog"
             android:text="@string/button_change_picture"
             app:layout_constraintTop_toBottomOf="@id/image_view_profile_picture"
-            android:backgroundTint="@android:color/white" />
+            android:textColor="@color/colorPrimary"
+            android:backgroundTint="@android:color/white"
+            />
 
         <TextView
             android:id="@+id/label_first_name"

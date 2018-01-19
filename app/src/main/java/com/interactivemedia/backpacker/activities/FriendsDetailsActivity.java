@@ -172,6 +172,10 @@ public class FriendsDetailsActivity extends AppCompatActivity {
             if (result == null) {
                 Log.d("Error: ", "Error in GET Request");
                 Toast.makeText(getApplicationContext(), "There was an error loading your friend's locations", Toast.LENGTH_LONG).show();
+            } else if (result.equals("401")){
+                //unauthorized -> we need new token -> redirect to Login Activity
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
             } else {
                 Log.i("JSON response: ", result);
                 //we need to handle the conversion from json string to User Object, because user in this json is in format
@@ -309,6 +313,10 @@ public class FriendsDetailsActivity extends AppCompatActivity {
             if (result == null) {
                 Log.d("Error: ", "Error in DELETE Request");
                 Toast.makeText(getApplicationContext(), "There was an error deleting your friend", Toast.LENGTH_LONG).show();
+            } else if (result.equals("401")){
+                //unauthorized -> we need new token -> redirect to Login Activity
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
             } else {
                 Log.i("JSON response: ", result);
                 Toast.makeText(getApplicationContext(), "Friend deleted successfully", Toast.LENGTH_LONG).show();

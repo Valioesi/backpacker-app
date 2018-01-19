@@ -234,6 +234,10 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
             if (result == null) {
                 Log.d("Error: ", "Error in GET Request");
                 Toast.makeText(getApplicationContext(), "There was an Error saving your profile", Toast.LENGTH_LONG).show();
+            } else if (result.equals("401")){
+                //unauthorized -> we need new token -> redirect to Login Activity
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
             } else {
                 Log.d("JSON response: ", result);
                 Toast.makeText(getApplicationContext(), "Successfully saved your profile", Toast.LENGTH_LONG).show();
@@ -270,6 +274,10 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
                 //redirect to home activity
                 redirectToHome();
 
+            } else if (result.equals("401")){
+                //unauthorized -> we need new token -> redirect to Login Activity
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
             } else {
                 Log.d("JSON response: ", result);
                 //we use the gson builder to add an exclusion strategy, which leads to gson excluding the field locations
@@ -327,6 +335,10 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
             progressBar.setVisibility(View.GONE);
             if (result == null) {
                 Toast.makeText(getApplicationContext(), "There was an Error uploading your profile picture", Toast.LENGTH_LONG).show();
+            } else if (result.equals("401")){
+                //unauthorized -> we need new token -> redirect to Login Activity
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
             } else {
                 Log.d("JSON response: ", result);
                 Toast.makeText(getApplicationContext(), "Profile picture uploaded successfully", Toast.LENGTH_LONG).show();
