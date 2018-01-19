@@ -65,6 +65,8 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
         contentLayout = findViewById(R.id.content_layout);  //to hide it later
 
         userId = Preferences.getUserId(this);
+        //show progress bar while loading profile
+        progressBar.setVisibility(View.VISIBLE);
         new GetProfile().execute("/users/" + userId);
     }
 
@@ -260,6 +262,8 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
 
         @Override
         protected void onPostExecute(String result) {
+            //hide progress bar again
+            progressBar.setVisibility(View.GONE);
             if (result == null) {
                 Log.d("Error: ", "Error in GET Request");
                 Toast.makeText(getApplicationContext(), "There was an Error loading your profile", Toast.LENGTH_LONG).show();

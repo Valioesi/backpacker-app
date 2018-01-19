@@ -112,15 +112,10 @@ public class MapFragment extends Fragment {
             mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
         }
 
-        /////////////////////////////////////////////////
-        userId = "5a323b82654ba50ef8d2b8c2";
+        //get the logged in user's id from preferences
+        userId = Preferences.getUserId(getContext());
+        //userId = "5a4cb9154162d41ba096f01d";
 
-
-
-//        //get the logged in user's id from preferences
-//        userId = Preferences.getUserId(getContext());
-
-        ///////////////////////////////////////////////////
 
         googleIdUsersMap = new HashMap<>();
         googleIdMarkersMap = new HashMap<>();
@@ -197,7 +192,7 @@ public class MapFragment extends Fragment {
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 map = googleMap;
-                //loadLocationsOfUser();
+                loadLocationsOfUser();
             }
         });
 
@@ -439,8 +434,7 @@ public class MapFragment extends Fragment {
                     //but only, if an image exists for this location
                     if (location.getImages().length != 0) {
 
-                        String imageUri = Request.IMAGES_URL + "/locatio" +
-                                "n/" + location.getImages()[0] + ".jpg";
+                        String imageUri = Request.IMAGES_URL + "/location/" + location.getImages()[0] + ".jpg";
                         //we have to set a request listener to reload the info window (because it is not a live view, just an image)
                         //only set callback once
                         //therefore we check if the window was already shown, ergo this code has already been executed
@@ -511,12 +505,20 @@ public class MapFragment extends Fragment {
                 Intent intent = new Intent(getContext(), LocationDetailsActivity.class);
                 Location location = (Location) marker.getTag();
 
-                ArrayList<String> locationIds = new ArrayList<>();
-                locationIds.add(location.get_id());
+                //pass the google id of the location and the users with the intent
+                intent.putExtra("locationGoogleId", location.getGoogleId());
 
-                //we have the google id of the location, now we can use that to get the other locations with that google id
-           //     ArrayList<Marker> markers = googleIdMarkersMap.get(location.getGoogleId());
+                //get user ids from user objects
+                ArrayList<String> userIds = new ArrayList<>();
+                ArrayList<String> userNames = new ArrayList<>();
 
+                for(User user: googleIdUsersMap.get(location.getGoogleId())){
+                    userIds.add(user.getId());
+                    userNames.add(user.getFirstName());
+                }
+                intent.putExtra("userIdArray", userIds);
+                intent.putExtra("userNameArray", userNames);
+                startActivity(intent);
             }
         });
     }
@@ -565,14 +567,15 @@ public class MapFragment extends Fragment {
         super.onResume();
         mapView.onResume();
         //reload markers, because there might have been added one
-        if (map != null) {
+        //TODO make better!
+     /*   if (map != null) {
             map.clear();
             googleIdUsersMap.clear();
             googleIdMarkersMap.clear();
             friends.clear();
             adapter.clear();
-            //loadLocationsOfUser();
-        }
+            loadLocationsOfUser();
+        }*/
     }
 
     @Override
@@ -592,6 +595,7 @@ public class MapFragment extends Fragment {
         super.onLowMemory();
         mapView.onLowMemory();
     }
+
 
 
 }

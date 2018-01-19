@@ -94,7 +94,7 @@ public class AddFriendEmailActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... strings) {
-            return Request.put(getApplicationContext(), strings[0], strings[1]);
+            return Request.put(getApplicationContext(), strings[0]);
         }
 
         @Override

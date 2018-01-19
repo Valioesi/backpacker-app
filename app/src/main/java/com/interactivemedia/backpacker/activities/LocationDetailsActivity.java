@@ -1,5 +1,6 @@
 package com.interactivemedia.backpacker.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -8,12 +9,13 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
 
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.fragments.LocationDetailsFragment;
+
+import java.util.ArrayList;
 
 public class LocationDetailsActivity extends AppCompatActivity {
 
@@ -32,7 +34,9 @@ public class LocationDetailsActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
 
-    private String[] locationIds;
+    private String locationGoogleId;
+
+    private ArrayList<String> userIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,16 +49,28 @@ public class LocationDetailsActivity extends AppCompatActivity {
 
         TabLayout tabLayout = findViewById(R.id.tabs);
 
+        Intent intent = getIntent();
+        //get location id from intent
+        locationGoogleId = intent.getStringExtra("locationGoogleId");
 
         //check if an array was passed or just a single id
-        if(getIntent().hasExtra("locationArray")){
-            //do stuff
+        if(intent.hasExtra("userIdArray")){
+            userIds = intent.getStringArrayListExtra("userIdArray");
+            ArrayList<String> userNames = intent.getStringArrayListExtra("userNameArray");
+
+            //add a tab for every user
+            for(String name: userNames){
+                tabLayout.addTab(tabLayout.newTab().setText(name));
+            }
         } else {
-            //in this case we only have one location, so we want to hide the tabs
+            //in this case we only have one user, so we want to hide the tabs
             tabLayout.setVisibility(View.GONE);
-            //get location id from intent
-            locationIds = new String[]{getIntent().getStringExtra("location")};
+
+            userIds = new ArrayList<>();
+            //because in this case we only have one user we add it to the array list
+            userIds.add(intent.getStringExtra("userId"));
         }
+
 
 
         // Create the adapter that will return a fragment for each of the three
@@ -91,13 +107,13 @@ public class LocationDetailsActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a LocationDetailsFragment
-            return LocationDetailsFragment.newInstance(locationIds[position]);
+            return LocationDetailsFragment.newInstance(locationGoogleId, userIds.get(position));
         }
 
         @Override
         public int getCount() {
             // Show as many pages as there are locations.
-            return locationIds.length;
+            return userIds.size();
         }
     }
 

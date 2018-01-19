@@ -23,7 +23,8 @@
     <string name="saved_token">id_token</string>
     <string name="saved_id">user_id</string>
     <string name="server_client_id">281227624759-l6dd68h5j2jlcn8scgh4g0kcn42f107l.apps.googleusercontent.com</string>
-    <string name="nfc_info">Put your phone next to the phone of your new friend. \n His or her phone needs to be unlocked.</string>
+    <string name="nfc_info">Put your phone next to the phone of your new friend.  His or her phone needs to be unlocked.
+        Make sure, that NFC is activated on both phones and android beam is activated on your's.</string>
     <string name="first_name_label">First name</string>
     <string name="last_name_label">Last name</string>
     <string name="button_save_profile">Save profile</string>

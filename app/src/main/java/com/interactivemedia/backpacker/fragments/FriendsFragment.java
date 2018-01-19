@@ -21,6 +21,7 @@ import com.google.gson.reflect.TypeToken;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.AddFriendNfcActivity;
 import com.interactivemedia.backpacker.helpers.FillMyFriendsListAdapter;
+import com.interactivemedia.backpacker.helpers.Preferences;
 import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.models.User;
 
@@ -96,15 +97,7 @@ public class FriendsFragment extends Fragment {
     }
 
     private void loadFriends() {
-        //call AsycTask to the locations of one user to show from server
-
-
-        ////////////////////////////////////////////////////////////////
-
-        String userId="5a323b82654ba50ef8d2b8c2";
-        //String userId= Preferences.getUserId(getContext());
-
-        ///////////////////////////////////////////////////////////////
+        String userId = Preferences.getUserId(getContext());
         new GetFriends(fillMyFriendsListAdapter).execute("/users/" + userId + "/friends");
     }
 

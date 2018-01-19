@@ -28,8 +28,8 @@ public class Request {
 
     // public static final String DOMAIN_URL = "http://10.60.60.143:3000";   //Uni
     // public static final String DOMAIN_URL = "http://192.168.178.25:3000";   //Vali Stuttgart
-     //public static final String DOMAIN_URL="http://192.168.178.50:3000"; //Rebecca Stuttgart
-    public static final String DOMAIN_URL="http://10.60.60.38:3000";
+    // public static final String DOMAIN_URL="http://192.168.178.50:3000"; //Rebecca Stuttgart
+    public static final String DOMAIN_URL="http://10.60.32.5:3001";
     private static final String API_URL = DOMAIN_URL + "/api/v0";
     public static final String IMAGES_URL = DOMAIN_URL + "/uploads/imgs";
 
@@ -137,11 +137,10 @@ public class Request {
      *
      * @param context  application context, needed to get shared preferences
      * @param endpoint -> String of the REST endpoint, is added to our URL
-     * @param body     as string in JSON format
      * @return response as string
      */
-    public static String put(Context context, String endpoint, String body) {
-        return postPutOrPatch(context, endpoint, body, RequestMethod.PUT);
+    public static String put(Context context, String endpoint) {
+        return postPutOrPatch(context, endpoint, "{}", RequestMethod.PUT);
     }
 
 
@@ -187,7 +186,6 @@ public class Request {
             OutputStream outputStream = urlConnection.getOutputStream();
 
             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
-            Log.d("BufferedWriter", String.valueOf(bufferedWriter));
             bufferedWriter.write(body);
             bufferedWriter.flush();
 
@@ -234,6 +232,7 @@ public class Request {
             urlConnection.setUseCaches(false);
             urlConnection.setDoOutput(true);
             urlConnection.setDoInput(true);
+
 
             urlConnection.setRequestMethod(requestMethod);
             urlConnection.setRequestProperty("Connection", "Keep-Alive");

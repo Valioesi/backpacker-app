@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -27,11 +28,13 @@ public class LoginActivity extends AppCompatActivity {
 
     private GoogleSignInClient mGoogleSignInClient;
     private static final int SIGN_IN_REQUEST = 1;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -41,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        //startHomeActivity();
+
         //add onClickListener for sign in button
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,6 +52,8 @@ public class LoginActivity extends AppCompatActivity {
                 signIn();
             }
         });
+
+        progressBar = findViewById(R.id.progress_bar_login);
     }
 
     @Override
@@ -59,15 +64,15 @@ public class LoginActivity extends AppCompatActivity {
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         //start home activity, when account is not null (user already signed in)
         if (account != null) {
-            //startHomeActivity();
+            startHomeActivity();
             //logout for testing purposes
-                 mGoogleSignInClient.signOut()
+           /* mGoogleSignInClient.signOut()
                     .addOnCompleteListener(this, new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             // ...
                         }
-                    });
+                    });*/
             //TODO: validate via Server, if necessary
         }
     }
@@ -117,6 +122,8 @@ public class LoginActivity extends AppCompatActivity {
      */
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
+            //show progress bar
+            progressBar.setVisibility(View.VISIBLE);
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
             //save token in Shared Preferences
@@ -127,8 +134,8 @@ public class LoginActivity extends AppCompatActivity {
                     "\", \"googleId\": \"" + account.getId() + "\"}";
             Log.d("User json", jsonBody);
             // TODO: uncomment later, once endpoint is up and running
-           // new PostUser().execute("/users", jsonBody);
-            startHomeActivity();
+            new PostUser().execute("/users", jsonBody);
+            //startHomeActivity();
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
@@ -151,6 +158,8 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
+            //hide progress bar
+            progressBar.setVisibility(View.GONE);
             if (result == null) {
                 Toast.makeText(getApplicationContext(), "There was an Error logging in", Toast.LENGTH_LONG).show();
             } else {
@@ -165,6 +174,7 @@ public class LoginActivity extends AppCompatActivity {
                 //redirect to EditProfileActivity to give the user the option to edit his data
                 Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
                 startActivity(intent);
+                finish();
             }
 
         }

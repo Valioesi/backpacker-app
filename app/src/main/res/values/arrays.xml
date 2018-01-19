@@ -5,4 +5,19 @@
         <item>Camera</item>
     </string-array>
 
+    <string-array name="categories">
+        <item>Museum/Gallery</item>
+        <item>Bar</item>
+        <item>Cafe</item>
+        <item>Restaurant</item>
+        <item>Shopping</item>
+        <item>Park</item>
+        <item>Viewpoint</item>
+        <item>History</item>
+        <item>Architecture</item>
+        <item>Club</item>
+        <item>Seaside</item>
+        <item>Nature</item>
+        <item>Hiking</item>
+    </string-array>
 </resources>

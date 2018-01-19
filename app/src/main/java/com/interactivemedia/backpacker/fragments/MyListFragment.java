@@ -40,6 +40,8 @@ public class MyListFragment extends Fragment {
 
     private ArrayList<Location> mylocations;
     private FillLocationListsAdapter fillListAdapter;
+    private String adapterCallSource = "MyListFragment";
+    private String userId;
     private ListView lvMyLocations;
     private TextView tv_noOwnLocations;
 
@@ -76,10 +78,14 @@ public class MyListFragment extends Fragment {
 
         mylocations = new ArrayList<>();
 
+        userId = Preferences.getUserId(getContext());
+        //userId = "5a46519c6de6a50f3c46efba";
+
         //Create Adapter containing location list
         String adapterCallSource = "MyListFragment";
         fillListAdapter = new FillLocationListsAdapter(getContext(), R.layout.listitem_locations, mylocations, adapterCallSource);
         lvMyLocations.setAdapter(fillListAdapter);
+
 
         //Loads locations by calling AsyncTask
         loadLocations();
@@ -100,7 +106,8 @@ public class MyListFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //start details activity
                 Intent intent = new Intent(getContext(), LocationDetailsActivity.class);
-                intent.putExtra("location", mylocations.get(i).get_id());
+                intent.putExtra("locationGoogleId", mylocations.get(i).getGoogleId());
+                intent.putExtra("userId", userId);
                 startActivity(intent);
             }
         });
@@ -113,14 +120,6 @@ public class MyListFragment extends Fragment {
 
     private void loadLocations() {
         //call AsycTask to the locations of one user to show from server
-
-
-        ////////////////////////////////////////////////////////////////
-
-        String userId="5a323b82654ba50ef8d2b8c2";
-        //String userId= Preferences.getUserId(getContext());
-
-        ///////////////////////////////////////////////////////////////
         new GetLocations(fillListAdapter).execute("/locations?users=" + userId);
     }
 

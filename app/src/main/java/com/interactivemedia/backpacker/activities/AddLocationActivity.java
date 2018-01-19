@@ -51,7 +51,7 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
     private static final int IMAGE_CAPTURE_REQUEST = 2;
     private static final int IMAGE_STORAGE_REQUEST = 3;
     private static final int PERMISSION_READ_STORAGE_REQUEST = 4;
-    private static final String[] OPTIONS_CATEGORIES = {"Bar", "Restaurant", "Beach", "Club"};
+    private String[] optionsCategories;
     private Place place;
     private String[] selectedCategories;
     private ArrayList<String> picturePaths; //important, holds all paths of selected images -> needed for upload later
@@ -65,6 +65,8 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
         //get progress bar, we want to make it visible later
         progressBar = findViewById(R.id.progress_bar);
         picturePaths = new ArrayList<>();
+
+        optionsCategories = getResources().getStringArray(R.array.categories);
 
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
         try {
@@ -91,7 +93,7 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
                 textView.setText(place.getName());
                 //find spinner and initialize it
                 MultiSelectionSpinner spinner = findViewById(R.id.spinner);
-                spinner.setItems(OPTIONS_CATEGORIES);
+                spinner.setItems(optionsCategories);
                 spinner.setListener(this);
                 Log.d("place picker", place.getAddress().toString());
             }
@@ -143,7 +145,6 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
 
     @Override
     public void selectedStrings(List<String> strings) {
-        Toast.makeText(this, strings.toString(), Toast.LENGTH_LONG).show();
         //transform list to string array and save it in selectedCategories
         selectedCategories = strings.toArray(new String[0]);
     }
