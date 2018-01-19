@@ -82,18 +82,6 @@ public class FriendsFragment extends Fragment {
         loadFriends();
 
 
-//
-//        //OnItemClickListener to get friends detail
-//        lvfriends.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                Intent intent = new Intent(getActivity(), FriendsDetailsActivity.class);
-//                intent.putExtra("userId", userId);
-//                startActivity(intent);
-//            }
-//        });
-
-
         //set on click listener for add friend button -> open AddFriendNfcActivity
         FloatingActionButton button = view.findViewById(R.id.add_friend_button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -108,7 +96,16 @@ public class FriendsFragment extends Fragment {
     }
 
     private void loadFriends() {
-        new GetFriends(fillMyFriendsListAdapter).execute("/users/5a323b82654ba50ef8d2b8c2/friends");
+        //call AsycTask to the locations of one user to show from server
+
+
+        ////////////////////////////////////////////////////////////////
+
+        String userId="5a323b82654ba50ef8d2b8c2";
+        //String userId= Preferences.getUserId(getContext());
+
+        ///////////////////////////////////////////////////////////////
+        new GetFriends(fillMyFriendsListAdapter).execute("/users/" + userId + "/friends");
     }
 
 

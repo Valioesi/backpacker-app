@@ -1,12 +1,11 @@
 <resources>
-    <string name="app_name">wanderlust</string>
+    <string name="app_name">Wanderlust</string>
     <string name="title_map">Map</string>
-    <string name="title_list">My list</string>
-    <string name="title_friends">My friends</string>
-    <string name="title_settings">Settings</string>
+    <string name="title_list">My List</string>
+    <string name="title_friends">My Friends</string>
+    <string name="title_more">More</string>
     <string name="action_settings">Settings</string>
     <string name="heading_myList">My Favorite Locations</string>
-
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="des_buttonFav">Is Button Favorite?</string>
     <string name="des_LocationName">Name of Location</string>
@@ -30,9 +29,7 @@
     <string name="button_save_profile">Save profile</string>
     <string name="location_thumbnail">Thumbnail of location</string>
     <string name="no_categories">No categories specified</string>
-
     <string name="connection_error">Sorry, no connection to the XML file available</string>
-
     <string name="lvexp_setting_heading">heading</string>
     <string name="lvexp_setting_content">content</string>
     <string name="credits">This application was created by \n
@@ -48,8 +45,8 @@
     <string name="edit_profile_button">Edit profile</string>
     <string name="des_locationDescription">Description of the location you added</string>
     <string name="search_for_user_label">Search for user</string>
-    <string name="search_for_user_hint">Type in Email address…</string>
-    <string name="search_user_button">Search user</string>
+    <string name="search_for_user_hint">Type in email address…</string>
+    <string name="search_user_button">Search User</string>
     <string name="share_locations_button">Share locations with user</string>
     <string name="des_friendName">Name of Friend</string>
     <string name="des_avatar">Profil Image of Friend</string>
@@ -61,13 +58,17 @@
     <string name="tab_text_3">Tab 3</string>
     <string name="des_noLocation">Your Friend has not saved any locations</string>
     <string name="des_marker_MapFilter">icon to show color assigned to specific person</string>
-    <string name="slogan">for a more personal way of backpacking</string>
-    <string name="label_AddLocationActivity">add a location</string>
-    <string name="label_AddFriendNfcActivity">add a friend</string>
-    <string name="label_EditProfileActivity">edit your profile</string>
-    <string name="label_AddFriendEmailActivity">share your locations with a friend via email</string>
-    <string name="label_FriendsDetailsActivity">details of this friend</string>
-    <string name="label_activity_location_details">details of this location</string>
+    <string name="slogan">the personal way to backpack</string>
+    <string name="label_AddLocationActivity">Add a Location</string>
+    <string name="label_AddFriendNfcActivity">Add a Friend</string>
+    <string name="label_EditProfileActivity">Edit Your Profile</string>
+    <string name="label_AddFriendEmailActivity">Share Your Locations with a Friend via Email</string>
+    <string name="label_FriendsDetailsActivity">Details of This Friend</string>
+    <string name="label_activity_location_details">Details of This Location</string>
     <string name="des_noOwnLocation">You have not saved any locations yet</string>
     <string name="des_noFriends">You have not added friends to your list</string>
+    <string name="logout">Logout</string>
+    <string name="showCredits">Show Credits</string>
+    <string name="welcome">Welcome!</string>
+    <string name="des_homeImage">logo Wanderlust</string>
 </resources>

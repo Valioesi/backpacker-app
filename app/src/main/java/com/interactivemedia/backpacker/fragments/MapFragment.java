@@ -112,8 +112,15 @@ public class MapFragment extends Fragment {
             mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
         }
 
-        //get the logged in user's id from preferences
-        userId = Preferences.getUserId(getContext());
+        /////////////////////////////////////////////////
+        userId = "5a323b82654ba50ef8d2b8c2";
+
+
+
+//        //get the logged in user's id from preferences
+//        userId = Preferences.getUserId(getContext());
+
+        ///////////////////////////////////////////////////
 
         googleIdUsersMap = new HashMap<>();
         googleIdMarkersMap = new HashMap<>();

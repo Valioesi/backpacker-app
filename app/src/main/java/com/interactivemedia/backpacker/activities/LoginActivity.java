@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        startHomeActivity();
+        //startHomeActivity();
         //add onClickListener for sign in button
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,15 +59,15 @@ public class LoginActivity extends AppCompatActivity {
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         //start home activity, when account is not null (user already signed in)
         if (account != null) {
-            startHomeActivity();
+            //startHomeActivity();
             //logout for testing purposes
-//                 mGoogleSignInClient.signOut()
-//                    .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<Void> task) {
-//                            // ...
-//                        }
-//                    });
+                 mGoogleSignInClient.signOut()
+                    .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            // ...
+                        }
+                    });
             //TODO: validate via Server, if necessary
         }
     }

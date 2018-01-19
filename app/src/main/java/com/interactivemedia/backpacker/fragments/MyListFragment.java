@@ -94,6 +94,7 @@ public class MyListFragment extends Fragment {
             }
         });
 
+        //show Location Details after choosing an element
         lvMyLocations.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -112,8 +113,14 @@ public class MyListFragment extends Fragment {
 
     private void loadLocations() {
         //call AsycTask to the locations of one user to show from server
-        //TODO: instead of a defined userid we will insert the userid of the owner of the app
-        String userId= Preferences.getUserId(getContext());
+
+
+        ////////////////////////////////////////////////////////////////
+
+        String userId="5a323b82654ba50ef8d2b8c2";
+        //String userId= Preferences.getUserId(getContext());
+
+        ///////////////////////////////////////////////////////////////
         new GetLocations(fillListAdapter).execute("/locations?users=" + userId);
     }
 

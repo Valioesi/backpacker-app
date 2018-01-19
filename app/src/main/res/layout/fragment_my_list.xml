@@ -6,32 +6,32 @@
     android:layout_height="match_parent"
     tools:context="com.interactivemedia.backpacker.fragments.MyListFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <ListView
         android:id="@+id/lv_myloc"
         android:layout_width="match_parent"
-        android:layout_height="370dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/margin_Bottom_for_listitems"
         android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_location_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="5dp"
-        android:layout_marginBottom="32dp"
-        android:layout_marginEnd="@dimen/margin_normal"
-        android:layout_marginTop="8dp"
+        android:layout_margin="@dimen/margin_floatingActionButtons"
         android:src="@drawable/ic_add_location_black_40dp"
         android:tint="@android:color/white"
         app:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lv_myloc" />
+        app:layout_constraintTop_toBottomOf="@+id/lv_myloc"
+        app:layout_constraintVertical_bias="0.777" />
 
     <TextView
         android:id="@+id/noOwnLocations"

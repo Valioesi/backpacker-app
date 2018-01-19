@@ -1,50 +1,41 @@
 package com.interactivemedia.backpacker.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ExpandableListView;
-import android.widget.TextView;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.EditProfileActivity;
-import com.interactivemedia.backpacker.helpers.ExpandableListSettingsAdapter;
-import com.interactivemedia.backpacker.helpers.StackOverflowXmlParser;
-import com.interactivemedia.backpacker.helpers.Entry;
+import com.interactivemedia.backpacker.activities.LoginActivity;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-
+import java.nio.channels.SocketChannel;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class SettingsFragment extends Fragment {
 
+    private Button btn_openProfile;
+    private Button btn_credits;
+    private Button btn_logout;
 
-    private ExpandableListView listView;
-    private ExpandableListSettingsAdapter listAdapter;
-    private List<String> listDataHeader;
-    private HashMap<String, List<String>> listHash;
-
-    private static final String XML_URL = "http://stackoverflow.com/feeds/tag?tagnames=android&sort=newest";
-    //XmlPullParser xpp=getResources().getXml(R.xml.user_documentation);
-
+    private GoogleSignInClient mGoogleSignInClient;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -74,47 +65,119 @@ public class SettingsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
 
-        listView = (ExpandableListView) view.findViewById(R.id.lvexp_settings);
-        //initialize Data:
-        listDataHeader=new ArrayList<>();
-        listHash = new HashMap<String, List<String>>();
-
-
-        listDataHeader.add("How To Use The App");
-        listDataHeader.add("Credits");
-
-
-
-        List<String> howTo = new ArrayList<>();
-        howTo.add(getString(R.string.howTo1));
-
-
-        List<String> credits = new ArrayList<>();
-        credits.add(getString(R.string.credits));
-
-
-
-
-        //Adds Childs to Headings
-        listHash.put(listDataHeader.get(0), howTo);
-        listHash.put(listDataHeader.get(1), credits);
-
-
-
-        //Sets adapter
-        listAdapter = new ExpandableListSettingsAdapter(getContext(), listDataHeader, listHash);
-        listView.setAdapter(listAdapter);
-
-
         //create on click listener for open profile button
-        Button button = view.findViewById(R.id.button_open_profile);
-        button.setOnClickListener(new View.OnClickListener() {
+        btn_openProfile = view.findViewById(R.id.button_open_profile);
+        btn_openProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openProfile();
             }
         });
+
+        //create on click listener for showing the credits
+        btn_credits=view.findViewById(R.id.button_show_credits);
+        btn_credits.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showCredits();
+            }
+        });
+
+        //create on click listener for Logout Button
+        btn_logout=view.findViewById(R.id.button_logout);
+        btn_logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertMessage();
+            }
+        });
+
+
+        //Re-initialize the Client for signing out
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(getContext())
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+        mGoogleApiClient.connect();
+        super.onStart();
+
+        // Build a GoogleSignInClient with the options specified by gso.
+        mGoogleSignInClient = GoogleSignIn.getClient(getContext(), gso);
+
+
+
+
         return view;
+    }
+
+    private void alertMessage() {
+        //remove friend confirmation dialog
+        //taken from: http://www.androidhub4you.com/2012/09/alert-dialog-box-or-confirmation-box-in.html
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            // Yes button clicked
+                            logout();
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            // No button clicked
+                            // do nothing
+                            // Toast.makeText(FriendsDetailsActivity.this, "No Clicked",
+                            //        Toast.LENGTH_LONG).show();
+                            break;
+                    }
+                }
+            };
+
+            //Show "warning" Dialog, if user is sure about deleting friend.
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setMessage("Are you sure you want to log out from this app?")
+                    .setTitle("Logout")
+                    .setPositiveButton("Yes", dialogClickListener)
+                    .setNegativeButton("No", dialogClickListener).show();
+        }
+
+
+    private void logout() {
+
+
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getContext());
+        //start home activity, when account is not null (user already signed in)
+        if (account != null) {
+            Log.d("LOGOUT", "Google Accoutn is not null");
+            if (mGoogleSignInClient != null) {
+                mGoogleSignInClient.signOut()
+                        .addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Log.d("LogoutButton", "You were Logged out succesfully");
+                                Intent intent = new Intent(getContext(), LoginActivity.class);
+                                startActivity(intent);
+                                // ...
+                            }
+                        });
+            }
+        }
+    }
+
+    private void showCredits() {
+        //show credit information
+        //source: https://stackoverflow.com/questions/6264694/how-to-add-message-box-with-ok-button
+        final AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(getContext());
+        dlgAlert.setMessage(R.string.credits);
+        dlgAlert.setTitle("Credits");
+        dlgAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                //for dismissing the dialog there is no action necessary
+            }
+            });
+        dlgAlert.setCancelable(true);
+        dlgAlert.create().show();
     }
 
     /**
