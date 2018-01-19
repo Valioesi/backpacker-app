@@ -155,7 +155,7 @@ public class FriendsFragment extends Fragment {
 
 
                 //check if locations are empty and set different Layout componentes
-                if (myFriends == null && myFriends.size() != 0) {
+                if (myFriends == null || myFriends.size() != 0) {
                     setLayout();
                 }
 

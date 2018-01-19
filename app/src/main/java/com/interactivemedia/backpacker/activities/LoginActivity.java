@@ -38,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
                 .requestIdToken(getString(R.string.server_client_id))
                 .build();
 
@@ -131,7 +132,8 @@ public class LoginActivity extends AppCompatActivity {
             //let's make an api call with the token, so that the backend can check, if the user already exists in our db and can create it if necessary
             String jsonBody = "{ \"firstName\": \"" + account.getGivenName() +
                     "\", \"lastName\": \"" + account.getFamilyName() +
-                    "\", \"googleId\": \"" + account.getId() + "\"}";
+                    "\", \"googleId\": \"" + account.getId() +
+                    "\", \"email\": \"" + account.getEmail() + "\"}";
             Log.d("User json", jsonBody);
             // TODO: uncomment later, once endpoint is up and running
             new PostUser().execute("/users", jsonBody);

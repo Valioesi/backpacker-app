@@ -29,7 +29,7 @@ public class Request {
     // public static final String DOMAIN_URL = "http://10.60.60.143:3000";   //Uni
     // public static final String DOMAIN_URL = "http://192.168.178.25:3000";   //Vali Stuttgart
     // public static final String DOMAIN_URL="http://192.168.178.50:3000"; //Rebecca Stuttgart
-    public static final String DOMAIN_URL="http://10.60.32.5:3001";
+    public static final String DOMAIN_URL="http://10.60.60.38:3000";
     private static final String API_URL = DOMAIN_URL + "/api/v0";
     public static final String IMAGES_URL = DOMAIN_URL + "/uploads/imgs";
 
@@ -86,7 +86,7 @@ public class Request {
             urlConnection.setRequestProperty("access_token", Preferences.getIdToken(context));
             //if the status code is anything else but 200, we want to return something different,
             //which can be handled in our AsyncTasks
-            if (urlConnection.getResponseCode() % 100 == 2) {
+            if (urlConnection.getResponseCode() / 100 != 2) {
                 Log.e("Error stream", readStream(urlConnection.getErrorStream()));
                 return null;
             }
@@ -191,7 +191,8 @@ public class Request {
 
             //if the status code is anything else but a 2-something, we want to return something different,
             //which can be handled in our AsyncTasks
-            if (urlConnection.getResponseCode() % 100 == 2) {
+            int responseCode = urlConnection.getResponseCode();
+            if ((responseCode / 100) != 2) {
                 Log.e("Status code", urlConnection.getResponseCode() + "");
                 Log.e("error in post request", urlConnection.getResponseMessage());
                 Log.e("Error stream", readStream(urlConnection.getErrorStream()));

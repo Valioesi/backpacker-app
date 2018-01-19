@@ -232,6 +232,7 @@ public class MapFragment extends Fragment {
      * this AsyncTask makes a call to our API to get locations of the logged in user, which will be rendered on the map
      * the task to get locations of friends will be started in the onPostExecute
      */
+    @SuppressLint("StaticFieldLeak")
     private class GetLocationsOfUser extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... strings) {
@@ -260,6 +261,7 @@ public class MapFragment extends Fragment {
     /**
      * this AsyncTask makes a call to our API to get friends and their locations, which will be rendered on the map
      */
+    @SuppressLint("StaticFieldLeak")
     private class GetLocationsOfFriends extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... strings) {

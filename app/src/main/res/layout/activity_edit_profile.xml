@@ -40,7 +40,8 @@
             android:layout_marginTop="@dimen/margin_normal"
             android:onClick="openDialog"
             android:text="@string/button_change_picture"
-            app:layout_constraintTop_toBottomOf="@id/image_view_profile_picture" />
+            app:layout_constraintTop_toBottomOf="@id/image_view_profile_picture"
+            android:backgroundTint="@android:color/white" />
 
         <TextView
             android:id="@+id/label_first_name"

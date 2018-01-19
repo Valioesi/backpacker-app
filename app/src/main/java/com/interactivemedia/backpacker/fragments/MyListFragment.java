@@ -151,7 +151,7 @@ public class MyListFragment extends Fragment {
                 Log.d("Error: ", "Error in GET Request");
                 Toast.makeText(getContext(), "There was an Error loading your locations", Toast.LENGTH_LONG).show();
             } else {
-                Log.i("JSON response: ", result);
+                Log.i("JSON locations: ", result);
                 //we need to handle the conversion from json string to User Object, because user in this json is in format
                 //user : { id: ..., firstName: ..., lastName:..}    instead of just user: id
                 //therefore we want to ignore user in the deserialization process
@@ -179,7 +179,7 @@ public class MyListFragment extends Fragment {
                 fillListAdapter.notifyDataSetChanged();
 
                 //check if locations are empty and set different Layout components
-                if (mylocations == null && mylocations.size() == 0) {
+                if (mylocations == null || mylocations.size() == 0) {
                     setLayout();
                 }
             }
