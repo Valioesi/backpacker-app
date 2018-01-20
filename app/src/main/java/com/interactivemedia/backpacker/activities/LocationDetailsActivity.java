@@ -58,9 +58,11 @@ public class LocationDetailsActivity extends AppCompatActivity {
             userIds = intent.getStringArrayListExtra("userIdArray");
             ArrayList<String> userNames = intent.getStringArrayListExtra("userNameArray");
 
-            //add a tab for every user
-            for(String name: userNames){
-                tabLayout.addTab(tabLayout.newTab().setText(name));
+            if(intent.getStringArrayListExtra("userIdArray").size() > 1){
+                //add a tab for every user
+                for(String name: userNames){
+                    tabLayout.addTab(tabLayout.newTab().setText(name));
+                }
             }
         } else {
             //in this case we only have one user, so we want to hide the tabs

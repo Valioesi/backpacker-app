@@ -28,7 +28,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.interactivemedia.backpacker.R;
-import com.interactivemedia.backpacker.helpers.FillLocationListsAdapter;
+import com.interactivemedia.backpacker.adapters.FillLocationListsAdapter;
 import com.interactivemedia.backpacker.helpers.Preferences;
 import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.models.Location;

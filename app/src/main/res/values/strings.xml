@@ -24,7 +24,7 @@
     <string name="saved_id">user_id</string>
     <string name="server_client_id">281227624759-l6dd68h5j2jlcn8scgh4g0kcn42f107l.apps.googleusercontent.com</string>
     <string name="nfc_info">Put your phone next to the phone of your new friend.  His or her phone needs to be unlocked.
-        Make sure, that NFC is activated on both phones and android beam is activated on your's.</string>
+        Make sure, that NFC is activated on both phones and Android Beam on your's.</string>
     <string name="first_name_label">First name</string>
     <string name="last_name_label">Last name</string>
     <string name="button_save_profile">Save profile</string>
@@ -63,7 +63,7 @@
     <string name="label_AddLocationActivity">Add a Location</string>
     <string name="label_AddFriendNfcActivity">Add a Friend</string>
     <string name="label_EditProfileActivity">Edit Your Profile</string>
-    <string name="label_AddFriendEmailActivity">Share Your Locations with a Friend via Email</string>
+    <string name="label_AddFriendEmailActivity">Share Your Locations</string>
     <string name="label_FriendsDetailsActivity">Details of This Friend</string>
     <string name="label_activity_location_details">Details of This Location</string>
     <string name="des_noOwnLocation">You have not saved any locations yet</string>
@@ -73,4 +73,9 @@
     <string name="welcome">Welcome!</string>
     <string name="des_homeImage">logo Wanderlust</string>
     <string name="no_user_found">No user was found</string>
+    <string name="channel_name">Wanderlust</string>
+    <string name="channel_description">New notification from Wanderlust</string>
+    <string name="channel_id">channel_1_wanderlust</string>
+    <string name="saved_nfc_event">nfc_event</string>
+    <string name="text_no_internet">You have no internet connection!</string>
 </resources>

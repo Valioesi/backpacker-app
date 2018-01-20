@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.Task;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.EditProfileActivity;
 import com.interactivemedia.backpacker.activities.LoginActivity;
+import com.interactivemedia.backpacker.helpers.Preferences;
 
 import java.nio.channels.SocketChannel;
 
@@ -127,8 +128,6 @@ public class SettingsFragment extends Fragment {
                         case DialogInterface.BUTTON_NEGATIVE:
                             // No button clicked
                             // do nothing
-                            // Toast.makeText(FriendsDetailsActivity.this, "No Clicked",
-                            //        Toast.LENGTH_LONG).show();
                             break;
                     }
                 }
@@ -156,9 +155,13 @@ public class SettingsFragment extends Fragment {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 Log.d("LogoutButton", "You were Logged out succesfully");
+                                //remove user id from preferences to indicate, that he is not logged in
+                                Preferences.saveUserId(getContext(), null);
+
                                 Intent intent = new Intent(getContext(), LoginActivity.class);
                                 startActivity(intent);
-                                // ...
+                                //remove home activity from stack
+                                getActivity().finish();
                             }
                         });
             }

@@ -1,4 +1,4 @@
-package com.interactivemedia.backpacker.helpers;
+package com.interactivemedia.backpacker.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

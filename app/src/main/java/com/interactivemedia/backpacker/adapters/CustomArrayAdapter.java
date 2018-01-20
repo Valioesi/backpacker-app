@@ -1,4 +1,4 @@
-package com.interactivemedia.backpacker.helpers;
+package com.interactivemedia.backpacker.adapters;
 
 
 import android.app.Activity;
@@ -14,6 +14,7 @@ import android.widget.CheckedTextView;
 import android.widget.ImageView;
 
 import com.interactivemedia.backpacker.R;
+import com.interactivemedia.backpacker.helpers.MarkerColors;
 import com.interactivemedia.backpacker.models.User;
 
 import java.util.ArrayList;

@@ -79,7 +79,10 @@ public class AddFriendEmailActivity extends AppCompatActivity {
             } else {
                 Log.d("JSON response: ", result);
                 Gson gson = new Gson();
-                newFriend = gson.fromJson(result, User.class);
+                //an array is returned, therefore we need to parse it with User[]
+                User[] userArray = gson.fromJson(result, User[].class);
+                //but it is only one value in that array, the found user
+                newFriend = userArray[0];
                 //get text views
                 TextView textViewName = findViewById(R.id.text_view_name);
                 TextView textViewLocations = findViewById(R.id.text_view_number_locations);
@@ -100,6 +103,9 @@ public class AddFriendEmailActivity extends AppCompatActivity {
                     } else {
                         imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_image_grey_180dp));
                     }
+
+                    //show button to share locations
+                    findViewById(R.id.button_share_locations).setVisibility(View.VISIBLE);
                 }
 
             }
@@ -123,12 +129,14 @@ public class AddFriendEmailActivity extends AppCompatActivity {
                 //unauthorized -> we need new token -> redirect to Login Activity
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
+                finish();
             } else {
                 Log.d("JSON response: ", result);
                 Toast.makeText(getApplicationContext(), "Successfully shared your locations with " + newFriend.getFirstName(), Toast.LENGTH_LONG).show();
                 //return to home activity
                 Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
                 startActivity(intent);
+                finish();
             }
         }
 

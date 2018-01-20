@@ -10,21 +10,21 @@
 
     <EditText
         android:id="@+id/edit_text_email"
-        android:textSize="@dimen/heading2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/search_for_user_hint"
-        android:inputType="textEmailAddress" />
+        android:inputType="textEmailAddress"
+        android:textSize="@dimen/heading2" />
 
     <Button
         android:id="@+id/button_search_user"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="@android:color/white"
         android:onClick="searchUser"
         android:text="@string/search_user_button"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_email"
         android:textColor="@color/colorPrimary"
-        android:backgroundTint="@android:color/white" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_email" />
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -40,21 +40,19 @@
             android:layout_height="wrap_content"
             android:text="@string/no_user_found"
             android:textSize="@dimen/heading2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:visibility="gone"
-            />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <ProgressBar
             android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:visibility="gone"
-            />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <ImageView
@@ -68,9 +66,9 @@
         <android.support.constraint.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/image_view_profile_picture"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_view_profile_picture"
 
             >
 
@@ -79,8 +77,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="50dp"
-                android:textSize="22sp"
-                />
+                android:textSize="22sp" />
 
 
             <TextView
@@ -96,15 +93,16 @@
 
 
     <Button
+        android:id="@+id/button_share_locations"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_double"
         android:layout_marginBottom="@dimen/margin_normal"
+        android:layout_marginTop="@dimen/margin_double"
         android:backgroundTint="@color/colorPrimary"
-        android:textColor="@android:color/white"
-        android:id="@+id/button_share_locations"
         android:onClick="shareLocations"
         android:text="@string/share_locations_button"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"/>
 
 </android.support.constraint.ConstraintLayout>

@@ -1,9 +1,16 @@
 package com.interactivemedia.backpacker.activities;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +24,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.helpers.Preferences;
@@ -29,12 +37,23 @@ public class LoginActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private static final int SIGN_IN_REQUEST = 1;
     private ProgressBar progressBar;
+    private ConstraintLayout layout;
     private boolean neverSignedIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        //this is needed for android 8
+        createNotificationChannel();
+
+        progressBar = findViewById(R.id.progress_bar_login);
+        //show progress bar
+        progressBar.setVisibility(View.VISIBLE);
+        //and hide rest
+        layout = findViewById(R.id.login_layout);
+        layout.setVisibility(View.GONE);
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -51,24 +70,29 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                signIn();
+                if(Request.hasInternetConnection(getApplicationContext())){
+                    signIn();
+                } else {
+                    Toast.makeText(getApplicationContext(), "It seems like you have no internet connection", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
-        //check if there is already a user id saved in preferences and set boolean accordingly
+        //check if there is already an id token (user id would not work, because
+        // we set it to null after logout) saved in preferences and set boolean accordingly
         //we need this to either redirect to Edit Profile or Home
-        if (Preferences.getUserId(this) == null) {
+        if (Preferences.getIdToken(this) == null) {
             neverSignedIn = true;
         } else {
             neverSignedIn = false;
         }
 
-        progressBar = findViewById(R.id.progress_bar_login);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
         //use silent sign in to sign in, if the user had already signed in in the past
         //we use the silent sign in approach to be able to refresh the token
         mGoogleSignInClient.silentSignIn().addOnCompleteListener(this, new OnCompleteListener<GoogleSignInAccount>() {
@@ -107,7 +131,12 @@ public class LoginActivity extends AppCompatActivity {
             Log.w("Sign in", "silent signInResult:failed code=" + e.getStatusCode());
 
             //if code is 4, we need to sign in
-            if(e.getStatusCode() != 4){
+            if (e.getStatusCode() == 4) {
+                //show login screen and hide progress bar
+                progressBar.setVisibility(View.GONE);
+                layout.setVisibility(View.VISIBLE);
+
+            } else {
                 Toast.makeText(this, "There was an error signing in", Toast.LENGTH_LONG).show();
             }
         }
@@ -174,6 +203,40 @@ public class LoginActivity extends AppCompatActivity {
 
 
     /**
+     * This function creates a notification channel. It is required for Android 8.
+     */
+    private void createNotificationChannel() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+
+            NotificationManager mNotificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            // The id of the channel.
+            String id = getString(R.string.channel_id);
+            // The user-visible name of the channel.
+            CharSequence name = getString(R.string.channel_name);
+            // The user-visible description of the channel.
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel mChannel = null;
+            mChannel = new NotificationChannel(id, name, importance);
+            // Configure the notification channel.
+            mChannel.setDescription(description);
+            mChannel.enableLights(true);
+            // Sets the notification light color for notifications posted to this
+            // channel, if the device supports this feature.
+            mChannel.setLightColor(Color.RED);
+            mChannel.enableVibration(true);
+            mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+            if (mNotificationManager != null) {
+                mNotificationManager.createNotificationChannel(mChannel);
+            }
+        }
+
+
+    }
+
+
+    /**
      * this AsyncTask sends a post request to the users endpoint to create a new user, if it does not exists
      * if successful, the Home Activity is started
      */
@@ -190,7 +253,7 @@ public class LoginActivity extends AppCompatActivity {
             progressBar.setVisibility(View.GONE);
             if (result == null) {
                 Toast.makeText(getApplicationContext(), "There was an Error logging in", Toast.LENGTH_LONG).show();
-            } else if (result.equals("401")){
+            } else if (result.equals("401")) {
                 //unauthorized -> we need new token -> redirect to Login Activity
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);

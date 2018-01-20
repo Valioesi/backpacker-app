@@ -204,6 +204,7 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
     private void redirectToHome() {
         Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
         startActivity(intent);
+        finish();
     }
 
     /**
@@ -346,7 +347,6 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
 
             //redirect to HomeActivity
             redirectToHome();
-
         }
     }
 

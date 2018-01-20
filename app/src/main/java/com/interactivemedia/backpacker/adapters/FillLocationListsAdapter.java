@@ -1,4 +1,4 @@
-package com.interactivemedia.backpacker.helpers;
+package com.interactivemedia.backpacker.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -22,6 +22,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.LoginActivity;
+import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.models.Location;
 import com.interactivemedia.backpacker.models.User;
 

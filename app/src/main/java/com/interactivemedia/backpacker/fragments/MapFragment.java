@@ -23,7 +23,6 @@ import android.widget.CheckedTextView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,14 +45,13 @@ import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.AddLocationActivity;
 import com.interactivemedia.backpacker.activities.LocationDetailsActivity;
 import com.interactivemedia.backpacker.activities.LoginActivity;
-import com.interactivemedia.backpacker.helpers.CustomArrayAdapter;
+import com.interactivemedia.backpacker.adapters.CustomArrayAdapter;
 import com.interactivemedia.backpacker.helpers.MarkerColors;
 import com.interactivemedia.backpacker.helpers.Preferences;
 import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.models.Location;
 import com.interactivemedia.backpacker.models.User;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -115,7 +113,6 @@ public class MapFragment extends Fragment {
 
         //get the logged in user's id from preferences
         userId = Preferences.getUserId(getContext());
-        //userId = "5a4cb9154162d41ba096f01d";
 
 
         googleIdUsersMap = new HashMap<>();
@@ -193,7 +190,14 @@ public class MapFragment extends Fragment {
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 map = googleMap;
-                loadLocationsOfUser();
+                //check, if user is online
+                if(Request.hasInternetConnection(getContext())){
+                    loadLocationsOfUser();
+                } else {
+                    Toast.makeText(getContext(), "It seems like you have no internet connection", Toast.LENGTH_LONG).show();
+                    getView().findViewById(R.id.add_location_button).setVisibility(View.GONE);
+                }
+
             }
         });
 
@@ -213,7 +217,7 @@ public class MapFragment extends Fragment {
      * this function starts the async task to load locations of logged in user,
      * the process to load locations of friends will be started in onPostExecute of the async task
      */
-    private void loadLocationsOfUser(){
+    private void loadLocationsOfUser() {
 //        new GetLocationsOfUser().execute("/users/5a4cb9154162d41ba096f01d");
         new GetLocationsOfUser().execute("/users/" + userId);
     }
@@ -225,9 +229,8 @@ public class MapFragment extends Fragment {
         //call AsycnTask to get users and their saved locations to show from server
         //this will be changed later, since we are only getting our friends!
 
-    //    new GetLocationsOfFriends().execute("/users/" + userId + "/friends");
+        new GetLocationsOfFriends().execute("/users/" + userId + "/friends");
     }
-
 
 
     /**
@@ -246,11 +249,11 @@ public class MapFragment extends Fragment {
             if (result == null) {
                 Log.d("Error: ", "Error in GET Request");
                 Toast.makeText(getContext(), "There was an Error loading your locations", Toast.LENGTH_LONG).show();
-            } else if (result.equals("401")){
+            } else if (result.equals("401")) {
                 //unauthorized -> we need new token -> redirect to Login Activity
                 Intent intent = new Intent(getContext(), LoginActivity.class);
                 startActivity(intent);
-            }else {
+            } else {
                 Log.d("JSON response: ", result);
                 Gson gson = new Gson();
                 User user = gson.fromJson(result, User.class);
@@ -279,7 +282,7 @@ public class MapFragment extends Fragment {
             if (result == null) {
                 Log.d("Error: ", "Error in GET Request");
                 Toast.makeText(getContext(), "There was an Error loading the locations of your friends", Toast.LENGTH_LONG).show();
-            } else if (result.equals("401")){
+            } else if (result.equals("401")) {
                 //unauthorized -> we need new token -> redirect to Login Activity
                 Intent intent = new Intent(getContext(), LoginActivity.class);
                 startActivity(intent);
@@ -287,7 +290,8 @@ public class MapFragment extends Fragment {
                 Log.d("JSON response: ", result);
                 Gson gson = new Gson();
                 //type token is used to load into array list, see: https://stackoverflow.com/questions/12384064/gson-convert-from-json-to-a-typed-arraylistt
-                ArrayList<User> users = gson.fromJson(result, new TypeToken<ArrayList<User>>(){}.getType());
+                ArrayList<User> users = gson.fromJson(result, new TypeToken<ArrayList<User>>() {
+                }.getType());
 
                 friends.addAll(users);
 
@@ -377,19 +381,19 @@ public class MapFragment extends Fragment {
      * this is necessary for: if there already is a marker for a google id, it has to be removed from the map
      *
      * @param googleId the key, under which the marker will be stored
-     * @param marker the marker to be stored
+     * @param marker   the marker to be stored
      */
-    private void addMarkerToHashMap(String googleId, Marker marker){
+    private void addMarkerToHashMap(String googleId, Marker marker) {
         Marker existingMarker = googleIdMarkersMap.get(googleId);
         //check if there is already a marker for this google Id
         // -> if yes, then remove the existing marker from map
-        if(existingMarker != null){
+        if (existingMarker != null) {
             //check, if the new marker does not have images -> in that case, we check, if the old one has got one
             Location newLocation = (Location) marker.getTag();
-            if(newLocation != null && newLocation.getImages().length == 0){
+            if (newLocation != null && newLocation.getImages().length == 0) {
                 Location existingLocation = (Location) existingMarker.getTag();
                 //if the location of the old marker has images, set those as the images of the new marker
-                if(existingLocation != null && existingLocation.getImages().length != 0){
+                if (existingLocation != null && existingLocation.getImages().length != 0) {
                     newLocation.setImages(existingLocation.getImages());
                     marker.setTag(newLocation);
                 }
@@ -517,20 +521,22 @@ public class MapFragment extends Fragment {
                 Intent intent = new Intent(getContext(), LocationDetailsActivity.class);
                 Location location = (Location) marker.getTag();
 
-                //pass the google id of the location and the users with the intent
-                intent.putExtra("locationGoogleId", location.getGoogleId());
+                if(location != null){
+                    //pass the google id of the location and the users with the intent
+                    intent.putExtra("locationGoogleId", location.getGoogleId());
 
-                //get user ids from user objects
-                ArrayList<String> userIds = new ArrayList<>();
-                ArrayList<String> userNames = new ArrayList<>();
+                    //get user ids from user objects
+                    ArrayList<String> userIds = new ArrayList<>();
+                    ArrayList<String> userNames = new ArrayList<>();
 
-                for(User user: googleIdUsersMap.get(location.getGoogleId())){
-                    userIds.add(user.getId());
-                    userNames.add(user.getFirstName());
+                    for (User user : googleIdUsersMap.get(location.getGoogleId())) {
+                        userIds.add(user.getId());
+                        userNames.add(user.getFirstName());
+                    }
+                    intent.putExtra("userIdArray", userIds);
+                    intent.putExtra("userNameArray", userNames);
+                    startActivity(intent);
                 }
-                intent.putExtra("userIdArray", userIds);
-                intent.putExtra("userNameArray", userNames);
-                startActivity(intent);
             }
         });
     }
@@ -607,7 +613,6 @@ public class MapFragment extends Fragment {
         super.onLowMemory();
         mapView.onLowMemory();
     }
-
 
 
 }

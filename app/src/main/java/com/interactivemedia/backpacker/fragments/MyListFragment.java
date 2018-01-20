@@ -23,7 +23,7 @@ import com.google.gson.reflect.TypeToken;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.AddLocationActivity;
 import com.interactivemedia.backpacker.activities.LoginActivity;
-import com.interactivemedia.backpacker.helpers.FillLocationListsAdapter;
+import com.interactivemedia.backpacker.adapters.FillLocationListsAdapter;
 import com.interactivemedia.backpacker.activities.LocationDetailsActivity;
 import com.interactivemedia.backpacker.helpers.Preferences;
 import com.interactivemedia.backpacker.helpers.Request;
@@ -88,8 +88,15 @@ public class MyListFragment extends Fragment {
         lvMyLocations.setAdapter(fillListAdapter);
 
 
-        //Loads locations by calling AsyncTask
-        loadLocations();
+        //check, if user is online
+        if(Request.hasInternetConnection(getContext())){
+            //Loads locations by calling AsyncTask
+            loadLocations();
+        } else {
+            //show sad backpack
+            view.findViewById(R.id.main_layout).setVisibility(View.GONE);
+            view.findViewById(R.id.no_internet).setVisibility(View.VISIBLE);
+        }
 
 
         //find add location button and set on clock method to open new activity

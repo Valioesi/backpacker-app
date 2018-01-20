@@ -23,13 +23,24 @@ public class Preferences {
     }
 
     /**
-     * this function gets the user id (same as google id) from the shared preferences
+     * this function gets the user id from the shared preferences
      * @param context application context, needed to call appropriate functions
      * @return user id (google id) as string if available, otherwise null
      */
     public static String getUserId(Context context){
         return getPreferences(context).getString(context.getString(R.string.saved_id), null);
     }
+
+
+    /**
+     * This function gets the earlier saved string from the shared preferences
+     * @param context application context, needed to call appropriate functions
+     * @return true (nfc) or false (if it was not via nfc)
+     */
+    public static boolean getNfcEvent(Context context){
+        return getPreferences(context).getBoolean(context.getString(R.string.saved_nfc_event), false);
+    }
+
 
 
     /**
@@ -60,6 +71,20 @@ public class Preferences {
         editor.apply();
         //this will log the id saved in shared preferences
         Log.i("Preferences", sharedPreferences.getString(context.getString(R.string.saved_id), "id not present"));
+    }
+
+    /**
+     * This function saves a string to preferences to indicate, if it the adding of a friend was via NFC or Email.
+     *
+     * @param context application context, needed to call appropriate functions
+     * @param nfcEvent This boolean will be passed to indicate, if it the adding of a friend was via NFC (true).
+     *
+     */
+    public static void saveNfcEvent(Context context, boolean nfcEvent){
+        SharedPreferences sharedPreferences = getPreferences(context);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(context.getString(R.string.saved_nfc_event), nfcEvent);
+        editor.apply();
     }
 
     /**

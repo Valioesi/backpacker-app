@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -21,7 +22,7 @@ import com.google.gson.reflect.TypeToken;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.AddFriendNfcActivity;
 import com.interactivemedia.backpacker.activities.LoginActivity;
-import com.interactivemedia.backpacker.helpers.FillMyFriendsListAdapter;
+import com.interactivemedia.backpacker.adapters.FillMyFriendsListAdapter;
 import com.interactivemedia.backpacker.helpers.Preferences;
 import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.models.User;
@@ -30,7 +31,6 @@ import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
- *
  */
 public class FriendsFragment extends Fragment {
 
@@ -80,8 +80,16 @@ public class FriendsFragment extends Fragment {
         //assign ArrayAdapter to friends list
         lvfriends.setAdapter(fillMyFriendsListAdapter);
 
-        //load friends by calling AsyncTask
-        loadFriends();
+
+        //check, if user is online
+        if (Request.hasInternetConnection(getContext())) {
+            //load friends by calling AsyncTask
+            loadFriends();
+        } else {
+            //show sad backpack
+            view.findViewById(R.id.main_layout).setVisibility(View.GONE);
+            view.findViewById(R.id.no_internet).setVisibility(View.VISIBLE);
+        }
 
 
         //set on click listener for add friend button -> open AddFriendNfcActivity
@@ -121,8 +129,8 @@ public class FriendsFragment extends Fragment {
         protected void onPostExecute(String result) {
             if (result == null) {
                 Log.d("Error: ", "Error in GET Request");
-                //Toast.makeText(getContext(), "There was an Error loading the locations of your friends", Toast.LENGTH_LONG).show();
-            } else if (result.equals("401")){
+                Toast.makeText(getContext(), "There was an Error loading the locations of your friends", Toast.LENGTH_LONG).show();
+            } else if (result.equals("401")) {
                 //unauthorized -> we need new token -> redirect to Login Activity
                 Intent intent = new Intent(getContext(), LoginActivity.class);
                 startActivity(intent);
@@ -150,7 +158,8 @@ public class FriendsFragment extends Fragment {
                 });
                 Gson gson = gsonBuilder.create();
                 //type token is used to load into array list, see: https://stackoverflow.com/questions/12384064/gson-convert-from-json-to-a-typed-arraylistt
-                ArrayList<User> friends = gson.fromJson(result, new TypeToken<ArrayList<User>>(){}.getType());
+                ArrayList<User> friends = gson.fromJson(result, new TypeToken<ArrayList<User>>() {
+                }.getType());
 
 
                 myFriends.addAll(friends);
@@ -160,19 +169,16 @@ public class FriendsFragment extends Fragment {
 
 
                 //check if locations are empty and set different Layout componentes
-                if (myFriends == null || myFriends.size() != 0) {
-                    setLayout();
+                if (myFriends == null || myFriends.size() == 0) {
+                    //set visibility of ListView gone and of TextView visible to see the message
+                    lvfriends.setVisibility(View.GONE);
+                    tv_noFriends.setVisibility(View.VISIBLE);
                 }
 
             }
         }
 
 
-}
-
-    private void setLayout() {
-        //set visibility of ListView gone and of TextView visible to see the message
-        lvfriends.setVisibility(View.GONE);
-        tv_noFriends.setVisibility(View.VISIBLE);
     }
+
 }

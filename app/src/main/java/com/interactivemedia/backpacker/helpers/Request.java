@@ -1,6 +1,8 @@
 package com.interactivemedia.backpacker.helpers;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import java.io.BufferedInputStream;
@@ -50,15 +52,16 @@ public class Request {
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.setRequestProperty("access_token", Preferences.getIdToken(context));
+
+            if (urlConnection.getResponseCode() == 401) {
+                return "401";
+            }
+
             //if the status code is anything else but 2xx, we want to return something different,
             //which can be handled in our AsyncTasks
             if (urlConnection.getResponseCode() / 100 == 4 || urlConnection.getResponseCode() / 100 == 5) {
                 Log.e("Error stream", readStream(urlConnection.getErrorStream()));
                 return null;
-            }
-
-            if (urlConnection.getResponseCode() == 401) {
-                return "401";
             }
 
             return readStream(urlConnection.getInputStream());
@@ -88,14 +91,16 @@ public class Request {
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("DELETE");
             urlConnection.setRequestProperty("access_token", Preferences.getIdToken(context));
+
+            if (urlConnection.getResponseCode() == 401) {
+                return "401";
+            }
+
             //if the status code is anything else but 200, we want to return something different,
             //which can be handled in our AsyncTasks
             if (urlConnection.getResponseCode() / 100 == 4 || urlConnection.getResponseCode() / 100 == 5) {
                 Log.e("Error stream", readStream(urlConnection.getErrorStream()));
                 return null;
-            }
-            if (urlConnection.getResponseCode() == 401) {
-                return "401";
             }
 
             return readStream(urlConnection.getInputStream());
@@ -197,6 +202,10 @@ public class Request {
             bufferedWriter.write(body);
             bufferedWriter.flush();
 
+            if (urlConnection.getResponseCode() == 401) {
+                return "401";
+            }
+
             //if the status code is anything else but a 2-something, we want to return something different,
             //which can be handled in our AsyncTasks
             if (urlConnection.getResponseCode() / 100 == 4 || urlConnection.getResponseCode() / 100 == 5) {
@@ -205,9 +214,7 @@ public class Request {
                 Log.e("Error stream", readStream(urlConnection.getErrorStream()));
                 return null;
             }
-            if (urlConnection.getResponseCode() == 401) {
-                return "401";
-            }
+
 
             return readStream(urlConnection.getInputStream());
 
@@ -287,6 +294,12 @@ public class Request {
             //flush output buffer
             request.flush();
             request.close();
+
+
+            if (urlConnection.getResponseCode() == 401) {
+                return "401";
+            }
+
             //if the status code is anything else but 2xx, we want to return something different,
             //which can be handled in our AsyncTasks
             if (urlConnection.getResponseCode() / 100 == 4 || urlConnection.getResponseCode() / 100 == 5) {
@@ -295,9 +308,6 @@ public class Request {
                 return null;
             }
 
-            if (urlConnection.getResponseCode() == 401) {
-                return "401";
-            }
             return readStream(urlConnection.getInputStream());
 
         } catch (IOException e) {
@@ -339,6 +349,24 @@ public class Request {
             }
         }
         return response.toString();
+    }
+
+    /**
+     * This function checks, whether or not the user is online.
+     *
+     * @param context Context needed for calling of getSystemService
+     * @return true if has internet connection, false otherwise
+     */
+    public static boolean hasInternetConnection(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (cm != null) {
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            return activeNetwork != null &&
+                    activeNetwork.isConnectedOrConnecting();
+        }
+
+        return false;
     }
 
 }

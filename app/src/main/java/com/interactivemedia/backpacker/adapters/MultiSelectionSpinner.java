@@ -1,4 +1,4 @@
-package com.interactivemedia.backpacker.helpers;
+package com.interactivemedia.backpacker.adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;

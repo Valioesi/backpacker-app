@@ -12,7 +12,6 @@
     <uses-permission android:name="android.permission.NFC" />
 
     <uses-feature android:name="android.hardware.nfc" />
-
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
@@ -32,8 +31,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyA9yABz8sHgpRXtGuwzkgbEMY4HbqLpUwg" />
 
-        <activity android:name=".activities.AddLocationActivity"
-            android:label="@string/label_AddLocationActivity"/>
+        <activity
+            android:name=".activities.AddLocationActivity"
+            android:label="@string/label_AddLocationActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -47,10 +47,10 @@
 
         <activity
             android:name=".activities.LoginActivity"
-            android:launchMode="singleTask"
-            >
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -59,23 +59,43 @@
             android:label="@string/label_AddFriendNfcActivity">
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
         <activity
             android:name=".activities.EditProfileActivity"
-            android:label="@string/label_EditProfileActivity"/>
+            android:label="@string/label_EditProfileActivity" />
         <activity
             android:name=".activities.AddFriendEmailActivity"
-            android:label="@string/label_AddFriendEmailActivity"/>
+            android:label="@string/label_AddFriendEmailActivity" />
         <activity
             android:name=".activities.LocationDetailsActivity"
             android:label="@string/label_activity_location_details"
             android:theme="@style/WanderlustTheme.NoActionBar" />
         <activity
             android:name=".activities.FriendsDetailsActivity"
-            android:label="@string/label_FriendsDetailsActivity"/>
+            android:label="@string/label_FriendsDetailsActivity" />
+
+        <service
+            android:name=".services.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".services.MyFirebaseInstanceIDService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".services.NotificationActionService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

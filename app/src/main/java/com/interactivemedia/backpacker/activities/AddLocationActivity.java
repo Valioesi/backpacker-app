@@ -2,7 +2,6 @@ package com.interactivemedia.backpacker.activities;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
@@ -13,6 +12,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -31,7 +31,8 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.gson.Gson;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.fragments.PictureDialogFragment;
-import com.interactivemedia.backpacker.helpers.MultiSelectionSpinner;
+import com.interactivemedia.backpacker.adapters.MultiSelectionSpinner;
+import com.interactivemedia.backpacker.helpers.Preferences;
 import com.interactivemedia.backpacker.helpers.Storage;
 import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.models.Location;
@@ -57,6 +58,7 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
     private ArrayList<String> picturePaths; //important, holds all paths of selected images -> needed for upload later
     private String currentPicturePath;
     private ProgressBar progressBar;
+    private ConstraintLayout layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,9 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
         setContentView(R.layout.activity_add_location);
         //get progress bar, we want to make it visible later
         progressBar = findViewById(R.id.progress_bar);
+        //get layout to hide it later
+        layout = findViewById(R.id.add_location_layout);
+
         picturePaths = new ArrayList<>();
 
         optionsCategories = getResources().getStringArray(R.array.categories);
@@ -96,6 +101,9 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
                 spinner.setItems(optionsCategories);
                 spinner.setListener(this);
                 Log.d("place picker", place.getAddress().toString());
+            } else if(resultCode == RESULT_CANCELED){
+                //direct back, if user quits picker
+                finish();
             }
         } else if (requestCode == IMAGE_CAPTURE_REQUEST) {
             if (resultCode == RESULT_OK) {
@@ -260,6 +268,8 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
         if (!description.equals("")) {
             //show progress bar
             progressBar.setVisibility(View.VISIBLE);
+            //hide rest
+            layout.setVisibility(View.GONE);
             //use geocoder to get city and country of our place
             Geocoder geocoder = new Geocoder(this);
             try {
@@ -268,9 +278,10 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
                 String country = addresses.get(0).getCountryName() != null ? addresses.get(0).getCountryName() : "No country";
                 Log.d("address", addresses.get(0).toString());
                 //create location object to parse it via gson
+                String userId = Preferences.getUserId(getApplicationContext());
                 Location location = new Location(
                         place.getId(),
-                        "5a46519c6de6a50f3c46efba",     //TODO: our user id,
+                        userId,
                         place.getName().toString(),
                         true,
                         description,

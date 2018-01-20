@@ -1,4 +1,4 @@
-package com.interactivemedia.backpacker.helpers;
+package com.interactivemedia.backpacker.adapters;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -25,6 +25,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.FriendsDetailsActivity;
+import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.models.Location;
 import com.interactivemedia.backpacker.models.User;
 

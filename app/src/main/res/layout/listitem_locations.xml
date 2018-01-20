@@ -3,15 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:descendantFocusability="blocksDescendants">
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
+    android:paddingTop="@dimen/margin_normal"
+    android:paddingBottom="@dimen/margin_normal"
+    >
 
     <TextView
         android:id="@+id/tv_firstName"
         android:layout_width="wrap_content"
         android:layout_height="22dp"
         android:layout_marginStart="@dimen/margin_normal"
-        android:layout_marginTop="@dimen/margin_normal"
         android:text="@string/des_LocationName"
         android:textSize="@dimen/heading2"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,7 +55,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/tv_countryName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_firstName"
-        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/ic_favorite_border_black_24dp"
         tools:ignore="VectorDrawableCompat" />
 
