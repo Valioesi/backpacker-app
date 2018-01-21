@@ -13,5 +13,5 @@
     <dimen name="margin_normal">16dp</dimen>
     <dimen name="margin_double">32dp</dimen>
     <dimen name="margin_Bottom_for_listitems">65dp</dimen>
-    <dimen name="margin_floatingActionButtons">5dp</dimen>
+    <dimen name="margin_floatingActionButtons">8dp</dimen>
 </resources>

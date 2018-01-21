@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(Request.hasInternetConnection(getApplicationContext())){
+                if (Request.hasInternetConnection(getApplicationContext())) {
                     signIn();
                 } else {
                     Toast.makeText(getApplicationContext(), "It seems like you have no internet connection", Toast.LENGTH_LONG).show();
@@ -184,11 +184,16 @@ public class LoginActivity extends AppCompatActivity {
 
             //save token in Shared Preferences
             Preferences.saveIdToken(this, account.getIdToken());
+
+            //now that the user is logged in we will also send the fcm token to the server
+            String fcmToken = FirebaseInstanceId.getInstance().getToken();
+
             //let's make an api call with the token, so that the backend can check, if the user already exists in our db and can create it if necessary
             String jsonBody = "{ \"firstName\": \"" + account.getGivenName() +
                     "\", \"lastName\": \"" + account.getFamilyName() +
                     "\", \"googleId\": \"" + account.getId() +
-                    "\", \"email\": \"" + account.getEmail() + "\"}";
+                    "\", \"email\": \"" + account.getEmail() +
+                    "\", \"deviceToken\": \"" + fcmToken + "\"}";
             Log.d("User json", jsonBody);
             // TODO: uncomment later, once endpoint is up and running
             new PostUser().execute("/users", jsonBody);

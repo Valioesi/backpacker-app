@@ -32,7 +32,11 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
-        sendRegistrationToServer(refreshedToken);
+
+        //only send token, if user is logged in
+        if(Preferences.getUserId(this) != null){
+            sendRegistrationToServer(refreshedToken);
+        }
     }
 
     /**
@@ -44,12 +48,14 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
      * @param token The new token.
      */
     private void sendRegistrationToServer(String token) {
-        String jsonBody = "{ \"fcm_token\": \"" + token + "\"}";
+        String jsonBody = "{ \"deviceToken\": \"" + token + "\"}";
         //get user id
         String userId = Preferences.getUserId(this);
         String result = Request.patch(this, "/users/" + userId, jsonBody);
         if(result == null){
             Log.e(TAG, "Error while sending token to server");
+        } else {
+            Log.d(TAG, "Saved FCM token successfully");
         }
     }
 }
