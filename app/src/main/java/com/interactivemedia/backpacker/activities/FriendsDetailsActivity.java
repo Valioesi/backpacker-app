@@ -63,8 +63,8 @@ public class FriendsDetailsActivity extends AppCompatActivity {
         //Get information out of IntentExtras
         Intent intent = getIntent();
         final String friendId = intent.getStringExtra("userId");
-        String firstName=intent.getStringExtra("firstName");
-        String lastName=intent.getStringExtra("lastName");
+        String firstName = intent.getStringExtra("firstName");
+        String lastName = intent.getStringExtra("lastName");
         String friendName = firstName + " " + lastName;
         String imageUri = intent.getStringExtra("avatar");
 
@@ -77,13 +77,12 @@ public class FriendsDetailsActivity extends AppCompatActivity {
         profilePicture = findViewById(R.id.iv_avatar);
 
         //Set profile picture of friend.
-        if(imageUri!= null){
+        if (imageUri != null) {
             Glide.with(getApplicationContext()).load(Request.DOMAIN_URL + imageUri).into(profilePicture);
         }
 
 
-
-        friendsLocations=new ArrayList<>();
+        friendsLocations = new ArrayList<>();
 
         //find list view, create adapter containing friend list and set adapter of list view
         lv_favoritePlaces = findViewById(R.id.lvFavoritePlaces);
@@ -91,10 +90,23 @@ public class FriendsDetailsActivity extends AppCompatActivity {
         adapter = new FillLocationListsAdapter(getApplicationContext(), R.layout.listitem_locations, friendsLocations, adapterCallSource);
         lv_favoritePlaces.setAdapter(adapter);
 
+        //set on click listener to direct to LocationDetailsActivity
+        lv_favoritePlaces.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //we need to get the locations from the adapter, because they might have been filtered
+                //therefore we can not us friendsLocations from this activity
+                Location location = adapter.getLocations().get(i);
+                //start details activity
+                Intent intent = new Intent(getApplicationContext(), LocationDetailsActivity.class);
+                intent.putExtra("locationGoogleId", location.getGoogleId());
+                intent.putExtra("userId", friendId);
+                startActivity(intent);
+            }
+        });
 
         //Initializes Load of Location information from the backend
         loadLocations(friendId);
-
 
 
         //find Spinner
@@ -107,17 +119,11 @@ public class FriendsDetailsActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 alertMessage(friendId);
             }
         });
 
     }
-
-
-
-
-
 
 
     //remove friend confirmation dialog
@@ -149,14 +155,10 @@ public class FriendsDetailsActivity extends AppCompatActivity {
     }
 
 
-
-
-
     //initializes Request to load Locations of a friend.
     private void loadLocations(String friendId) {
         new GetLocationOfFriend().execute("/locations?users=" + friendId);
     }
-
 
 
     @SuppressLint("StaticFieldLeak")
@@ -172,7 +174,7 @@ public class FriendsDetailsActivity extends AppCompatActivity {
             if (result == null) {
                 Log.d("Error: ", "Error in GET Request");
                 Toast.makeText(getApplicationContext(), "There was an error loading your friend's locations", Toast.LENGTH_LONG).show();
-            } else if (result.equals("401")){
+            } else if (result.equals("401")) {
                 //unauthorized -> we need new token -> redirect to Login Activity
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
@@ -199,16 +201,16 @@ public class FriendsDetailsActivity extends AppCompatActivity {
                 });
                 Gson gson = gsonBuilder.create();
                 //type token is used to load into array list, see: https://stackoverflow.com/questions/12384064/gson-convert-from-json-to-a-typed-arraylist
-                ArrayList<Location> locations = gson.fromJson(result, new TypeToken<ArrayList<Location>>(){}.getType());
+                ArrayList<Location> locations = gson.fromJson(result, new TypeToken<ArrayList<Location>>() {
+                }.getType());
 
                 friendsLocations.addAll(locations);
 
                 adapter.setLocations(friendsLocations);
                 adapter.notifyDataSetChanged();
 
-
                 //If friend has locations, fill the spinner with information
-                if (friendsLocations!=null && friendsLocations.size()>0){
+                if (friendsLocations != null && friendsLocations.size() > 0) {
                     fillSpinner();
                 }
 
@@ -241,7 +243,7 @@ public class FriendsDetailsActivity extends AppCompatActivity {
         for (int i = 0; i < friendsLocations.size(); i++) {
             for (Location singleLocation : friendsLocations) {
                 country = singleLocation.getCountry();
-                Log.e ("ForEach Location", country);
+                Log.e("ForEach Location", country);
                 hashCountryList.add(country);
             }
             hashCountryList.add("- All locations -");
@@ -249,7 +251,6 @@ public class FriendsDetailsActivity extends AppCompatActivity {
 
         //Hashset into TreeSet to sort it.
         sortedCountryList.addAll(hashCountryList);
-
 
 
         //countries = FillLocationListsAdapter.sortedCountries;
@@ -268,8 +269,8 @@ public class FriendsDetailsActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 adapter.setLocations(friendsLocations);
                 //Log.d("onitem", String.valueOf(friendsLocations));
-                Log.d ("ONITMEClick", countries.get(position));
-                adapter.getFilter().filter(countries.get(position), new Filter.FilterListener(){
+                Log.d("ONITMEClick", countries.get(position));
+                adapter.getFilter().filter(countries.get(position), new Filter.FilterListener() {
 
                     @Override
                     public void onFilterComplete(int count) {
@@ -288,18 +289,18 @@ public class FriendsDetailsActivity extends AppCompatActivity {
 
     //delete friend after pushing the button --> Send request to backend.
     private void deleteFriend(String friendId) {
-        String userId= Preferences.getUserId(this);
+        String userId = Preferences.getUserId(this);
         //String meId = "5a323b82654ba50ef8d2b8c2";
-        new DeleteFriend(adapter).execute("/users/" +userId+"/friends/"+friendId);
+        new DeleteFriend(adapter).execute("/users/" + userId + "/friends/" + friendId);
     }
 
     @SuppressLint("StaticFieldLeak")
-    private class DeleteFriend extends AsyncTask <String, Integer, String> {
+    private class DeleteFriend extends AsyncTask<String, Integer, String> {
 
         FillLocationListsAdapter adapter;
 
         DeleteFriend(FillLocationListsAdapter adapter) {
-            this.adapter=adapter;
+            this.adapter = adapter;
         }
 
         @Override
@@ -313,13 +314,14 @@ public class FriendsDetailsActivity extends AppCompatActivity {
             if (result == null) {
                 Log.d("Error: ", "Error in DELETE Request");
                 Toast.makeText(getApplicationContext(), "There was an error deleting your friend", Toast.LENGTH_LONG).show();
-            } else if (result.equals("401")){
+            } else if (result.equals("401")) {
                 //unauthorized -> we need new token -> redirect to Login Activity
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
             } else {
                 Log.i("JSON response: ", result);
                 Toast.makeText(getApplicationContext(), "Friend deleted successfully", Toast.LENGTH_LONG).show();
+                //return to to home activity
                 finish();
             }
         }

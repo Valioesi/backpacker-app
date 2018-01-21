@@ -334,7 +334,7 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
                     if (picturePaths.size() > 0) {
                         new UploadPictures().execute("/locations/" + location.get_id() + "/images");
                     } else {
-                        //return to previous activity
+                        //return to to home activity
                         finish();
                     }
                 }

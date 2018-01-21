@@ -88,11 +88,11 @@ public class FillMyFriendsListAdapter extends ArrayAdapter<Location>{
             holder = (FriendsHolder) view.getTag();
         }
 
-        final User friend = friends.get(position);
-        final String firstName = friend.getFirstName();
-        final String lastName = friend.getLastName();
-        final String userId=friend.getId();
-        final String avatar=friend.getAvatar();
+        User friend = friends.get(position);
+        String firstName = friend.getFirstName();
+        String lastName = friend.getLastName();
+        String userId=friend.getId();
+        String avatar=friend.getAvatar();
         String friendName = firstName + " " + lastName;
 
 
@@ -120,19 +120,6 @@ public class FillMyFriendsListAdapter extends ArrayAdapter<Location>{
 //                context.startActivity(intent);
 //            }
 //        });
-
-
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), FriendsDetailsActivity.class);
-                intent.putExtra("userId", userId);
-                intent.putExtra("firstName", firstName);
-                intent.putExtra("lastName", lastName);
-                intent.putExtra("avatar", avatar);
-                context.startActivity(intent);
-            }
-        });
 
         return view;
     }

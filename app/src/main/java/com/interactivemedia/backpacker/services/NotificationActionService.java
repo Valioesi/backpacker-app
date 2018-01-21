@@ -19,7 +19,6 @@ import com.interactivemedia.backpacker.helpers.Request;
 public class NotificationActionService extends IntentService {
 
 
-    // TODO: Rename parameters
     public static final String EXTRA_PARAM_FRIEND_ID = "com.interactivemedia.backpacker.services.extra.PARAM_FRIEND_ID";
 
     public NotificationActionService() {

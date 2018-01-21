@@ -78,4 +78,5 @@
     <string name="channel_id">channel_1_wanderlust</string>
     <string name="saved_nfc_event">nfc_event</string>
     <string name="text_no_internet">You have no internet connection!</string>
+    <string name="add_friend_alternative_button">Not working...</string>
 </resources>

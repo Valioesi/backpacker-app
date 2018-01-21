@@ -40,7 +40,7 @@ public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapte
             finish();
         } else {
             //check if NFC and Beam are enabled
-            if(nfcAdapter.isNdefPushEnabled()){
+            if (nfcAdapter.isNdefPushEnabled()) {
                 //This will refer back to createNdefMessage for what it will send
                 nfcAdapter.setNdefPushMessageCallback(this, this);
 
@@ -125,7 +125,17 @@ public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapte
         Preferences.saveNfcEvent(this, true);
 
         //return to home activity
-        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+        finish();
+    }
+
+    /**
+     * This function is called upon click on "Not working" button.
+     * It redirects to another activity to add a friend via Email.
+     *
+     * @param view The button
+     */
+    public void openAlternative(View view) {
+        Intent intent = new Intent(this, AddFriendEmailActivity.class);
         startActivity(intent);
         finish();
     }
@@ -150,8 +160,6 @@ public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapte
                 Log.d("JSON response: ", result);
                 Toast.makeText(getApplicationContext(), "You have successfully exchanged locations", Toast.LENGTH_LONG).show();
                 //return to home activity
-                Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                startActivity(intent);
                 finish();
             }
         }

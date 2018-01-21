@@ -1,6 +1,7 @@
 package com.interactivemedia.backpacker.fragments;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ public class SettingsFragment extends Fragment {
     private Button btn_logout;
 
     private GoogleSignInClient mGoogleSignInClient;
+    private Context context;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -48,7 +50,6 @@ public class SettingsFragment extends Fragment {
      *
      * @return A new instance of fragment SettingsFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static SettingsFragment newInstance() {
         SettingsFragment fragment = new SettingsFragment();
         return fragment;
@@ -65,6 +66,7 @@ public class SettingsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
+        context = getContext();
 
         //create on click listener for open profile button
         btn_openProfile = view.findViewById(R.id.button_open_profile);
@@ -99,14 +101,14 @@ public class SettingsFragment extends Fragment {
                 .requestEmail()
                 .build();
 
-        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(getContext())
+        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(context)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
         mGoogleApiClient.connect();
         super.onStart();
 
         // Build a GoogleSignInClient with the options specified by gso.
-        mGoogleSignInClient = GoogleSignIn.getClient(getContext(), gso);
+        mGoogleSignInClient = GoogleSignIn.getClient(context, gso);
 
 
 
@@ -134,7 +136,7 @@ public class SettingsFragment extends Fragment {
             };
 
             //Show "warning" Dialog, if user is sure about deleting friend.
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setMessage("Are you sure you want to log out from this app?")
                     .setTitle("Logout")
                     .setPositiveButton("Yes", dialogClickListener)
@@ -145,7 +147,7 @@ public class SettingsFragment extends Fragment {
     private void logout() {
 
 
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getContext());
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
         //start home activity, when account is not null (user already signed in)
         if (account != null) {
             Log.d("LOGOUT", "Google Accoutn is not null");
@@ -156,9 +158,9 @@ public class SettingsFragment extends Fragment {
                             public void onComplete(@NonNull Task<Void> task) {
                                 Log.d("LogoutButton", "You were Logged out succesfully");
                                 //remove user id from preferences to indicate, that he is not logged in
-                                Preferences.saveUserId(getContext(), null);
+                                Preferences.saveUserId(context, null);
 
-                                Intent intent = new Intent(getContext(), LoginActivity.class);
+                                Intent intent = new Intent(context, LoginActivity.class);
                                 startActivity(intent);
                                 //remove home activity from stack
                                 getActivity().finish();
@@ -171,7 +173,7 @@ public class SettingsFragment extends Fragment {
     private void showCredits() {
         //show credit information
         //source: https://stackoverflow.com/questions/6264694/how-to-add-message-box-with-ok-button
-        final AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(getContext());
+        final AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(context);
         dlgAlert.setMessage(R.string.credits);
         dlgAlert.setTitle("Credits");
         dlgAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -187,7 +189,7 @@ public class SettingsFragment extends Fragment {
      * this function starts the EditProfileActivity
      */
     private void openProfile() {
-        Intent intent = new Intent(getContext(), EditProfileActivity.class);
+        Intent intent = new Intent(context, EditProfileActivity.class);
         startActivity(intent);
     }
 

@@ -1,6 +1,7 @@
 package com.interactivemedia.backpacker.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -45,6 +46,7 @@ public class MyListFragment extends Fragment {
     private String userId;
     private ListView lvMyLocations;
     private TextView tv_noOwnLocations;
+    private Context context;
 
     public MyListFragment() {
         // Required empty public constructor
@@ -73,23 +75,25 @@ public class MyListFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my_list, container, false);
 
+        context = getContext();
+
         //find Layout Components
         tv_noOwnLocations=view.findViewById(R.id.noOwnLocations);
         lvMyLocations = view.findViewById(R.id.lv_myloc);
 
         mylocations = new ArrayList<>();
 
-        userId = Preferences.getUserId(getContext());
+        userId = Preferences.getUserId(context);
         //userId = "5a46519c6de6a50f3c46efba";
 
         //Create Adapter containing location list
         String adapterCallSource = "MyListFragment";
-        fillListAdapter = new FillLocationListsAdapter(getContext(), R.layout.listitem_locations, mylocations, adapterCallSource);
+        fillListAdapter = new FillLocationListsAdapter(context, R.layout.listitem_locations, mylocations, adapterCallSource);
         lvMyLocations.setAdapter(fillListAdapter);
 
 
         //check, if user is online
-        if(Request.hasInternetConnection(getContext())){
+        if(Request.hasInternetConnection(context)){
             //Loads locations by calling AsyncTask
             loadLocations();
         } else {
@@ -113,7 +117,7 @@ public class MyListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //start details activity
-                Intent intent = new Intent(getContext(), LocationDetailsActivity.class);
+                Intent intent = new Intent(context, LocationDetailsActivity.class);
                 intent.putExtra("locationGoogleId", mylocations.get(i).getGoogleId());
                 intent.putExtra("userId", userId);
                 startActivity(intent);
@@ -125,6 +129,22 @@ public class MyListFragment extends Fragment {
         return view;
     }
 
+    //use the onResume method to load for first time or reload locations(e.g. after one has been added)
+    @Override
+    public void onResume() {
+        super.onResume();
+        //check, if user is online
+        if(Request.hasInternetConnection(context)){
+            mylocations.clear();
+            //Loads locations by calling AsyncTask
+            loadLocations();
+        } else {
+            //show sad backpack
+            getView().findViewById(R.id.main_layout).setVisibility(View.GONE);
+            getView().findViewById(R.id.no_internet).setVisibility(View.VISIBLE);
+        }
+
+    }
 
     private void loadLocations() {
         //call AsycTask to the locations of one user to show from server
@@ -150,17 +170,17 @@ public class MyListFragment extends Fragment {
         @Override
         protected String doInBackground(String... strings) {
             Log.i("DoInBackground", "Started in Class GetLocations");
-            return Request.get(getContext(), strings[0]);
+            return Request.get(context, strings[0]);
         }
 
         @Override
         protected void onPostExecute(String result) {
             if (result == null) {
                 Log.d("Error: ", "Error in GET Request");
-                Toast.makeText(getContext(), "There was an Error loading your locations", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "There was an Error loading your locations", Toast.LENGTH_LONG).show();
             } else if (result.equals("401")){
                 //unauthorized -> we need new token -> redirect to Login Activity
-                Intent intent = new Intent(getContext(), LoginActivity.class);
+                Intent intent = new Intent(context, LoginActivity.class);
                 startActivity(intent);
             }else {
                 Log.i("JSON locations: ", result);
@@ -202,7 +222,7 @@ public class MyListFragment extends Fragment {
      * this function simply opens the addLocationActivity
      */
     private void openAddLocationActivity(){
-        Intent intent = new Intent(getContext(), AddLocationActivity.class);
+        Intent intent = new Intent(context, AddLocationActivity.class);
         startActivity(intent);
     }
 

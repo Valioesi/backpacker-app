@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/margin_normal"
         android:layout_marginStart="@dimen/margin_normal"
-        android:layout_marginTop="130dp"
+        android:layout_marginTop="100dp"
         android:text="@string/nfc_info"
         android:textAlignment="center"
         android:textSize="@dimen/heading2"
@@ -23,6 +23,7 @@
 
 
     <ProgressBar
+        android:id="@+id/progress_bar_nfc"
         style="?android:attr/progressBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,6 +32,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_view_nfc" />
+
+    <Button
+        android:id="@+id/addPicture"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_normal"
+        android:backgroundTint="@android:color/white"
+        android:onClick="openAlternative"
+        android:text="@string/add_friend_alternative_button"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintTop_toBottomOf="@+id/progress_bar_nfc" />
 
 
 </android.support.constraint.ConstraintLayout>

@@ -134,8 +134,6 @@ public class AddFriendEmailActivity extends AppCompatActivity {
                 Log.d("JSON response: ", result);
                 Toast.makeText(getApplicationContext(), "Successfully shared your locations with " + newFriend.getFirstName(), Toast.LENGTH_LONG).show();
                 //return to home activity
-                Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                startActivity(intent);
                 finish();
             }
         }

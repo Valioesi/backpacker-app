@@ -1,6 +1,7 @@
 package com.interactivemedia.backpacker.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -76,6 +77,8 @@ public class MapFragment extends Fragment {
     private HashMap<String, ArrayList<User>> googleIdUsersMap;
     private HashMap<String, Marker> googleIdMarkersMap;
     private String userId;
+    private boolean firstCreate;
+    private Context context;
 
     public MapFragment() {
         // Required empty public constructor
@@ -102,6 +105,8 @@ public class MapFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
+        context = getContext();
+
         //Vali: this is taken from https://github.com/googlemaps/android-samples/blob/master/ApiDemos/app/src/main/java/com/example/mapdemo/RawMapViewDemoActivity.java
         // *** IMPORTANT ***
         // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
@@ -112,8 +117,9 @@ public class MapFragment extends Fragment {
         }
 
         //get the logged in user's id from preferences
-        userId = Preferences.getUserId(getContext());
+        userId = Preferences.getUserId(context);
 
+        firstCreate = true;    //this is used to check in onresume if we should already reload locations
 
         googleIdUsersMap = new HashMap<>();
         googleIdMarkersMap = new HashMap<>();
@@ -126,7 +132,7 @@ public class MapFragment extends Fragment {
 
         //find list view, create adapter containing friend list and set adapter of list view
         listView = view.findViewById(R.id.filter_list);
-        adapter = new CustomArrayAdapter(getContext(), R.layout.custom_list_item_multiple_choice, friends);
+        adapter = new CustomArrayAdapter(context, R.layout.custom_list_item_multiple_choice, friends);
         listView.setAdapter(adapter);
 
         //on item click listener will implement the functionality to filter the markers by user
@@ -190,14 +196,7 @@ public class MapFragment extends Fragment {
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 map = googleMap;
-                //check, if user is online
-                if(Request.hasInternetConnection(getContext())){
-                    loadLocationsOfUser();
-                } else {
-                    Toast.makeText(getContext(), "It seems like you have no internet connection", Toast.LENGTH_LONG).show();
-                    getView().findViewById(R.id.add_location_button).setVisibility(View.GONE);
-                }
-
+                loadLocationsOfUser();
             }
         });
 
@@ -208,7 +207,7 @@ public class MapFragment extends Fragment {
      * this function simply opens the addLocationActivity
      */
     private void openAddLocationActivity() {
-        Intent intent = new Intent(getContext(), AddLocationActivity.class);
+        Intent intent = new Intent(context, AddLocationActivity.class);
         startActivity(intent);
     }
 
@@ -218,8 +217,13 @@ public class MapFragment extends Fragment {
      * the process to load locations of friends will be started in onPostExecute of the async task
      */
     private void loadLocationsOfUser() {
-//        new GetLocationsOfUser().execute("/users/5a4cb9154162d41ba096f01d");
-        new GetLocationsOfUser().execute("/users/" + userId);
+        //check, if user is online
+        if(Request.hasInternetConnection(context)){
+            new GetLocationsOfUser().execute("/users/" + userId);
+        } else {
+            Toast.makeText(context, "It seems like you have no internet connection", Toast.LENGTH_LONG).show();
+            getView().findViewById(R.id.add_location_button).setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -241,17 +245,17 @@ public class MapFragment extends Fragment {
     private class GetLocationsOfUser extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... strings) {
-            return Request.get(getContext(), strings[0]);
+            return Request.get(context, strings[0]);
         }
 
         @Override
         protected void onPostExecute(String result) {
             if (result == null) {
                 Log.d("Error: ", "Error in GET Request");
-                Toast.makeText(getContext(), "There was an Error loading your locations", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "There was an Error loading your locations", Toast.LENGTH_LONG).show();
             } else if (result.equals("401")) {
                 //unauthorized -> we need new token -> redirect to Login Activity
-                Intent intent = new Intent(getContext(), LoginActivity.class);
+                Intent intent = new Intent(context, LoginActivity.class);
                 startActivity(intent);
             } else {
                 Log.d("JSON response: ", result);
@@ -274,17 +278,17 @@ public class MapFragment extends Fragment {
     private class GetLocationsOfFriends extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... strings) {
-            return Request.get(getContext(), strings[0]);
+            return Request.get(context, strings[0]);
         }
 
         @Override
         protected void onPostExecute(String result) {
             if (result == null) {
                 Log.d("Error: ", "Error in GET Request");
-                Toast.makeText(getContext(), "There was an Error loading the locations of your friends", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "There was an Error loading the locations of your friends", Toast.LENGTH_LONG).show();
             } else if (result.equals("401")) {
                 //unauthorized -> we need new token -> redirect to Login Activity
-                Intent intent = new Intent(getContext(), LoginActivity.class);
+                Intent intent = new Intent(context, LoginActivity.class);
                 startActivity(intent);
             } else {
                 Log.d("JSON response: ", result);
@@ -302,6 +306,7 @@ public class MapFragment extends Fragment {
                 if (friends != null && friends.size() != 0) {
                     addMarkersForAllUsers();
                     configureInfoWindow();
+                    firstCreate = false;
                 }
             }
 
@@ -455,7 +460,7 @@ public class MapFragment extends Fragment {
                         //only set callback once
                         //therefore we check if the window was already shown, ergo this code has already been executed
                         if (!location.wasInfoWindowAlreadyShown()) {
-                            Glide.with(getContext()).load(imageUri).listener(new RequestListener<Drawable>() {
+                            Glide.with(context).load(imageUri).listener(new RequestListener<Drawable>() {
                                 @Override
                                 public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                                     return false;
@@ -471,7 +476,7 @@ public class MapFragment extends Fragment {
                             location.setInfoWindowAlreadyShown(true);
                         } else {
                             //this time around the image will be taken from cache or disk or whatever
-                            Glide.with(getContext()).load(imageUri).into(imageView);
+                            Glide.with(context).load(imageUri).into(imageView);
                         }
                     } else {
                         //if there are no images for this location, add a placeholder image
@@ -518,7 +523,7 @@ public class MapFragment extends Fragment {
         map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-                Intent intent = new Intent(getContext(), LocationDetailsActivity.class);
+                Intent intent = new Intent(context, LocationDetailsActivity.class);
                 Location location = (Location) marker.getTag();
 
                 if(location != null){
@@ -585,15 +590,16 @@ public class MapFragment extends Fragment {
         super.onResume();
         mapView.onResume();
         //reload markers, because there might have been added one
-        //TODO make better!
-     /*   if (map != null) {
+        //only reload if we were redirected (e.g. after AddLocation), therefore we check, if it is the first creation
+        //of this fragment instance
+         if (map != null && !firstCreate) {
             map.clear();
             googleIdUsersMap.clear();
             googleIdMarkersMap.clear();
             friends.clear();
             adapter.clear();
             loadLocationsOfUser();
-        }*/
+        }
     }
 
     @Override

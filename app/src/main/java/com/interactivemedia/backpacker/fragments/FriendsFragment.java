@@ -1,6 +1,7 @@
 package com.interactivemedia.backpacker.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +23,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.AddFriendNfcActivity;
+import com.interactivemedia.backpacker.activities.FriendsDetailsActivity;
 import com.interactivemedia.backpacker.activities.LoginActivity;
 import com.interactivemedia.backpacker.adapters.FillMyFriendsListAdapter;
 import com.interactivemedia.backpacker.helpers.Preferences;
@@ -39,6 +42,7 @@ public class FriendsFragment extends Fragment {
 
     private TextView tv_noFriends;
     private ListView lvfriends;
+    private Context context;
 
     public FriendsFragment() {
         // Required empty public constructor
@@ -50,7 +54,6 @@ public class FriendsFragment extends Fragment {
      *
      * @return A new instance of fragment FriendsFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static FriendsFragment newInstance() {
         return new FriendsFragment();
     }
@@ -67,6 +70,8 @@ public class FriendsFragment extends Fragment {
         // Inflate layout for this fragment
         View view = inflater.inflate(R.layout.fragment_friends, container, false);
 
+        context = getContext();
+
         //find ListView
         lvfriends = view.findViewById(R.id.listViewFriends);
 
@@ -80,16 +85,20 @@ public class FriendsFragment extends Fragment {
         //assign ArrayAdapter to friends list
         lvfriends.setAdapter(fillMyFriendsListAdapter);
 
+        lvfriends.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                User user = myFriends.get(i);
 
-        //check, if user is online
-        if (Request.hasInternetConnection(getContext())) {
-            //load friends by calling AsyncTask
-            loadFriends();
-        } else {
-            //show sad backpack
-            view.findViewById(R.id.main_layout).setVisibility(View.GONE);
-            view.findViewById(R.id.no_internet).setVisibility(View.VISIBLE);
-        }
+                Intent intent = new Intent(getContext(), FriendsDetailsActivity.class);
+                intent.putExtra("userId", user.getId());
+                intent.putExtra("firstName", user.getFirstName());
+                intent.putExtra("lastName", user.getLastName());
+                intent.putExtra("avatar", user.getAvatar());
+                startActivity(intent);
+            }
+        });
+
 
 
         //set on click listener for add friend button -> open AddFriendNfcActivity
@@ -105,8 +114,26 @@ public class FriendsFragment extends Fragment {
         return view;
     }
 
+    //use the onResume method to load for first time or reload friends (e.g. after one has been added)
+    @Override
+    public void onResume() {
+        super.onResume();
+        //check, if user is online
+        if (Request.hasInternetConnection(context)) {
+            //clear friends list (necessary when coming back)
+            myFriends.clear();
+            //load friends by calling AsyncTask
+            loadFriends();
+        } else {
+            //show sad backpack
+            getView().findViewById(R.id.main_layout).setVisibility(View.GONE);
+            getView().findViewById(R.id.no_internet).setVisibility(View.VISIBLE);
+        }
+
+    }
+
     private void loadFriends() {
-        String userId = Preferences.getUserId(getContext());
+        String userId = Preferences.getUserId(context);
         new GetFriends(fillMyFriendsListAdapter).execute("/users/" + userId + "/friends");
     }
 
@@ -122,20 +149,20 @@ public class FriendsFragment extends Fragment {
         @Override
         protected String doInBackground(String... strings) {
             Log.d("DoInBackground", "Started in Class GetFriends");
-            return Request.get(getContext(), strings[0]);
+            return Request.get(context, strings[0]);
         }
 
         @Override
         protected void onPostExecute(String result) {
             if (result == null) {
                 Log.d("Error: ", "Error in GET Request");
-                Toast.makeText(getContext(), "There was an Error loading the locations of your friends", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "There was an Error loading the locations of your friends", Toast.LENGTH_LONG).show();
             } else if (result.equals("401")) {
                 //unauthorized -> we need new token -> redirect to Login Activity
-                Intent intent = new Intent(getContext(), LoginActivity.class);
+                Intent intent = new Intent(context, LoginActivity.class);
                 startActivity(intent);
             } else {
-                Log.d("JSON response: ", result);
+                 Log.d("JSON response: ", result);
 
                 //we need to handle the conversion from json string to User Object, because user in this json is in format
                 //user : { id: ..., firstName: ..., lastName:..}    instead of just user: id

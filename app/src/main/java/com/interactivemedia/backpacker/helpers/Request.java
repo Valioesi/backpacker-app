@@ -45,35 +45,38 @@ public class Request {
      * @return the server response as String
      */
     public static String get(Context context, String endpoint) {
-        HttpURLConnection urlConnection = null;
-        try {
-            URL url = new URL(API_URL + endpoint);
+        if(context != null){
+            HttpURLConnection urlConnection = null;
+            try {
+                URL url = new URL(API_URL + endpoint);
 
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("GET");
-            urlConnection.setRequestProperty("access_token", Preferences.getIdToken(context));
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.setRequestProperty("access_token", Preferences.getIdToken(context));
 
-            if (urlConnection.getResponseCode() == 401) {
-                return "401";
-            }
+                if (urlConnection.getResponseCode() == 401) {
+                    return "401";
+                }
 
-            //if the status code is anything else but 2xx, we want to return something different,
-            //which can be handled in our AsyncTasks
-            if (urlConnection.getResponseCode() / 100 == 4 || urlConnection.getResponseCode() / 100 == 5) {
-                Log.e("Error stream", readStream(urlConnection.getErrorStream()));
-                return null;
-            }
+                //if the status code is anything else but 2xx, we want to return something different,
+                //which can be handled in our AsyncTasks
+                if (urlConnection.getResponseCode() / 100 == 4 || urlConnection.getResponseCode() / 100 == 5) {
+                    Log.e("Error stream", readStream(urlConnection.getErrorStream()));
+                    return null;
+                }
 
-            return readStream(urlConnection.getInputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
+                return readStream(urlConnection.getInputStream());
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
 
+                }
             }
         }
         return null;
+
     }
 
     /**
@@ -84,33 +87,36 @@ public class Request {
      * @return the server response as String
      */
     public static String delete(Context context, String endpoint) {
-        HttpURLConnection urlConnection = null;
-        try {
-            URL url = new URL(API_URL + endpoint);
+        if(context != null){
+            HttpURLConnection urlConnection = null;
+            try {
+                URL url = new URL(API_URL + endpoint);
 
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("DELETE");
-            urlConnection.setRequestProperty("access_token", Preferences.getIdToken(context));
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("DELETE");
+                urlConnection.setRequestProperty("access_token", Preferences.getIdToken(context));
 
-            if (urlConnection.getResponseCode() == 401) {
-                return "401";
+                if (urlConnection.getResponseCode() == 401) {
+                    return "401";
+                }
+
+                //if the status code is anything else but 200, we want to return something different,
+                //which can be handled in our AsyncTasks
+                if (urlConnection.getResponseCode() / 100 == 4 || urlConnection.getResponseCode() / 100 == 5) {
+                    Log.e("Error stream", readStream(urlConnection.getErrorStream()));
+                    return null;
+                }
+
+                return readStream(urlConnection.getInputStream());
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+
+                }
             }
 
-            //if the status code is anything else but 200, we want to return something different,
-            //which can be handled in our AsyncTasks
-            if (urlConnection.getResponseCode() / 100 == 4 || urlConnection.getResponseCode() / 100 == 5) {
-                Log.e("Error stream", readStream(urlConnection.getErrorStream()));
-                return null;
-            }
-
-            return readStream(urlConnection.getInputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-
-            }
         }
         return null;
     }
@@ -168,61 +174,64 @@ public class Request {
      * @return response as string
      */
     private static String postPutOrPatch(Context context, String endpoint, String body, RequestMethod requestMethod) {
-        HttpURLConnection urlConnection = null;
-        try {
-            URL url = new URL(API_URL + endpoint);
-            urlConnection = (HttpURLConnection) url.openConnection();
-            //the following line will only be executed for a patch request, it sets the request method to patch
-            //it seems kinda hacky, but there is no way to directly set the request method to patch
-            switch (requestMethod) {
-                case PATCH:
-                    urlConnection.setRequestProperty("X-HTTP-Method-Override", "PATCH");
-                    urlConnection.setRequestProperty("Content-Type",
-                            "application/merge-patch+json");
-                    break;
-                case POST:
-                    urlConnection.setRequestMethod("POST");
-                    urlConnection.setRequestProperty("Content-Type",
-                            "application/json");
-                    break;
-                case PUT:
-                    urlConnection.setRequestMethod("PUT");
-                    urlConnection.setRequestProperty("Content-Type",
-                            "application/json");
-                    break;
-            }
+        if(context != null){
 
-            urlConnection.setRequestProperty("access_token", Preferences.getIdToken(context));
-            urlConnection.setDoInput(true);
-            urlConnection.setDoOutput(true);
+            HttpURLConnection urlConnection = null;
+            try {
+                URL url = new URL(API_URL + endpoint);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                //the following line will only be executed for a patch request, it sets the request method to patch
+                //it seems kinda hacky, but there is no way to directly set the request method to patch
+                switch (requestMethod) {
+                    case PATCH:
+                        urlConnection.setRequestProperty("X-HTTP-Method-Override", "PATCH");
+                        urlConnection.setRequestProperty("Content-Type",
+                                "application/merge-patch+json");
+                        break;
+                    case POST:
+                        urlConnection.setRequestMethod("POST");
+                        urlConnection.setRequestProperty("Content-Type",
+                                "application/json");
+                        break;
+                    case PUT:
+                        urlConnection.setRequestMethod("PUT");
+                        urlConnection.setRequestProperty("Content-Type",
+                                "application/json");
+                        break;
+                }
 
-            OutputStream outputStream = urlConnection.getOutputStream();
+                urlConnection.setRequestProperty("access_token", Preferences.getIdToken(context));
+                urlConnection.setDoInput(true);
+                urlConnection.setDoOutput(true);
 
-            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
-            bufferedWriter.write(body);
-            bufferedWriter.flush();
+                OutputStream outputStream = urlConnection.getOutputStream();
 
-            if (urlConnection.getResponseCode() == 401) {
-                return "401";
-            }
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+                bufferedWriter.write(body);
+                bufferedWriter.flush();
 
-            //if the status code is anything else but a 2-something, we want to return something different,
-            //which can be handled in our AsyncTasks
-            if (urlConnection.getResponseCode() / 100 == 4 || urlConnection.getResponseCode() / 100 == 5) {
-                Log.e("Status code", urlConnection.getResponseCode() + "");
-                Log.e("error in post request", urlConnection.getResponseMessage());
-                Log.e("Error stream", readStream(urlConnection.getErrorStream()));
-                return null;
-            }
+                if (urlConnection.getResponseCode() == 401) {
+                    return "401";
+                }
+
+                //if the status code is anything else but a 2-something, we want to return something different,
+                //which can be handled in our AsyncTasks
+                if (urlConnection.getResponseCode() / 100 == 4 || urlConnection.getResponseCode() / 100 == 5) {
+                    Log.e("Status code", urlConnection.getResponseCode() + "");
+                    Log.e("error in post request", urlConnection.getResponseMessage());
+                    Log.e("Error stream", readStream(urlConnection.getErrorStream()));
+                    return null;
+                }
 
 
-            return readStream(urlConnection.getInputStream());
+                return readStream(urlConnection.getInputStream());
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
             }
         }
         return null;
@@ -238,84 +247,87 @@ public class Request {
      * @return response as string
      */
     public static String uploadPictures(Context context, String endpoint, ArrayList<String> picturePaths, String requestMethod) {
-        HttpURLConnection urlConnection = null;
-        try {
-            URL url = new URL(API_URL + endpoint);
+        if(context != null){
+            HttpURLConnection urlConnection = null;
+            try {
+                URL url = new URL(API_URL + endpoint);
 
-            //stuff we need for multipart request
-            String crlf = "\r\n";
-            String twoHyphens = "--";
-            String boundary = "*****";
+                //stuff we need for multipart request
+                String crlf = "\r\n";
+                String twoHyphens = "--";
+                String boundary = "*****";
 
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setUseCaches(false);
-            urlConnection.setDoOutput(true);
-            urlConnection.setDoInput(true);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setUseCaches(false);
+                urlConnection.setDoOutput(true);
+                urlConnection.setDoInput(true);
 
 
-            urlConnection.setRequestMethod(requestMethod);
-            urlConnection.setRequestProperty("Connection", "Keep-Alive");
-            urlConnection.setRequestProperty("Cache-Control", "no-cache");
-            urlConnection.setRequestProperty(
-                    "Content-Type", "multipart/form-data;boundary=" + boundary);
-            urlConnection.setRequestProperty("access_token", Preferences.getIdToken(context));
+                urlConnection.setRequestMethod(requestMethod);
+                urlConnection.setRequestProperty("Connection", "Keep-Alive");
+                urlConnection.setRequestProperty("Cache-Control", "no-cache");
+                urlConnection.setRequestProperty(
+                        "Content-Type", "multipart/form-data;boundary=" + boundary);
+                urlConnection.setRequestProperty("access_token", Preferences.getIdToken(context));
 
-            //start content wrapper
-            DataOutputStream request = new DataOutputStream(
-                    urlConnection.getOutputStream());
+                //start content wrapper
+                DataOutputStream request = new DataOutputStream(
+                        urlConnection.getOutputStream());
 
-            String fieldName = "picture";
+                String fieldName = "picture";
 
-            //loops through all paths which are passed by AddLocationActivity
-            //creates File for every path, reads the file and writes its bytes
-            for (String path : picturePaths) {
-                File file = new File(path);
-                String fileName = file.getName();
-                request.writeBytes(twoHyphens + boundary + crlf);
-                request.writeBytes("Content-Disposition: form-data; name=\"" +
-                        fieldName + "\";filename=\"" +
-                        fileName + "\"" + crlf);
+                //loops through all paths which are passed by AddLocationActivity
+                //creates File for every path, reads the file and writes its bytes
+                for (String path : picturePaths) {
+                    File file = new File(path);
+                    String fileName = file.getName();
+                    request.writeBytes(twoHyphens + boundary + crlf);
+                    request.writeBytes("Content-Disposition: form-data; name=\"" +
+                            fieldName + "\";filename=\"" +
+                            fileName + "\"" + crlf);
+                    request.writeBytes(crlf);
+                    //file to bytes
+                    int size = (int) file.length();
+                    byte[] bytes = new byte[size];
+                    BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
+                    buf.read(bytes, 0, bytes.length);
+                    buf.close();
+                    request.write(bytes);
+                    request.writeBytes(crlf);
+                }
+
+                //end content wrapper
                 request.writeBytes(crlf);
-                //file to bytes
-                int size = (int) file.length();
-                byte[] bytes = new byte[size];
-                BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
-                buf.read(bytes, 0, bytes.length);
-                buf.close();
-                request.write(bytes);
-                request.writeBytes(crlf);
+                request.writeBytes(twoHyphens + boundary +
+                        twoHyphens + crlf);
+
+                //flush output buffer
+                request.flush();
+                request.close();
+
+
+                if (urlConnection.getResponseCode() == 401) {
+                    return "401";
+                }
+
+                //if the status code is anything else but 2xx, we want to return something different,
+                //which can be handled in our AsyncTasks
+                if (urlConnection.getResponseCode() / 100 == 4 || urlConnection.getResponseCode() / 100 == 5) {
+                    Log.e("Error uploading images", urlConnection.getResponseMessage());
+                    Log.e("Error message", readStream(urlConnection.getErrorStream()));
+                    return null;
+                }
+
+                return readStream(urlConnection.getInputStream());
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
             }
 
-            //end content wrapper
-            request.writeBytes(crlf);
-            request.writeBytes(twoHyphens + boundary +
-                    twoHyphens + crlf);
-
-            //flush output buffer
-            request.flush();
-            request.close();
-
-
-            if (urlConnection.getResponseCode() == 401) {
-                return "401";
-            }
-
-            //if the status code is anything else but 2xx, we want to return something different,
-            //which can be handled in our AsyncTasks
-            if (urlConnection.getResponseCode() / 100 == 4 || urlConnection.getResponseCode() / 100 == 5) {
-                Log.e("Error uploading images", urlConnection.getResponseMessage());
-                Log.e("Error message", readStream(urlConnection.getErrorStream()));
-                return null;
-            }
-
-            return readStream(urlConnection.getInputStream());
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
         }
         return null;
 

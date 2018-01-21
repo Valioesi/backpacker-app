@@ -36,7 +36,7 @@ import java.util.HashSet;
  * Created by Rebecca Durm on 04.01.2018.
  */
 
-public class FillLocationListsAdapter extends ArrayAdapter<ArrayList<Location>> implements Filterable{
+public class FillLocationListsAdapter extends ArrayAdapter<ArrayList<Location>> implements Filterable {
     private Context context;
     private int layoutResourceId;
     private ArrayList<Location> locations;
@@ -48,8 +48,7 @@ public class FillLocationListsAdapter extends ArrayAdapter<ArrayList<Location>> 
     private boolean isFavorite;
 
 
-
-    public FillLocationListsAdapter(Context context, int layoutResourceId, ArrayList<Location> locations, String adapterCallSource){
+    public FillLocationListsAdapter(Context context, int layoutResourceId, ArrayList<Location> locations, String adapterCallSource) {
         super(context, layoutResourceId);
         this.context = context;
         this.layoutResourceId = layoutResourceId;
@@ -58,16 +57,14 @@ public class FillLocationListsAdapter extends ArrayAdapter<ArrayList<Location>> 
     }
 
     @SuppressLint("CutPasteId")
-    @Override @NonNull
+    @Override
+    @NonNull
     public View getView(int position, View convertView, ViewGroup viewGroup) {
         View row = convertView;
         LocationsHolder holder;
 
 
-
-
-
-        if (row==null){
+        if (row == null) {
             //LayoutInflater inflater = ((Activity)context).getLayoutInflater();
             //This layout inflater works no matter whether we come from an activity or a fragment
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -75,11 +72,11 @@ public class FillLocationListsAdapter extends ArrayAdapter<ArrayList<Location>> 
 
             holder = new LocationsHolder();
 
-            holder.nameLocation= row.findViewById(R.id.tv_firstName);
-            holder.nameCountry= row.findViewById(R.id.tv_countryName);
-            holder.nameCity=  row.findViewById(R.id.tv_cityName);
+            holder.nameLocation = row.findViewById(R.id.tv_firstName);
+            holder.nameCountry = row.findViewById(R.id.tv_countryName);
+            holder.nameCity = row.findViewById(R.id.tv_cityName);
             //holder.description=row.findViewById(R.id.tv_location_des);
-            holder.iv_favorite= row.findViewById(R.id.iv_favorite);
+            holder.iv_favorite = row.findViewById(R.id.iv_favorite);
 
             row.setTag(holder);
 
@@ -90,12 +87,12 @@ public class FillLocationListsAdapter extends ArrayAdapter<ArrayList<Location>> 
 
         Location location = locations.get(position);
         String nameLocation = location.getName() + " ";
-        String nameCity=location.getCity() + "," ;
-        String nameCountry=location.getCountry();
+        String nameCity = location.getCity() + ",";
+        String nameCountry = location.getCountry();
         //String description=location.getDescription();
-        final Boolean isFavoriteBackend=location.isFavorite();
-        final String googleId=location.getGoogleId();
-        final String locationid=location.get_id();
+        final Boolean isFavoriteBackend = location.isFavorite();
+        final String googleId = location.getGoogleId();
+        final String locationid = location.get_id();
 
         holder.nameLocation.setText(nameLocation);
         holder.nameCity.setText(nameCity);
@@ -103,11 +100,8 @@ public class FillLocationListsAdapter extends ArrayAdapter<ArrayList<Location>> 
         //holder.description.setText(description);
 
 
-
-
-
         //Only show and interact with FavoriteButton, if you come from the fragment "my list".
-        if(adapterCallSource=="MyListFragment") {
+        if (adapterCallSource == "MyListFragment") {
 
             //Get information about favorite location from Backend
             isFavorite = isFavoriteBackend;
@@ -145,26 +139,28 @@ public class FillLocationListsAdapter extends ArrayAdapter<ArrayList<Location>> 
         }
 
 
-
         return row;
     }
 
 
     @Override
-    public int getCount(){
-        if(locations != null){
+    public int getCount() {
+        if (locations != null) {
             return locations.size();
         }
         return 0;
     }
 
-    public void setLocations(ArrayList<Location> locations){
+    public void setLocations(ArrayList<Location> locations) {
         this.locations = locations;
     }
 
+    public ArrayList<Location> getLocations() {
+        return this.locations;
+    }
 
 
-    static class LocationsHolder    {
+    static class LocationsHolder {
         TextView nameLocation;
         TextView nameCountry;
         TextView nameCity;
@@ -173,30 +169,27 @@ public class FillLocationListsAdapter extends ArrayAdapter<ArrayList<Location>> 
     }
 
 
-
-
-
-
-
     @SuppressLint("StaticFieldLeak")
-    private class ChangeFavorite extends AsyncTask<String, Integer, String>{
+    private class ChangeFavorite extends AsyncTask<String, Integer, String> {
         Boolean isFavorite;
         String googleId;
 
-        /**Changes the attribute "favorite" in the Backend depending on the user's input. Click on image view changes
+        /**
+         * Changes the attribute "favorite" in the Backend depending on the user's input. Click on image view changes
          * isFavorite value.
+         *
          * @param isFavorite Determines if location is a favorite Place or not. Is set by clicking the image view.
-         * @param googleId GoogleID of the location. Is necessary for changing the location's attributes.
+         * @param googleId   GoogleID of the location. Is necessary for changing the location's attributes.
          */
         ChangeFavorite(boolean isFavorite, String googleId) {
-            this.isFavorite=isFavorite;
-            this.googleId=googleId;
+            this.isFavorite = isFavorite;
+            this.googleId = googleId;
         }
 
         @Override
         protected String doInBackground(String... strings) {
             //return Request.changeFavorites(strings[0], isFavorite, locationid, "PATCH");
-            String json= "{\"googleId\":\"" +  googleId + "\",\"favorite\":"+ isFavorite + "}";
+            String json = "{\"googleId\":\"" + googleId + "\",\"favorite\":" + isFavorite + "}";
             Log.e("SendBack Json", json);
             return Request.patch(getContext(), strings[0], json);
         }
@@ -206,7 +199,7 @@ public class FillLocationListsAdapter extends ArrayAdapter<ArrayList<Location>> 
         protected void onPostExecute(String result) {
             if (result == null) {
                 Toast.makeText(getContext(), "There was an Error setting your location to favorite", Toast.LENGTH_LONG).show();
-            } else if (result.equals("401")){
+            } else if (result.equals("401")) {
                 //unauthorized -> we need new token -> redirect to Login Activity
                 Intent intent = new Intent(getContext(), LoginActivity.class);
                 getContext().startActivity(intent);
@@ -251,9 +244,9 @@ public class FillLocationListsAdapter extends ArrayAdapter<ArrayList<Location>> 
 
             // There is always a value selected in the spinner. The value "**All locations**" is shown as first element.
             // all values are shown.
-            if(countryName.equals("- All locations -")){
-                results.count=locations.size();
-                results.values=locations;
+            if (countryName.equals("- All locations -")) {
+                results.count = locations.size();
+                results.values = locations;
 
             }
 
@@ -273,24 +266,20 @@ public class FillLocationListsAdapter extends ArrayAdapter<ArrayList<Location>> 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
 
-            locations=(ArrayList<Location>)results.values;
+            locations = (ArrayList<Location>) results.values;
             notifyDataSetChanged();
 
         }
     }
 
 
-
-
-
-    public Filter getFilter(){
+    public Filter getFilter() {
         CountryFilter countryFilter = null;
-        if(countryFilter==null){
+        if (countryFilter == null) {
             countryFilter = new CountryFilter();
         }
         return countryFilter;
     }
-
 
 
 }
