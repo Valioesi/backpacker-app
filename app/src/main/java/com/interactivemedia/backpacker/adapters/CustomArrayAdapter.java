@@ -67,8 +67,7 @@ public class CustomArrayAdapter extends ArrayAdapter<User>{
         float hueColor = MarkerColors.computeColor(position);
         int color = ColorUtils.HSLToColor(new float[]{hueColor, 1, 0.5f});
         //change the color of the icon in the list, this might be changed later, when we are not depending on the MARKER_COLORS anymore
-        holder.colorIcon.getDrawable().setColorFilter(color , PorterDuff.Mode.SRC_IN);
-
+        holder.colorIcon.setColorFilter(color , PorterDuff.Mode.SRC_IN);
         return row;
     }
 

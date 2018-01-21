@@ -46,8 +46,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
-            if (remoteMessage.getData().containsKey("friendId")) {
-                String friendId = remoteMessage.getData().get("friendId");
+            if (remoteMessage.getData().containsKey("userId")) {
+                String friendId = remoteMessage.getData().get("userId");
+                String firstName = remoteMessage.getData().get("firstName");
+                String lastName = remoteMessage.getData().get("lastName");
                 Log.d(TAG, friendId);
 
                 //we want to differentiate whether the notification came from NFC event or because the user was added as friend via mail
@@ -65,7 +67,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                     //only send notification, if user is logged in (user id not null in preferences)
                     if (Preferences.getUserId(this) != null) {
-                        String notificationMessage = "message"; //TODO: get from push notification
+                        String notificationMessage = firstName + " " + lastName + " shared his/her locations with you";
                         sendNotification(notificationMessage, friendId);
                     }
 
@@ -99,7 +101,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.e(TAG, "Error while adding friend");
         } else {
             Log.d(TAG, "Successfully added friend");
-            Toast.makeText(this, "You have successfully exchanged locations", Toast.LENGTH_LONG).show();
         }
     }
 

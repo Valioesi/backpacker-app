@@ -1,5 +1,6 @@
 package com.interactivemedia.backpacker.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -24,10 +25,14 @@ import static android.nfc.NdefRecord.createMime;
 public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapter.OnNdefPushCompleteCallback, NfcAdapter.CreateNdefMessageCallback {
 
 
+    private Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_friend_nfc);
+
+        context = this;
 
         Log.e("NFC", "is in on onCreate");
         NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -40,7 +45,7 @@ public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapte
             finish();
         } else {
             //check if NFC and Beam are enabled
-            if (nfcAdapter.isNdefPushEnabled()) {
+            if (nfcAdapter.isEnabled()) {
                 //This will refer back to createNdefMessage for what it will send
                 nfcAdapter.setNdefPushMessageCallback(this, this);
 
@@ -49,7 +54,7 @@ public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapte
 
             } else {
                 //tell user to enable both and return to previous activity
-                Toast.makeText(this, "Please enable both NFC and Android Beam to proceed", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Please enable NFC to proceed", Toast.LENGTH_LONG).show();
                 finish();
             }
         }
@@ -94,7 +99,6 @@ public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapte
                 NdefMessage ndefMessage = (NdefMessage) rawMsgs[0];
                 // record 0 contains the message, record 1 is the AAR, if present
                 String friendId = new String(ndefMessage.getRecords()[0].getPayload());
-                Toast.makeText(this, friendId, Toast.LENGTH_LONG).show();
 
                 Log.e("NFC", friendId);
 
@@ -121,6 +125,13 @@ public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapte
 
     @Override
     public void onNdefPushComplete(NfcEvent nfcEvent) {
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(context, "You have successfully exchanged locations", Toast.LENGTH_LONG).show();
+            }
+        });
         //we want to save the timestamp in preferences to check it later in our firebase service
         Preferences.saveNfcEvent(this, true);
 
@@ -145,20 +156,20 @@ public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapte
 
         @Override
         protected String doInBackground(String... strings) {
-            return Request.put(getApplicationContext(), strings[0]);
+            return Request.put(context, strings[0]);
         }
 
         @Override
         protected void onPostExecute(String result) {
             if (result == null) {
-                Toast.makeText(getApplicationContext(), "There was an Error exchanging your locations", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "There was an Error exchanging your locations", Toast.LENGTH_LONG).show();
             } else if (result.equals("401")) {
                 //unauthorized -> we need new token -> redirect to Login Activity
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                Intent intent = new Intent(context, LoginActivity.class);
                 startActivity(intent);
             } else {
                 Log.d("JSON response: ", result);
-                Toast.makeText(getApplicationContext(), "You have successfully exchanged locations", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "You have successfully exchanged locations", Toast.LENGTH_LONG).show();
                 //return to home activity
                 finish();
             }

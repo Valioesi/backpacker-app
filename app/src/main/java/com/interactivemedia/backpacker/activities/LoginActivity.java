@@ -185,15 +185,12 @@ public class LoginActivity extends AppCompatActivity {
             //save token in Shared Preferences
             Preferences.saveIdToken(this, account.getIdToken());
 
-            //now that the user is logged in we will also send the fcm token to the server
-            String fcmToken = FirebaseInstanceId.getInstance().getToken();
 
             //let's make an api call with the token, so that the backend can check, if the user already exists in our db and can create it if necessary
             String jsonBody = "{ \"firstName\": \"" + account.getGivenName() +
                     "\", \"lastName\": \"" + account.getFamilyName() +
                     "\", \"googleId\": \"" + account.getId() +
-                    "\", \"email\": \"" + account.getEmail() +
-                    "\", \"deviceToken\": \"" + fcmToken + "\"}";
+                    "\", \"email\": \"" + account.getEmail() + "\"}";
             Log.d("User json", jsonBody);
             // TODO: uncomment later, once endpoint is up and running
             new PostUser().execute("/users", jsonBody);
@@ -243,7 +240,6 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * this AsyncTask sends a post request to the users endpoint to create a new user, if it does not exists
-     * if successful, the Home Activity is started
      */
     private class PostUser extends AsyncTask<String, Integer, String> {
         @Override
@@ -254,14 +250,8 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            //hide progress bar
-            progressBar.setVisibility(View.GONE);
             if (result == null) {
                 Toast.makeText(getApplicationContext(), "There was an Error logging in", Toast.LENGTH_LONG).show();
-            } else if (result.equals("401")) {
-                //unauthorized -> we need new token -> redirect to Login Activity
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(intent);
             } else {
                 Log.d("JSON response: ", result);
                 //use JsonObject instead of Gson to not have to define an exclusion strategy
@@ -269,6 +259,37 @@ public class LoginActivity extends AppCompatActivity {
                 User user = gson.fromJson(result, User.class);
                 //save _id in shared preferences
                 Preferences.saveUserId(getApplicationContext(), user.getId());
+
+                //now that the user is logged in we will also send the fcm token to the server
+                String fcmToken = FirebaseInstanceId.getInstance().getToken();
+
+                Log.d("FCM Token in Login", fcmToken);
+
+                String jsonBody = "{ \"deviceToken\": \"" + fcmToken + "\"}";
+                new PatchFcmToken().execute("/users/" + user.getId(), jsonBody);
+            }
+
+        }
+    }
+
+    /**
+     * This AsyncTask sends a patch request to the users endpoint to add the fcm token.
+     * If successful, the Home Activity is started.
+     */
+    private class PatchFcmToken extends AsyncTask<String, Integer, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            return Request.patch(getApplicationContext(), strings[0], strings[1]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            //hide progress bar
+            progressBar.setVisibility(View.GONE);
+            if (result == null) {
+                Toast.makeText(getApplicationContext(), "There was an Error logging in", Toast.LENGTH_LONG).show();
+            } else {
+
 
                 Toast.makeText(getApplicationContext(), "Signed in successfully", Toast.LENGTH_LONG).show();
 
