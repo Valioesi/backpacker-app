@@ -120,8 +120,6 @@ public class FriendsFragment extends Fragment {
         super.onResume();
         //check, if user is online
         if (Request.hasInternetConnection(context)) {
-            //clear friends list (necessary when coming back)
-            myFriends.clear();
             //load friends by calling AsyncTask
             loadFriends();
         } else {
@@ -134,17 +132,12 @@ public class FriendsFragment extends Fragment {
 
     private void loadFriends() {
         String userId = Preferences.getUserId(context);
-        new GetFriends(fillMyFriendsListAdapter).execute("/users/" + userId + "/friends");
+        new GetFriends().execute("/users/" + userId + "/friends");
     }
 
 
     @SuppressLint("StaticFieldLeak")
     private class GetFriends extends AsyncTask<String, Integer, String> {
-        private FillMyFriendsListAdapter adapter;
-
-        GetFriends(FillMyFriendsListAdapter adapter) {
-            this.adapter = adapter;
-        }
 
         @Override
         protected String doInBackground(String... strings) {
@@ -189,10 +182,14 @@ public class FriendsFragment extends Fragment {
                 }.getType());
 
 
+                //clear friends list (necessary when coming back)
+                myFriends.clear();
+                fillMyFriendsListAdapter.clear();
+
                 myFriends.addAll(friends);
 
-                adapter.setFriends(myFriends);
-                adapter.notifyDataSetChanged();
+                fillMyFriendsListAdapter.setFriends(myFriends);
+                fillMyFriendsListAdapter.notifyDataSetChanged();
 
 
                 //check if locations are empty and set different Layout componentes

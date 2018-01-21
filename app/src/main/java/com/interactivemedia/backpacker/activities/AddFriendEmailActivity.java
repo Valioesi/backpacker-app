@@ -50,14 +50,15 @@ public class AddFriendEmailActivity extends AppCompatActivity {
     /**
      * this function is called upon click of share locations button and starts the async task
      * to add the user as friend (or better: share locations with this user)
+     *
      * @param view the button
      */
     public void shareLocations(View view) {
         //get user id from shared preferences
         String userId = Preferences.getUserId(this);
-        if(userId != null){
+        if (userId != null) {
             //userId is the id of the logged in user, newFriend is the found user
-            new AddFriend().execute("/users/" + userId + "/friends/" + newFriend.getId());
+            new AddFriend().execute("/users/" + userId + "/friends/" + newFriend.getId() + "?notify=true");
         }
     }
 
@@ -72,7 +73,7 @@ public class AddFriendEmailActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             if (result == null) {
                 Toast.makeText(getApplicationContext(), "There was an Error while searching the user", Toast.LENGTH_LONG).show();
-            } else if (result.equals("401")){
+            } else if (result.equals("401")) {
                 //unauthorized -> we need new token -> redirect to Login Activity
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
@@ -90,15 +91,15 @@ public class AddFriendEmailActivity extends AppCompatActivity {
                 //hide progress bar
                 progressBar.setVisibility(View.GONE);
                 //if there is no user found, then display appropriate text
-                if(newFriend == null || newFriend.getId() == null){
+                if (newFriend == null || newFriend.getId() == null) {
                     findViewById(R.id.text_view_no_user).setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     //...and display user info
                     String name = newFriend.getFirstName() + " " + newFriend.getLastName();
                     textViewName.setText(name);
                     //load profile picture into image view
                     ImageView imageView = findViewById(R.id.image_view_profile_picture);
-                    if(newFriend.getAvatar() != null){
+                    if (newFriend.getAvatar() != null) {
                         Glide.with(getApplicationContext()).load(Request.DOMAIN_URL + newFriend.getAvatar()).into(imageView);
                     } else {
                         imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_image_grey_180dp));
@@ -125,7 +126,7 @@ public class AddFriendEmailActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             if (result == null) {
                 Toast.makeText(getApplicationContext(), "There was an Error sharing your locations", Toast.LENGTH_LONG).show();
-            } else if (result.equals("401")){
+            } else if (result.equals("401")) {
                 //unauthorized -> we need new token -> redirect to Login Activity
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);

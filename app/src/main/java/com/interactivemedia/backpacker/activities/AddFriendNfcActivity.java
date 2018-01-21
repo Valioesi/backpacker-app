@@ -102,7 +102,7 @@ public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapte
 
                 Log.e("NFC", friendId);
 
-                new AddFriendRelationship().execute("/users/" + userId + "/friends/" + friendId);
+                new AddFriendRelationship().execute("/users/" + userId + "/friends/" + friendId + "?notify=true");
             } else {
                 Toast.makeText(this, "You need to sign in", Toast.LENGTH_LONG).show();
                 Intent loginIntent = new Intent(this, LoginActivity.class);

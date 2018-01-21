@@ -39,16 +39,14 @@ import java.util.ArrayList;
  * Created by Rebecca Durm on 04.01.2018.
  */
 
-public class FillMyFriendsListAdapter extends ArrayAdapter<Location>{
+public class FillMyFriendsListAdapter extends ArrayAdapter<Location> {
     private Context context;
     private int layoutResourceId;
     private ArrayList<User> friends;
     private ArrayList<Location> location;
 
-    ImageView iv_avatar;
 
-
-    public FillMyFriendsListAdapter(Context context, int layoutResourceId, ArrayList<User> friends){
+    public FillMyFriendsListAdapter(Context context, int layoutResourceId, ArrayList<User> friends) {
         super(context, layoutResourceId);
         this.context = context;
         this.layoutResourceId = layoutResourceId;
@@ -57,52 +55,43 @@ public class FillMyFriendsListAdapter extends ArrayAdapter<Location>{
 
 
     @Override
-    public int getCount(){
-        if(friends != null) {
+    public int getCount() {
+        if (friends != null) {
             return friends.size();
         }
         return 0;
     }
 
 
-    @SuppressLint("CutPasteId")
-    @Override @NonNull
+    @Override
+    @NonNull
     public View getView(final int position, View convertView, ViewGroup viewGroup) {
         View view = convertView;
-        FriendsHolder holder;
 
 
-
-        if (view==null){
-            LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-            view = inflater.inflate(layoutResourceId, viewGroup, false);
-
-            holder = new FriendsHolder();
-
-            holder.friendName = view.findViewById(R.id.tv_friendName);
-            holder.profilePicture = view.findViewById(R.id.iv_avatar);
-            view.setTag(holder);
+        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+        view = inflater.inflate(layoutResourceId, viewGroup, false);
 
 
-        } else {
-            holder = (FriendsHolder) view.getTag();
-        }
+        TextView textViewName = view.findViewById(R.id.tv_friendName);
+        ImageView imageViewAvatar = view.findViewById(R.id.iv_avatar);
+
 
         User friend = friends.get(position);
         String firstName = friend.getFirstName();
         String lastName = friend.getLastName();
-        String userId=friend.getId();
-        String avatar=friend.getAvatar();
+        String avatar = friend.getAvatar();
         String friendName = firstName + " " + lastName;
 
 
-        holder.friendName.setText(friendName);
+        textViewName.setText(friendName);
 
         //Set profile picture of friend.
-        if(friend.getAvatar()!= null){
-            Glide.with(getContext()).load(Request.DOMAIN_URL + avatar).into(holder.profilePicture);
+        if (friend.getAvatar() != null) {
+            Glide.with(getContext()).load(Request.DOMAIN_URL + avatar).into(imageViewAvatar);
         }
 
+        return view;
 
 //        //The Friends Details Activity is only accessed via FriendsFragment.
 //        //That's why there is no need to do a second request in the FriendsDetailsActivity. We can simply hand over the information from this request
@@ -120,26 +109,17 @@ public class FillMyFriendsListAdapter extends ArrayAdapter<Location>{
 //                context.startActivity(intent);
 //            }
 //        });
-
-        return view;
-    }
-
-    static class FriendsHolder
-    {
-        TextView friendName;
-        ImageView profilePicture;
     }
 
 
-    public void setFriends(ArrayList<User> friends){
+    public void setFriends(ArrayList<User> friends) {
         this.friends = friends;
     }
 
 
-    public void setLocation(ArrayList<Location> locations){
+    public void setLocation(ArrayList<Location> locations) {
         this.location = locations;
     }
-
 
 
 }

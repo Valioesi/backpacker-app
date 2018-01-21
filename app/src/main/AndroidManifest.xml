@@ -95,7 +95,7 @@
         </service>
         <service
             android:name=".services.NotificationActionService"
-            android:exported="false"></service>
+            android:exported="false" />
     </application>
 
 </manifest>
