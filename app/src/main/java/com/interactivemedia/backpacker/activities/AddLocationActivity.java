@@ -17,6 +17,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,6 +25,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
@@ -139,12 +141,12 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
     public void createImageView(Bitmap picture) {
         //create new image view, add it to layout and set the bitmap
         ImageView imageView = new ImageView(this);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(100, 200);
-        layoutParams.setMargins(0, 0, 10, 0);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        layoutParams.setMargins(0, 0, 20, 0);
         imageView.setLayoutParams(layoutParams);
-        imageView.setImageBitmap(picture);
         LinearLayout layout = findViewById(R.id.image_layout);
         layout.addView(imageView);
+        Glide.with(this).load(picture).into(imageView);
     }
 
     @Override

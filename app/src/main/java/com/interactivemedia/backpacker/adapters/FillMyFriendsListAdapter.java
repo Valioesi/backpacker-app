@@ -66,15 +66,15 @@ public class FillMyFriendsListAdapter extends ArrayAdapter<Location> {
     @Override
     @NonNull
     public View getView(final int position, View convertView, ViewGroup viewGroup) {
-        View view = convertView;
+
+        if(convertView == null){
+            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+            convertView = inflater.inflate(layoutResourceId, viewGroup, false);
+        }
 
 
-        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        view = inflater.inflate(layoutResourceId, viewGroup, false);
-
-
-        TextView textViewName = view.findViewById(R.id.tv_friendName);
-        ImageView imageViewAvatar = view.findViewById(R.id.iv_avatar);
+        TextView textViewName = convertView.findViewById(R.id.tv_friendName);
+        ImageView imageViewAvatar = convertView.findViewById(R.id.iv_avatar);
 
 
         User friend = friends.get(position);
@@ -91,7 +91,7 @@ public class FillMyFriendsListAdapter extends ArrayAdapter<Location> {
             Glide.with(getContext()).load(Request.DOMAIN_URL + avatar).into(imageViewAvatar);
         }
 
-        return view;
+        return convertView;
 
 //        //The Friends Details Activity is only accessed via FriendsFragment.
 //        //That's why there is no need to do a second request in the FriendsDetailsActivity. We can simply hand over the information from this request
