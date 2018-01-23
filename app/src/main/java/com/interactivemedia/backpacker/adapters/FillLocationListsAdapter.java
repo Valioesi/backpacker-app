@@ -101,7 +101,7 @@ public class FillLocationListsAdapter extends ArrayAdapter<Location> implements 
 
 
         //Only show and interact with FavoriteButton, if you come from the fragment "my list".
-        if (adapterCallSource == "MyListFragment") {
+        if (adapterCallSource == "MyLocationsFragment") {
 
             //Get information about favorite location from Backend
             isFavorite = isFavoriteBackend;

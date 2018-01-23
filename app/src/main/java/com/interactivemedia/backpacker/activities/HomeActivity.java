@@ -9,9 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.interactivemedia.backpacker.R;
-import com.interactivemedia.backpacker.fragments.FriendsFragment;
-import com.interactivemedia.backpacker.fragments.MapFragment;
-import com.interactivemedia.backpacker.fragments.MyListFragment;
+import com.interactivemedia.backpacker.fragments.MyFriendsFragment;
+import com.interactivemedia.backpacker.fragments.MyLocationsFragment;
+import com.interactivemedia.backpacker.fragments.MyMapFragment;
 import com.interactivemedia.backpacker.fragments.SettingsFragment;
 
 public class HomeActivity extends AppCompatActivity {
@@ -25,13 +25,13 @@ public class HomeActivity extends AppCompatActivity {
             Fragment selectedFragment = null;
             switch (item.getItemId()) {
                 case R.id.navigation_map:
-                    selectedFragment = MapFragment.newInstance();
+                    selectedFragment = MyMapFragment.newInstance();
                     break;
                 case R.id.navigation_list:
-                    selectedFragment = MyListFragment.newInstance();
+                    selectedFragment = MyLocationsFragment.newInstance();
                     break;
                 case R.id.navigation_friends:
-                    selectedFragment = FriendsFragment.newInstance();
+                    selectedFragment = MyFriendsFragment.newInstance();
                     break;
                 case R.id.navigation_more:
                     selectedFragment = SettingsFragment.newInstance();
@@ -56,7 +56,7 @@ public class HomeActivity extends AppCompatActivity {
 
         //Manually displaying the first fragment - one time only
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.frame_layout, MapFragment.newInstance());
+        transaction.replace(R.id.frame_layout, MyMapFragment.newInstance());
         transaction.commit();
 
         //this serves as an example of how to use Request helper class

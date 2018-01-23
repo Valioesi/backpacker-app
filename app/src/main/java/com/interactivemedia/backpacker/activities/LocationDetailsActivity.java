@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 
 import com.interactivemedia.backpacker.R;
@@ -19,24 +18,11 @@ import java.util.ArrayList;
 
 public class LocationDetailsActivity extends AppCompatActivity {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    private ViewPager mViewPager;
-
     private String locationGoogleId;
 
     private ArrayList<String> userIds;
+
+    private ArrayList<String> userNames;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,13 +42,17 @@ public class LocationDetailsActivity extends AppCompatActivity {
         //check if an array was passed or just a single id
         if(intent.hasExtra("userIdArray")){
             userIds = intent.getStringArrayListExtra("userIdArray");
-            ArrayList<String> userNames = intent.getStringArrayListExtra("userNameArray");
+            userNames = intent.getStringArrayListExtra("userNameArray");
 
             if(intent.getStringArrayListExtra("userIdArray").size() > 1){
                 //add a tab for every user
                 for(String name: userNames){
                     tabLayout.addTab(tabLayout.newTab().setText(name));
                 }
+
+            } else {
+                //in this case we only have one user, so we want to hide the tabs
+                tabLayout.setVisibility(View.GONE);
             }
         } else {
             //in this case we only have one user, so we want to hide the tabs
@@ -71,18 +61,25 @@ public class LocationDetailsActivity extends AppCompatActivity {
             userIds = new ArrayList<>();
             //because in this case we only have one user we add it to the array list
             userIds.add(intent.getStringExtra("userId"));
+
+            //if has name add it to array
+            userNames = new ArrayList<>();
+            if(intent.hasExtra("userName")){
+                userNames.add(intent.getStringExtra("userName"));
+            }
         }
 
 
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
+        SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
 
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = findViewById(R.id.container);
+        ViewPager mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
@@ -101,7 +98,7 @@ public class LocationDetailsActivity extends AppCompatActivity {
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -109,7 +106,13 @@ public class LocationDetailsActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a LocationDetailsFragment
-            return LocationDetailsFragment.newInstance(locationGoogleId, userIds.get(position));
+
+            //check if we got names (in case of multiple users)
+            String name = null;
+            if(userNames != null){
+                name = userNames.get(position);
+            }
+            return LocationDetailsFragment.newInstance(locationGoogleId, userIds.get(position), name);
         }
 
         @Override

@@ -23,7 +23,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.AddFriendNfcActivity;
-import com.interactivemedia.backpacker.activities.FriendsDetailsActivity;
+import com.interactivemedia.backpacker.activities.FriendDetailsActivity;
 import com.interactivemedia.backpacker.activities.LoginActivity;
 import com.interactivemedia.backpacker.adapters.FillMyFriendsListAdapter;
 import com.interactivemedia.backpacker.helpers.Preferences;
@@ -35,7 +35,7 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FriendsFragment extends Fragment {
+public class MyFriendsFragment extends Fragment {
 
     private ArrayList<User> myFriends;
     private FillMyFriendsListAdapter fillMyFriendsListAdapter;
@@ -44,7 +44,7 @@ public class FriendsFragment extends Fragment {
     private ListView lvfriends;
     private Context context;
 
-    public FriendsFragment() {
+    public MyFriendsFragment() {
         // Required empty public constructor
     }
 
@@ -52,10 +52,10 @@ public class FriendsFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment.
      *
-     * @return A new instance of fragment FriendsFragment.
+     * @return A new instance of fragment MyFriendsFragment.
      */
-    public static FriendsFragment newInstance() {
-        return new FriendsFragment();
+    public static MyFriendsFragment newInstance() {
+        return new MyFriendsFragment();
     }
 
     @Override
@@ -90,7 +90,7 @@ public class FriendsFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 User user = myFriends.get(i);
 
-                Intent intent = new Intent(getContext(), FriendsDetailsActivity.class);
+                Intent intent = new Intent(getContext(), FriendDetailsActivity.class);
                 intent.putExtra("userId", user.getId());
                 intent.putExtra("firstName", user.getFirstName());
                 intent.putExtra("lastName", user.getLastName());

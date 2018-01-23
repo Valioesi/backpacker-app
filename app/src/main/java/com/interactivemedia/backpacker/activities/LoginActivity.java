@@ -133,6 +133,7 @@ public class LoginActivity extends AppCompatActivity {
             //if code is 4, we need to sign in
             if (e.getStatusCode() == 4) {
                 //show login screen and hide progress bar
+                layout = findViewById(R.id.login_layout);
                 progressBar.setVisibility(View.GONE);
                 layout.setVisibility(View.VISIBLE);
 
@@ -261,11 +262,20 @@ public class LoginActivity extends AppCompatActivity {
 
                 //now that the user is logged in we will also send the fcm token to the server
                 String fcmToken = FirebaseInstanceId.getInstance().getToken();
-
-                Log.d("FCM Token in Login", fcmToken);
-
-                String jsonBody = "{ \"deviceToken\": \"" + fcmToken + "\"}";
-                new PatchFcmToken().execute("/users/" + user.getId(), jsonBody);
+                if (fcmToken != null) {
+                    Log.d("FCM Token in Login", fcmToken);
+                    String jsonBody = "{ \"deviceToken\": \"" + fcmToken + "\"}";
+                    new PatchFcmToken().execute("/users/" + user.getId(), jsonBody);
+                } else {
+                    if (neverSignedIn) {
+                        //redirect to EditProfileActivity to give the user the option to edit his data
+                        Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
+                        startActivity(intent);
+                    } else {
+                        startHomeActivity();
+                    }
+                    finish();
+                }
             }
 
         }

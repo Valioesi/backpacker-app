@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.TreeSet;
 
-public class FriendsDetailsActivity extends AppCompatActivity {
+public class FriendDetailsActivity extends AppCompatActivity {
 
     private ArrayList<Location> friendsLocations;
     private FillLocationListsAdapter adapter;
@@ -65,7 +65,7 @@ public class FriendsDetailsActivity extends AppCompatActivity {
         final String friendId = intent.getStringExtra("userId");
         String firstName = intent.getStringExtra("firstName");
         String lastName = intent.getStringExtra("lastName");
-        String friendName = firstName + " " + lastName;
+        final String friendName = firstName + " " + lastName;
         String imageUri = intent.getStringExtra("avatar");
 
 
@@ -86,7 +86,7 @@ public class FriendsDetailsActivity extends AppCompatActivity {
 
         //find list view, create adapter containing friend list and set adapter of list view
         lv_favoritePlaces = findViewById(R.id.lvFavoritePlaces);
-        String adapterCallSource = "FriendsDetailsActivity";
+        String adapterCallSource = "FriendDetailsActivity";
         adapter = new FillLocationListsAdapter(getApplicationContext(), R.layout.listitem_locations, friendsLocations, adapterCallSource);
         lv_favoritePlaces.setAdapter(adapter);
 
@@ -101,6 +101,7 @@ public class FriendsDetailsActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), LocationDetailsActivity.class);
                 intent.putExtra("locationGoogleId", location.getGoogleId());
                 intent.putExtra("userId", friendId);
+                intent.putExtra("userName", friendName);
                 startActivity(intent);
             }
         });
@@ -140,7 +141,7 @@ public class FriendsDetailsActivity extends AppCompatActivity {
                     case DialogInterface.BUTTON_NEGATIVE:
                         // No button clicked
                         // do nothing
-                        // Toast.makeText(FriendsDetailsActivity.this, "No Clicked",
+                        // Toast.makeText(FriendDetailsActivity.this, "No Clicked",
                         //        Toast.LENGTH_LONG).show();
                         break;
                 }
@@ -204,7 +205,12 @@ public class FriendsDetailsActivity extends AppCompatActivity {
                 ArrayList<Location> locations = gson.fromJson(result, new TypeToken<ArrayList<Location>>() {
                 }.getType());
 
-                friendsLocations.addAll(locations);
+                //only show favorite locations
+                for(Location location : locations){
+                    if(location.isFavorite()){
+                        friendsLocations.add(location);
+                    }
+                }
 
                 adapter.setLocations(friendsLocations);
                 adapter.notifyDataSetChanged();

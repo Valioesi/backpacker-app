@@ -37,18 +37,18 @@ import java.util.ArrayList;
  * A simple {@link Fragment} subclass.
  *
  */
-public class MyListFragment extends Fragment {
+public class MyLocationsFragment extends Fragment {
 
 
     private ArrayList<Location> mylocations;
     private FillLocationListsAdapter fillListAdapter;
-    private String adapterCallSource = "MyListFragment";
+    private String adapterCallSource = "MyLocationsFragment";
     private String userId;
     private ListView lvMyLocations;
     private TextView tv_noOwnLocations;
     private Context context;
 
-    public MyListFragment() {
+    public MyLocationsFragment() {
         // Required empty public constructor
     }
 
@@ -56,11 +56,11 @@ public class MyListFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment.
      *
-     * @return A new instance of fragment MyListFragment.
+     * @return A new instance of fragment MyLocationsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MyListFragment newInstance() {
-        return new MyListFragment();
+    public static MyLocationsFragment newInstance() {
+        return new MyLocationsFragment();
     }
 
     @Override
@@ -87,7 +87,7 @@ public class MyListFragment extends Fragment {
         //userId = "5a46519c6de6a50f3c46efba";
 
         //Create Adapter containing location list
-        String adapterCallSource = "MyListFragment";
+        String adapterCallSource = "MyLocationsFragment";
         fillListAdapter = new FillLocationListsAdapter(context, R.layout.listitem_locations, mylocations, adapterCallSource);
         lvMyLocations.setAdapter(fillListAdapter);
 
@@ -120,6 +120,7 @@ public class MyListFragment extends Fragment {
                 Intent intent = new Intent(context, LocationDetailsActivity.class);
                 intent.putExtra("locationGoogleId", mylocations.get(i).getGoogleId());
                 intent.putExtra("userId", userId);
+
                 startActivity(intent);
             }
         });

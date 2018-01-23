@@ -21,11 +21,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.EditProfileActivity;
 import com.interactivemedia.backpacker.activities.LoginActivity;
 import com.interactivemedia.backpacker.helpers.Preferences;
 
+import java.io.IOException;
 import java.nio.channels.SocketChannel;
 
 /**
@@ -159,6 +161,19 @@ public class SettingsFragment extends Fragment {
                                 Log.d("LogoutButton", "You were Logged out succesfully");
                                 //remove user id from preferences to indicate, that he is not logged in
                                 Preferences.saveUserId(context, null);
+
+                                //remove FCM token
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            FirebaseInstanceId.getInstance().deleteInstanceId();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                    }
+                                }).start();
 
                                 Intent intent = new Intent(context, LoginActivity.class);
                                 startActivity(intent);

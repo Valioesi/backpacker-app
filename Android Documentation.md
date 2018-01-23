@@ -41,6 +41,8 @@ Die Berechtigungen werden in der Form
 | READ_EXTERNAL_STORAGE  | Lesezugriff auf den externen Speicher: Zum Abrufen der aufgenommenen Bilder oder zum Auswählen von bereits gespeicherten Bildern für das eigene Profil oder eine neue Location. |
 | NFC                    | Zugriff auf NFC Funktionen: Zum Hinzufügen neuer Freunde. |
 
+TODO: runtime permissions
+
 Zudem wird im Manifest angegeben, welche Features die App verwendet. Dies wird in der Form 
 
 `<uses-feature android:name="android.hardware.camera" />` eingetragen. 
@@ -137,7 +139,7 @@ In folgender Tabelle werden die einzelnen Activities kurz beschrieben. Um eine d
 
 ####fragments
 
-Dieses Package befasst sich mit ähnlicher Logik wie diejenige, die bereits im vorherigen Kapitel beschrieben wurde. Jedoch handelt es sich bei den den enhaltenen Klassen um Fragments. Diese stellen Bausteine dar, die innerhalb von einer Activity verwendet werden. Ein Fragment ist wiederverwendbar und kann somit von verschiedenen Activities oder in einer merhmals benutzt werden. Die bedeutensten Klassen in diesem Package sind die Fragments *MapFragment*, *MyListFragment*, *FriendsFragment* und *SettingsFragment*, da sie in der *HomeActivity*, quasi der Hauptanlaufstelle der App, eingebaut werden. Über eine Navigation kann der Nutzer durch diese vier Fragments navigieren.  In folgender Tabelle wird jedes Fragment detaillierter beschrieben. 
+Dieses Package befasst sich mit ähnlicher Logik wie diejenige, die bereits im vorherigen Kapitel beschrieben wurde. Jedoch handelt es sich bei den den enhaltenen Klassen um Fragments. Diese stellen Bausteine dar, die innerhalb von einer Activity verwendet werden. Ein Fragment ist wiederverwendbar und kann somit von verschiedenen Activities oder in einer merhmals benutzt werden. Die bedeutensten Klassen in diesem Package sind die Fragments *MyMapFragment*, *MyListFragment*, *MyFriendsFragment* und *SettingsFragment*, da sie in der *HomeActivity*, quasi der Hauptanlaufstelle der App, eingebaut werden. Über eine Navigation kann der Nutzer durch diese vier Fragments navigieren.  In folgender Tabelle wird jedes Fragment detaillierter beschrieben. 
 
 | Fragment                | Funktionalität                           |
 | ----------------------- | :--------------------------------------- |
@@ -300,7 +302,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 #### Google Maps API
 
-Die Einbindung der [*Google Maps API*](https://developers.google.com/maps/documentation/android-api/?hl=de) für Android wird in das *MapFragment*, in dem dem Nutzer die Kartenansicht mit seinen gespeicherten Orten und den Favoriten seiner Freund angezeigt werden, integriert. Es gibt zwei Möglichkeiten, die Karte einzubinden: das *MapFragment* (nicht zu verwechseln mit dem des Projekts) und die *MapView*. Dadurch, dass die *BottomNavigation* in der *HomeActivity* mit verschiedenen Fragments arbeitet und die Verschachtelung mehrere Fragments nicht empfohlen wird, greifen wir hier zur zweiten Variante. Hierfür wird die *MapView* in die zum Fragment zugehörige xml-Datei eingefügt
+Die Einbindung der [*Google Maps API*](https://developers.google.com/maps/documentation/android-api/?hl=de) für Android wird in das *MyMapFragment*, in dem dem Nutzer die Kartenansicht mit seinen gespeicherten Orten und den Favoriten seiner Freund angezeigt werden, integriert. Es gibt zwei Möglichkeiten, die Karte einzubinden: das *MyMapFragment* (nicht zu verwechseln mit dem des Projekts) und die *MapView*. Dadurch, dass die *BottomNavigation* in der *HomeActivity* mit verschiedenen Fragments arbeitet und die Verschachtelung mehrere Fragments nicht empfohlen wird, greifen wir hier zur zweiten Variante. Hierfür wird die *MapView* in die zum Fragment zugehörige xml-Datei eingefügt
 
 ```xml
 <com.google.android.gms.maps.MapView
@@ -309,7 +311,7 @@ Die Einbindung der [*Google Maps API*](https://developers.google.com/maps/docume
     android:layout_height="match_parent" />
 ```
 
- In unserem *MapFragment* kann nun auf die Karte zugegriffen werden.
+ In unserem *MyMapFragment* kann nun auf die Karte zugegriffen werden.
 
 ```java
 mapView = view.findViewById(R.id.map_view);

@@ -60,11 +60,11 @@ import java.util.HashMap;
  * A simple {@link Fragment} subclass.
  * <p>
  * This fragment included a MapView
- * The decision to use a MapView inside our own Fragment instead of using a MapFragment (which would have
+ * The decision to use a MapView inside our own Fragment instead of using a MyMapFragment (which would have
  * already included all of the lifecycle methods) is based on flexibility in the future and the possibility to easily edit the xml file
  * and add functionality to the fragment.
  */
-public class MapFragment extends Fragment {
+public class MyMapFragment extends Fragment {
 
 
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
@@ -80,7 +80,7 @@ public class MapFragment extends Fragment {
     private boolean firstCreate;
     private Context context;
 
-    public MapFragment() {
+    public MyMapFragment() {
         // Required empty public constructor
     }
 
@@ -88,10 +88,10 @@ public class MapFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment.
      *
-     * @return A new instance of fragment MapFragment.
+     * @return A new instance of fragment MyMapFragment.
      */
-    public static MapFragment newInstance() {
-        return new MapFragment();
+    public static MyMapFragment newInstance() {
+        return new MyMapFragment();
     }
 
     @Override
@@ -157,9 +157,12 @@ public class MapFragment extends Fragment {
                         //if the position is checked in the listview, we want to display the markers of this user
                         if (booleanArray.get(index)) {
                             for (Location location : friends.get(index).getLocations()) {
-                                //add user to google id -> to be able to later check, if there are multiple users having the same location
-                                boolean multiple = addUserToHashMap(location.getGoogleId(), friends.get(index));
-                                setMarker(location, index, multiple);
+                                //only show favorites of friends
+                                if (i == 0 || location.isFavorite()) {  //0 is the logged in user
+                                    //add user to google id -> to be able to later check, if there are multiple users having the same location
+                                    boolean multiple = addUserToHashMap(location.getGoogleId(), friends.get(index));
+                                    setMarker(location, index, multiple);
+                                }
                             }
                         }
                     }
@@ -218,7 +221,7 @@ public class MapFragment extends Fragment {
      */
     private void loadLocationsOfUser() {
         //check, if user is online
-        if(Request.hasInternetConnection(context)){
+        if (Request.hasInternetConnection(context)) {
             new GetLocationsOfUser().execute("/users/" + userId);
         } else {
             Toast.makeText(context, "It seems like you have no internet connection", Toast.LENGTH_LONG).show();
@@ -297,6 +300,7 @@ public class MapFragment extends Fragment {
                 ArrayList<User> users = gson.fromJson(result, new TypeToken<ArrayList<User>>() {
                 }.getType());
 
+
                 friends.addAll(users);
 
                 adapter.setUsers(friends);
@@ -347,9 +351,12 @@ public class MapFragment extends Fragment {
     private void addMarkersForAllUsers() {
         for (int i = 0; i < friends.size(); i++) {
             for (Location location : friends.get(i).getLocations()) {
-                //add user to google id -> to be able to later check, if there are multiple users having the same location
-                boolean multiple = addUserToHashMap(location.getGoogleId(), friends.get(i));
-                setMarker(location, i, multiple);
+                //only show favorites of friends
+                if (i == 0 || location.isFavorite()) {  //0 is the logged in user
+                    //add user to google id -> to be able to later check, if there are multiple users having the same location
+                    boolean multiple = addUserToHashMap(location.getGoogleId(), friends.get(i));
+                    setMarker(location, i, multiple);
+                }
             }
         }
     }
@@ -526,7 +533,7 @@ public class MapFragment extends Fragment {
                 Intent intent = new Intent(context, LocationDetailsActivity.class);
                 Location location = (Location) marker.getTag();
 
-                if(location != null){
+                if (location != null) {
                     //pass the google id of the location and the users with the intent
                     intent.putExtra("locationGoogleId", location.getGoogleId());
 
@@ -536,7 +543,7 @@ public class MapFragment extends Fragment {
 
                     for (User user : googleIdUsersMap.get(location.getGoogleId())) {
                         userIds.add(user.getId());
-                        userNames.add(user.getFirstName());
+                        userNames.add(user.getFirstName() + " " + user.getLastName());
                     }
                     intent.putExtra("userIdArray", userIds);
                     intent.putExtra("userNameArray", userNames);
@@ -592,7 +599,7 @@ public class MapFragment extends Fragment {
         //reload markers, because there might have been added one
         //only reload if we were redirected (e.g. after AddLocation), therefore we check, if it is the first creation
         //of this fragment instance
-         if (map != null && !firstCreate) {
+        if (map != null && !firstCreate) {
             map.clear();
             googleIdUsersMap.clear();
             googleIdMarkersMap.clear();
