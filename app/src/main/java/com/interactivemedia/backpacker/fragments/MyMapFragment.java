@@ -446,7 +446,7 @@ public class MyMapFragment extends Fragment {
 
                 //we have already set the location as tag, when we added the marker
                 //now we can get our needed data
-                Location location = (Location) marker.getTag();
+                final Location location = (Location) marker.getTag();
                 //set texts
                 if (location != null) {
                     textViewTitle.setText(location.getName());
@@ -475,12 +475,13 @@ public class MyMapFragment extends Fragment {
 
                                 @Override
                                 public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                    //because we do not want to call Glide with the Request Listener again, just without
+                                    location.setInfoWindowAlreadyShown(true);
                                     //reload info window to show image!
                                     marker.showInfoWindow();
                                     return false;
                                 }
                             }).into(imageView);
-                            location.setInfoWindowAlreadyShown(true);
                         } else {
                             //this time around the image will be taken from cache or disk or whatever
                             Glide.with(context).load(imageUri).into(imageView);
