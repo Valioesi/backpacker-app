@@ -1,6 +1,9 @@
 package com.interactivemedia.backpacker.fragments;
 
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -22,6 +26,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.LoginActivity;
+import com.interactivemedia.backpacker.helpers.Preferences;
 import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.models.Location;
 
@@ -38,6 +43,10 @@ public class LocationDetailsFragment extends Fragment {
     private String userId;
     private String userName;
     private ProgressBar progressBar;
+
+    private String myUserId;
+    private String locationId;
+    private Button btnRemoveLocation;
 
     public LocationDetailsFragment() {
         // Required empty public constructor
@@ -70,6 +79,8 @@ public class LocationDetailsFragment extends Fragment {
             userName = getArguments().getString(ARG_USER_NAME);
         }
 
+        myUserId = Preferences.getUserId(getContext());
+
     }
 
     @Override
@@ -99,6 +110,7 @@ public class LocationDetailsFragment extends Fragment {
     /**
      * this AsyncTask makes a call to our API to get the location passed through the intent
      */
+    @SuppressLint("StaticFieldLeak")
     private class GetLocation extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... strings) {
@@ -145,6 +157,8 @@ public class LocationDetailsFragment extends Fragment {
                 } else {
                     Location location = locationArray[0];
 
+                locationId=location.get_id();
+
 
                     View view = getView();
                     if (view != null) {
@@ -186,10 +200,77 @@ public class LocationDetailsFragment extends Fragment {
                 }
 
 
+                //if user has the same id as signed in user
+                if(myUserId.equals(userId)){
+                    btnRemoveLocation.setVisibility(View.VISIBLE);
+                    btnRemoveLocation.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            alertMessage(locationId);
+                        }
+                    });
+                }
+
+
             }
 
         }
+
+        private void alertMessage(final String locationId) {
+              DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                // Yes button clicked
+                                deleteLocation(locationId);
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                // No button clicked
+                                // do nothing
+                                // Toast.makeText(FriendsDetailsActivity.this, "No Clicked",
+                                //        Toast.LENGTH_LONG).show();
+                                break;
+                        }
+                    }
+                };
+
+                //Show "warning" Dialog, if user is sure about deleting location.
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setMessage("Are you sure?")
+                        .setPositiveButton("Yes", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener).show();
+            }
+        }
+
+        //Delete Location
+    private void deleteLocation(String locationId) {
+        new DeleteLocation().execute("/locations/" + locationId );
     }
 
+    @SuppressLint("StaticFieldLeak")
+    private class DeleteLocation extends AsyncTask<String, Integer, String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+            Log.i("doInBackground", "deleteFriend");
+            return Request.delete(getContext(), strings[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (result == null) {
+                Log.d("Error: ", "Error in DELETE Request");
+                Toast.makeText(getContext(), "There was an error deleting this location", Toast.LENGTH_LONG).show();
+            } else if (result.equals("401") || result.equals("403")) {
+                //unauthorized -> we need new token -> redirect to Login Activity
+                Intent intent = new Intent(getContext(), LoginActivity.class);
+                startActivity(intent);
+            } else {
+                Log.i("JSON response: ", result);
+                Toast.makeText(getContext(), "Location deleted successfully", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 
 }

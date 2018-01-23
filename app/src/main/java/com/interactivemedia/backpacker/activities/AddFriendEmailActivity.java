@@ -1,5 +1,6 @@
 package com.interactivemedia.backpacker.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,9 @@ import com.interactivemedia.backpacker.helpers.Preferences;
 import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.models.User;
 
+/**
+ * Will be used for adding a new friend via Email if nfc is not available or user presses "Not working" Button.
+ */
 public class AddFriendEmailActivity extends AppCompatActivity {
 
     private User newFriend;
@@ -34,9 +38,9 @@ public class AddFriendEmailActivity extends AppCompatActivity {
     }
 
     /**
-     * this function is called upon click of search user button and starts the async task to find users by email address
+     * This function is called upon click of "Search User" button and starts the async task to find users by email address.
      *
-     * @param view the button
+     * @param view the button "Search User"
      */
     public void searchUser(View view) {
         EditText editText = findViewById(R.id.edit_text_email);
@@ -48,10 +52,10 @@ public class AddFriendEmailActivity extends AppCompatActivity {
     }
 
     /**
-     * this function is called upon click of share locations button and starts the async task
-     * to add the user as friend (or better: share locations with this user)
+     * This function is called upon click of "share locations" button and starts the async task
+     * to add the user as a friend (or more precisely "to share locations" with this user).
      *
-     * @param view the button
+     * @param view the button "Share Locations"
      */
     public void shareLocations(View view) {
         //get user id from shared preferences
@@ -62,6 +66,10 @@ public class AddFriendEmailActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Async Task to get User Information from Backend.
+     */
+    @SuppressLint("StaticFieldLeak")
     private class FindUser extends AsyncTask<String, Integer, String> {
 
         @Override
@@ -114,7 +122,11 @@ public class AddFriendEmailActivity extends AppCompatActivity {
 
     }
 
-
+    /**
+     * This Async Task sets the friends Id into the users' Array "friends",
+     * so both users can see each others locations.
+     */
+    @SuppressLint("StaticFieldLeak")
     private class AddFriend extends AsyncTask<String, Integer, String> {
 
         @Override

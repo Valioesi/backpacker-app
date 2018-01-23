@@ -225,7 +225,10 @@ public class MyMapFragment extends Fragment {
             new GetLocationsOfUser().execute("/users/" + userId);
         } else {
             Toast.makeText(context, "It seems like you have no internet connection", Toast.LENGTH_LONG).show();
-            getView().findViewById(R.id.add_location_button).setVisibility(View.GONE);
+            View view = getView();
+            if (view != null){
+                getView().findViewById(R.id.add_location_button).setVisibility(View.GONE);
+            }
         }
     }
 
@@ -253,22 +256,26 @@ public class MyMapFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String result) {
-            if (result == null) {
-                Log.d("Error: ", "Error in GET Request");
-                Toast.makeText(context, "There was an Error loading your locations", Toast.LENGTH_LONG).show();
-            } else if (result.equals("401")) {
-                //unauthorized -> we need new token -> redirect to Login Activity
-                Intent intent = new Intent(context, LoginActivity.class);
-                startActivity(intent);
-            } else {
-                Log.d("JSON response: ", result);
-                Gson gson = new Gson();
-                User user = gson.fromJson(result, User.class);
+            //"Return true if the fragment is currently added to its activity."
+            //(https://stackoverflow.com/questions/10919240/fragment-myfragment-not-attached-to-activity)
+            if (isAdded()) {
+                if (result == null) {
+                    Log.d("Error: ", "Error in GET Request");
+                    Toast.makeText(context, "There was an Error loading your locations", Toast.LENGTH_LONG).show();
+                } else if (result.equals("401")) {
+                    //unauthorized -> we need new token -> redirect to Login Activity
+                    Intent intent = new Intent(context, LoginActivity.class);
+                    startActivity(intent);
+                } else {
+                    Log.d("JSON response: ", result);
+                    Gson gson = new Gson();
+                    User user = gson.fromJson(result, User.class);
 
-                friends.add(user);
+                    friends.add(user);
 
-                //now load locations of friends
-                loadLocationsOfFriends();
+                    //now load locations of friends
+                    loadLocationsOfFriends();
+                }
             }
 
         }

@@ -1,5 +1,6 @@
 package com.interactivemedia.backpacker.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -45,8 +46,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * this activity deals with the adding of a location to the user's list
- * it uses place picker to select a location
+ * This activity deals with the adding of a location to the user's list.
+ * It uses Google place picker to select a location.
  */
 public class AddLocationActivity extends AppCompatActivity implements MultiSelectionSpinner.OnMultipleItemsSelectedListener, PictureDialogFragment.PictureDialogListener {
 
@@ -86,9 +87,9 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
     }
 
     /**
-     * this function is called when a place was selected in place picker widget or a picture is taken
+     * This function is called when a place was selected in the place picker widget or after taking a picture.
      *
-     * @param requestCode integer we have set to differentiate between actions (placepicker, camera, storage)
+     * @param requestCode integer we have set to differentiate between actions (place picker, camera, storage)
      * @param resultCode  integer that indicates the status code
      * @param data        data is needed to access the selected place via getPlace or the picture
      */
@@ -134,7 +135,9 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
 
 
     /**
-     * this function creates a new ImageView, adds it to the layout and sets the given Bitmap as Image
+     * This function creates a new ImageView,
+     * adds it to the layout and
+     * sets the given Bitmap as Image.
      *
      * @param picture Bitmap, either from camera or from storage
      */
@@ -160,8 +163,8 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
     }
 
     /**
-     * this function is called upon click on take picture via camera
-     * it calls createImageFile() and opens the camera via an intent
+     * This function is called upon click on "take picture via camera".
+     * It calls createImageFile() and opens the camera via an intent.
      * <p>
      * The dialog fragment receives a reference to this Activity through the
      * Fragment.onAttach() callback, which it uses to call the following methods
@@ -195,7 +198,9 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
 
 
     /**
-     * this function starts the check for permission, in the permission callback we will start the intent to pick an image
+     *
+     * This function starts the check for permission.
+     * In the permission callback, we will start the intent to pick an image.
      */
     public void getPictureFromStorage() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -203,8 +208,10 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
     }
 
     /**
-     * this function is called, when the option storage is clicked in the picture options dialog
-     * if the permission was already granted we call the function getPictureFromStorage, otherwise we ask for permssion
+     * This function is called when the option "storage" is clicked in the picture options dialog.
+     * If the permission was already granted we call the function getPictureFromStorage(), otherwise we ask for permission.
+     *
+     * @param dialogFragment opens the dialogFragement to choose an application for showing the storage.
      */
     @Override
     public void onDialogStorageClick(PictureDialogFragment dialogFragment) {
@@ -215,11 +222,11 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
     }
 
     /**
-     * this function is called after we ask for permission for access to external storage
+     * This function is called after we ask for permission for accessing to external storage.
      *
      * @param requestCode  is specified in the class
      * @param permissions  just one string in this case: storage
-     * @param grantResults the result of the asking for permission
+     * @param grantResults the result of asking for permission
      */
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -248,9 +255,10 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
 
 
     /**
-     * this function is called upon click of add picture button, opens option dialog (PictureDialogFragment)
+     * This function is called upon click of "add picture" button and
+     * opens the option dialog (PictureDialogFragment)
      *
-     * @param view the button
+     * @param view the button "Add Picture"
      */
     public void openDialog(View view) {
         PictureDialogFragment dialog = new PictureDialogFragment();
@@ -258,11 +266,13 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
     }
 
     /**
-     * this function is called upon click of save location button
-     * it starts the AsyncTask to make post request to server
+     * This function is called upon click of "save location" button.
+     * It starts the AsyncTask to make a post request to the server.
      *
-     * @param view the button
+     * @param view the button "Save Location"
      */
+
+
     public void saveLocation(View view) {
         EditText editText = findViewById(R.id.description);
         String description = editText.getText().toString();
@@ -310,7 +320,11 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
 
     }
 
-
+    /**
+     * This async task will be called after editing the location information.
+     * The location will be sent via post request to the server.
+     */
+    @SuppressLint("StaticFieldLeak")
     private class PostLocation extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... strings) {
@@ -345,6 +359,10 @@ public class AddLocationActivity extends AppCompatActivity implements MultiSelec
         }
     }
 
+    /**
+     * This Async Tasks will be called if the user adds a picture to the location.
+     */
+    @SuppressLint("StaticFieldLeak")
     private class UploadPictures extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... strings) {

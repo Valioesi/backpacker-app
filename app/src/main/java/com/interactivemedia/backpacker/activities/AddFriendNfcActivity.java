@@ -1,5 +1,6 @@
 package com.interactivemedia.backpacker.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.nfc.NdefMessage;
@@ -21,7 +22,10 @@ import com.interactivemedia.backpacker.helpers.Request;
 import java.nio.charset.Charset;
 
 import static android.nfc.NdefRecord.createMime;
-
+/**
+*
+* Will be used for adding a new friend via Nfc.
+*/
 public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapter.OnNdefPushCompleteCallback, NfcAdapter.CreateNdefMessageCallback {
 
 
@@ -79,7 +83,8 @@ public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapte
 
 
     /**
-     * Parses the NDEF Message from the intent
+     * Parses the NDEF message from the intent.
+     * @param intent Intent with the an Array and the information
      */
     private void handleNfcIntent(Intent intent) {
 
@@ -111,6 +116,11 @@ public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapte
         }
     }
 
+    /**
+     * Creates the NDEF message.
+     * @param nfcEvent
+     * @return new NdefMessage (text)
+     */
 
     @Override
     public NdefMessage createNdefMessage(NfcEvent nfcEvent) {
@@ -123,6 +133,10 @@ public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapte
     }
 
 
+    /**
+     * After a successful push the user will get back to the home activity.
+     * @param nfcEvent
+     */
     @Override
     public void onNdefPushComplete(NfcEvent nfcEvent) {
 
@@ -151,7 +165,11 @@ public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapte
         finish();
     }
 
-
+    /**
+     * Both friends get each others locations by exchanging their user ids.
+     *
+     */
+    @SuppressLint("StaticFieldLeak")
     private class AddFriendRelationship extends AsyncTask<String, Integer, String> {
 
         @Override
