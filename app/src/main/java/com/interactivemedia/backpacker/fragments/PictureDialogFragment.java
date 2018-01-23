@@ -18,12 +18,12 @@ import com.interactivemedia.backpacker.activities.AddLocationActivity;
  */
 public class PictureDialogFragment extends DialogFragment {
 
-    /* The activity that creates an instance of this dialog fragment must
+    /** The activity that creates an instance of this dialog fragment must
     * implement this interface in order to receive event callbacks.
     * Each method passes the DialogFragment in case the host needs to query it.
     *
     * Vali: we do this, so that we can use this fragment in multiple activities (EditProfile + AddLocation)
-    * */
+    */
     public interface PictureDialogListener {
         void onDialogStorageClick(PictureDialogFragment dialog);
         void onDialogCameraClick(PictureDialogFragment dialog);

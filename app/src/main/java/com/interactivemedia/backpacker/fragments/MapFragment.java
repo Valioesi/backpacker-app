@@ -46,7 +46,7 @@ import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.AddLocationActivity;
 import com.interactivemedia.backpacker.activities.LocationDetailsActivity;
 import com.interactivemedia.backpacker.activities.LoginActivity;
-import com.interactivemedia.backpacker.adapters.CustomArrayAdapter;
+import com.interactivemedia.backpacker.adapters.MapFilterAdapter;
 import com.interactivemedia.backpacker.helpers.MarkerColors;
 import com.interactivemedia.backpacker.helpers.Preferences;
 import com.interactivemedia.backpacker.helpers.Request;
@@ -71,7 +71,7 @@ public class MapFragment extends Fragment {
     private MapView mapView;
     private ArrayList<User> friends;
     private DrawerLayout drawer;
-    private CustomArrayAdapter adapter;
+    private MapFilterAdapter adapter;
     private GoogleMap map;
     private ListView listView;
     private HashMap<String, ArrayList<User>> googleIdUsersMap;
@@ -132,7 +132,7 @@ public class MapFragment extends Fragment {
 
         //find list view, create adapter containing friend list and set adapter of list view
         listView = view.findViewById(R.id.filter_list);
-        adapter = new CustomArrayAdapter(context, R.layout.custom_list_item_multiple_choice, friends);
+        adapter = new MapFilterAdapter(context, R.layout.custom_list_item_multiple_choice, friends);
         listView.setAdapter(adapter);
 
         //on item click listener will implement the functionality to filter the markers by user
