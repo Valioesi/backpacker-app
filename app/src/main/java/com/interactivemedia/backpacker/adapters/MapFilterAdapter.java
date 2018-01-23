@@ -26,13 +26,13 @@ import java.util.ArrayList;
  * it is needed to have icons with different colors in our list
  */
 
-public class CustomArrayAdapter extends ArrayAdapter<User>{
+public class MapFilterAdapter extends ArrayAdapter<User>{
 
     private Context context;
     private int layoutResourceId;
     private ArrayList<User> users;
 
-    public CustomArrayAdapter(Context context, int layoutResourceId, ArrayList<User> users){
+    public MapFilterAdapter(Context context, int layoutResourceId, ArrayList<User> users){
         super(context, layoutResourceId);
         this.context = context;
         this.layoutResourceId = layoutResourceId;

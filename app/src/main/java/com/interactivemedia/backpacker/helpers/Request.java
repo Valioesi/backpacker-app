@@ -28,8 +28,8 @@ import java.util.ArrayList;
 
 public class Request {
 
-    // public static final String DOMAIN_URL = "http://10.60.60.143:3000";   //Uni
-    public static final String DOMAIN_URL = "http://192.168.178.25:3000";   //Vali Stuttgart
+    public static final String DOMAIN_URL = "http://10.60.40.174:3000";   //Uni
+    //public static final String DOMAIN_URL = "http://192.168.178.25:3000";   //Vali Stuttgart
     // public static final String DOMAIN_URL="http://192.168.178.50:3000"; //Rebecca Stuttgart
     private static final String API_URL = DOMAIN_URL;
     public static final String IMAGES_URL = DOMAIN_URL + "/uploads/imgs";
@@ -54,7 +54,7 @@ public class Request {
                 urlConnection.setRequestMethod("GET");
                 urlConnection.setRequestProperty("access_token", Preferences.getIdToken(context));
 
-                if (urlConnection.getResponseCode() == 401) {
+                if (urlConnection.getResponseCode() == 401 || urlConnection.getResponseCode() == 403) {
                     return "401";
                 }
 
@@ -96,7 +96,7 @@ public class Request {
                 urlConnection.setRequestMethod("DELETE");
                 urlConnection.setRequestProperty("access_token", Preferences.getIdToken(context));
 
-                if (urlConnection.getResponseCode() == 401) {
+                if (urlConnection.getResponseCode() == 401 || urlConnection.getResponseCode() == 403) {
                     return "401";
                 }
 
@@ -210,7 +210,7 @@ public class Request {
                 bufferedWriter.write(body);
                 bufferedWriter.flush();
 
-                if (urlConnection.getResponseCode() == 401) {
+                if (urlConnection.getResponseCode() == 401 || urlConnection.getResponseCode() == 403) {
                     return "401";
                 }
 
@@ -306,7 +306,7 @@ public class Request {
                 request.close();
 
 
-                if (urlConnection.getResponseCode() == 401) {
+                if (urlConnection.getResponseCode() == 401 || urlConnection.getResponseCode() == 403) {
                     return "401";
                 }
 

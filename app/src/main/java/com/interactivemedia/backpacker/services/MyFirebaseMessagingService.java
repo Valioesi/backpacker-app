@@ -114,12 +114,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Intent intent = new Intent(this, NotificationActionService.class);
         intent.putExtra(NotificationActionService.EXTRA_PARAM_FRIEND_ID, friendId);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
-        /*
-        Intent intent = new Intent(this, HomeActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,intent,
-                PendingIntent.FLAG_ONE_SHOT);
-        */
+
         String channelId = getString(R.string.channel_id);
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)

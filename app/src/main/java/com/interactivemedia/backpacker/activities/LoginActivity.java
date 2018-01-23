@@ -55,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
         layout = findViewById(R.id.login_layout);
         layout.setVisibility(View.GONE);
 
-        // Configure sign-in to request the user's ID, email address, and basic
+        // Configure sign-in to request the user's ID, email address, ID token and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -194,7 +194,6 @@ public class LoginActivity extends AppCompatActivity {
             Log.d("User json", jsonBody);
             // TODO: uncomment later, once endpoint is up and running
             new PostUser().execute("/users", jsonBody);
-            //startHomeActivity();
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.

@@ -14,7 +14,7 @@ import com.interactivemedia.backpacker.helpers.Request;
  * Created by vali_ on 20.01.2018.
  */
 
-public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
+public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
 
     private static final String TAG = "MyFirebaseIIDService";
 

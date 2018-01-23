@@ -36,7 +36,7 @@ import java.util.HashSet;
  * Created by Rebecca Durm on 04.01.2018.
  */
 
-public class FillLocationListsAdapter extends ArrayAdapter<ArrayList<Location>> implements Filterable {
+public class FillLocationListsAdapter extends ArrayAdapter<Location> implements Filterable {
     private Context context;
     private int layoutResourceId;
     private ArrayList<Location> locations;
