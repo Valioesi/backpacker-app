@@ -28,8 +28,8 @@ import java.util.ArrayList;
 
 public class Request {
 
-    // public static final String DOMAIN_URL = "http://10.60.60.143:3000";   //Uni
-    public static final String DOMAIN_URL = "http://192.168.178.25:3000";   //Vali Stuttgart
+     public static final String DOMAIN_URL = "http://10.60.35.224:3000";   //Uni
+//    public static final String DOMAIN_URL = "http://192.168.178.25:3000";   //Vali Stuttgart
     // public static final String DOMAIN_URL="http://192.168.178.50:3000"; //Rebecca Stuttgart
     private static final String API_URL = DOMAIN_URL;
     public static final String IMAGES_URL = DOMAIN_URL + "/uploads/imgs";

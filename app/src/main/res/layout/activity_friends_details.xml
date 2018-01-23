@@ -47,12 +47,13 @@
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/layout_locationInfo"
         android:layout_width="match_parent"
-        android:layout_height="299dp"
         android:layout_margin="@dimen/margin_normal"
+        app:layout_constraintBottom_toTopOf="@id/btnRemoveFriend"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layout_friendInfo"
-        app:layout_constraintBottom_toTopOf="@id/btnRemoveFriend">
+        app:layout_constraintVertical_bias="0.0"
+        android:layout_height="0dp">
 
         <TextView
             android:id="@+id/tv_favoritePlaces"
@@ -79,7 +80,7 @@
         <ListView
             android:id="@+id/lvFavoritePlaces"
             android:layout_width="match_parent"
-            android:layout_height="240dp"
+            android:layout_height="match_parent"
             android:layout_marginTop="@dimen/margin_normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -99,7 +100,7 @@
         android:text="@string/button_deleteFriend"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-       />
+        tools:ignore="UnusedAttribute" />
 
     <TextView
         android:id="@+id/noLocations"

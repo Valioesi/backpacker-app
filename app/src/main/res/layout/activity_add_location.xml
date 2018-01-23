@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -17,16 +18,22 @@
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_margin="@dimen/margin_normal"
-        >
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_saveLocation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="MissingConstraints">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/add_location_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="0dp">
 
             <TextView
                 android:id="@+id/label_categories"
@@ -46,7 +53,8 @@
                 android:onClick="openDialog"
                 android:text="@string/add_picture"
                 android:textColor="@color/colorPrimary"
-                app:layout_constraintTop_toBottomOf="@+id/label_picture" />
+                app:layout_constraintTop_toBottomOf="@+id/label_picture"
+                tools:ignore="UnusedAttribute" />
 
             <TextView
                 android:id="@+id/text_view_location"
@@ -106,12 +114,11 @@
                 android:text="@string/label_description"
                 android:textSize="@dimen/place_autocomplete_prediction_secondary_text"
                 app:layout_constraintTop_toBottomOf="@+id/text_view_location" />
+
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
-
-
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/btn_saveLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_normal"
@@ -120,5 +127,10 @@
         android:onClick="saveLocation"
         android:text="@string/save_location"
         android:textColor="@android:color/white"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/horizontalScrollView"
+        tools:ignore="NotSibling,UnusedAttribute" />
+
+
+
 </android.support.constraint.ConstraintLayout>
