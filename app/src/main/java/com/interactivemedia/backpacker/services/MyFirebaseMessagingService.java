@@ -123,7 +123,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         .setContentText(messageBody)
                         .setAutoCancel(true)
                         .setVibrate(new long[]{100, 200})
-                        .addAction(R.drawable.ic_person_pin_circle_black_24dp, "Share your's, too", pendingIntent)
+                        .addAction(R.drawable.ic_person_add_black_24dp, "Share your's, too", pendingIntent)
                         .setContentIntent(pendingIntent);
 
         NotificationManager notificationManager =

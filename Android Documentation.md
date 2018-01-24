@@ -475,6 +475,8 @@ public void onResume() {
 
 Die Methode *handleNfcIntent* liest daraufhin die Daten (die Id des anderen Nutzers) und sendet einen Request an den Server, um die "Freundesbeziehung" zu begründen.
 
+
+
 ### Push Notifications
 
 Wie bereits angedeutet, wird für die Funktionalität die Cloud Messaging Lösung von Firebase verwendet. Um die Umsetzung der Funktionalität kümmern sich zwei Klassen im Package *services*. 
@@ -509,3 +511,13 @@ Im aktuellen Stand des Produktes verwenden wir Push Benachrichtigungen an zwei S
 Wenn der Nutzer seine Orte in der *AddFriendEmailActivity* mit einem zweiten Nutzer teilt, so soll dieser benachrichtigt werden. Hier kommt auch die visuelle Benachrichtigung, die im letzten Absatz beschrieben wurde, ins Spiel. Diese Benachrichtigung enthält einen Button "Share your's, too", der dem zweiten Nutzer die Möglichkeit gibt direkt ebenfalls seine Orte zu teilen. Dies läuft über den dritten Service im services Package, den *NotificationActionService*, der einen *IntentService* erweitert. Hier wird ein Request an den Server gesendet durch den der Nutzer seine Orte nun auch teilt. 
 
 Die zweite Anwendung der Push Notification Funktion von Firebase ist das Hinzufügen eines Freundes via NFC. Da uns bei der Übertragung durch NFC, ohne zu große negative Beeinflussung der User Experience, nur eine unidirektionale Übertragung möglich ist, dient uns die Möglichkeit der Push Notifications als Lösung dieses Problems. Das Initiator-Gerät der NFC Verbindung schickt die Id seines Users and das zweite Gerät. Dieses sendet nun einen Request an den Server, um die Orte seines Nutzers zu teilen. Das Backend verarbeitet diese Anfrage und schickt daraufhin eine Push Benachrichtigung mit der Id des Nutzers des zweiten Gerätes an das Initiator-Gerät, das nun wiederum einen Request zum Teilen der Orte absendet. Dies läuft jedoch alles im Hintergrund ab (hier wird im Vergleich zum vorherigen Anwendungsfall keine visuelle Benachrichtigung angezeigt), sodass die Nutzer davon nichts mitbekommen, um so eine möglichst reibungslose Nutzererfahrung zu gewährleisten. Dieses etwas kompliziert erscheinende Verfahren ist nötig, um die Sicherheit der Rest API mit einer definierten Authentifizierungsstrategie zu kompromittieren. Jeder User darf nämlich nur seine Orte mit einem anderen teilen, jedoch nicht umgekehrt. Für die Details siehe hierzu das Kapitel, das sich mit der Implementierung des Backends befasst.
+
+
+
+### Offline-Nutzung
+
+Die Applikation soll, zwar vorerst mit Einschränkungen, auch offline eine zufriedenstellende User Experience bieten. So wird zum Beispiel in den Fragments der *HomeActivity* abgefragt, ob der Nutzer eine Internet Verbindung besitzt. Die hierfür benötigte Methode wurde in der *Request* Klasse implementiert. Ist der Nutzer zum Beispiel offline, wird im *MyLocationsFragment* und *MyFriendsFragment* anstatt, dass dort die jeweils relevanten Daten geladen werden, eine abgeänderte Anzeige angezeigt. Diese soll den Nutzer darüber informieren, dass er gerade keinen Zugriff zum Internet besitzt. Siehe hierzu das Kapitel Design.
+
+Des Weiteren besteht weiterhin die Möglichkeit Freunde via NFC hinzuzufügen, auch wenn einer der beiden oder beide Nutzer über keine Netzwerkverbindung verfügt. Hierzu wird die während der NFC Verbindung übertragene Id in den *SharedPreferences* zwischengespeichert. Dies funktioniert auch für mehrere neue Freunde. Beim erneuten Start der Applikation (bzw. beim Aufrufen der *HomeActivity*) wird überprüft, ob es Freunde gibt, zu denen noch eine Beziehung aufgebaut aufgebaut werden muss. Daraufhin wird ein Request an den Server geschickt, um dies zu erledigen. 
+
+In einer nächsten Version der App wäre es vorstellbar, eine ausgeweiterte Umsetzung der Offline-Nutzung in die App zu integrieren. Eine Implementation einer vollständigen Synchronisation der Daten mit einer lokalen Datenbank (z.B. SQLite) wäre denkbar. Dadurch wäre eine gänzlich uneingeschränkten Nutzung der App auch ohne Internetverbindung gewährleistet. 

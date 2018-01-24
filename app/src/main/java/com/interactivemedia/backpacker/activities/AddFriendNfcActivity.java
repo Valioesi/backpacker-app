@@ -148,11 +148,11 @@ public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapte
      */
     @Override
     public void onNdefPushComplete(NfcEvent nfcEvent) {
-        Preferences.saveNfcEvent(this, true);
 
         //we want to save the boolean in preferences to check it later in our firebase service
         //but only, if we we are online
         if(Request.hasInternetConnection(context)){
+            Preferences.saveNfcEvent(this, true);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
