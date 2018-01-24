@@ -81,7 +81,6 @@
     <string name="add_friend_alternative_button">Not working…</string>
     <string name="des_locationImages">Pictures of location detail</string>
     <string name="button_deleteLocation">Remove Location</string>
-    <string name="add_friend_alternative_button">Not working...</string>
     <string name="saved_friend_id">friend_id</string>
     <string name="add_friend_info_offline">But this still works with NFC! →</string>
 </resources>
