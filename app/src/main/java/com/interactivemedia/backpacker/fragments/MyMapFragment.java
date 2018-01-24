@@ -559,7 +559,7 @@ public class MyMapFragment extends Fragment {
                     }
                     intent.putExtra("userIdArray", userIds);
                     intent.putExtra("userNameArray", userNames);
-                    startActivity(intent);
+                    getActivity().startActivity(intent);
                 }
             }
         });

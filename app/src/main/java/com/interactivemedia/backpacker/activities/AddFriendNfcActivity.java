@@ -20,12 +20,13 @@ import com.interactivemedia.backpacker.helpers.Preferences;
 import com.interactivemedia.backpacker.helpers.Request;
 
 import java.nio.charset.Charset;
+import java.util.concurrent.TimeUnit;
 
 import static android.nfc.NdefRecord.createMime;
+
 /**
-*
-* Will be used for adding a new friend via Nfc.
-*/
+ * Will be used for adding a new friend via Nfc.
+ */
 public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapter.OnNdefPushCompleteCallback, NfcAdapter.CreateNdefMessageCallback {
 
 
@@ -84,6 +85,7 @@ public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapte
 
     /**
      * Parses the NDEF message from the intent.
+     *
      * @param intent Intent with the an Array and the information
      */
     private void handleNfcIntent(Intent intent) {
@@ -109,7 +111,7 @@ public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapte
 
                 //only make request, if user has internet
                 //otherwise show toast and save id in preferences to upload later
-                if(Request.hasInternetConnection(context)){
+                if (Request.hasInternetConnection(context)) {
                     new AddFriendRelationship().execute("/users/" + userId + "/friends/" + friendId + "?notify=true");
                 } else {
                     Preferences.saveFriendId(context, friendId);
@@ -127,7 +129,8 @@ public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapte
 
     /**
      * Creates the NDEF message.
-     * @param nfcEvent
+     *
+     * @param nfcEvent event
      * @return new NdefMessage (text)
      */
 
@@ -144,15 +147,14 @@ public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapte
 
     /**
      * After a successful push the user will get back to the home activity.
-     * @param nfcEvent
+     *
+     * @param nfcEvent event
      */
     @Override
     public void onNdefPushComplete(NfcEvent nfcEvent) {
-
-        //we want to save the boolean in preferences to check it later in our firebase service
-        //but only, if we we are online
-        if(Request.hasInternetConnection(context)){
-            Preferences.saveNfcEvent(this, true);
+        //we want to save the the time in preferences to check it later in our firebase service
+        Preferences.saveNfcEventTime(this, System.currentTimeMillis());
+        if (Request.hasInternetConnection(context)) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -167,6 +169,13 @@ public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapte
                     Toast.makeText(context, "You do not have an internet connection. Don't worry! Your friend will be added later.", Toast.LENGTH_LONG).show();
                 }
             });
+        }
+
+        //wait for 4 seconds
+        try {
+            TimeUnit.SECONDS.sleep(4);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
         //return to home activity
@@ -187,7 +196,6 @@ public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapte
 
     /**
      * Both friends get each others locations by exchanging their user ids.
-     *
      */
     @SuppressLint("StaticFieldLeak")
     private class AddFriendRelationship extends AsyncTask<String, Integer, String> {
@@ -207,6 +215,13 @@ public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapte
                 startActivity(intent);
             } else {
                 Log.d("JSON response: ", result);
+                //wait for 4 seconds
+                try {
+                    TimeUnit.SECONDS.sleep(4);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
                 Toast.makeText(context, "You have successfully exchanged locations", Toast.LENGTH_LONG).show();
                 //return to home activity
                 finish();

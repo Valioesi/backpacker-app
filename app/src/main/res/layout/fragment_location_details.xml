@@ -17,22 +17,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintLayout2"
+        android:id="@+id/location_details_layout"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/btnRemoveLocation"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="@dimen/margin_normal"
-        android:layout_marginTop="@dimen/margin_normal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        >
 
         <TextView
             android:id="@+id/text_view_title"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_double"
             android:textSize="@dimen/heading1" />
 
@@ -58,7 +55,6 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_marginTop="10dp"
-            android:contentDescription="@string/des_locationImages"
             android:src="@drawable/ic_image_grey_180dp"
             app:layout_constraintTop_toBottomOf="@id/text_view_title" />
 
@@ -85,21 +81,22 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/floatingText"
             app:layout_constraintTop_toBottomOf="@id/text_view_categories" />
-    </android.support.constraint.ConstraintLayout>
 
+    </android.support.constraint.ConstraintLayout>
 
     <Button
         android:id="@+id/btnRemoveLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:layout_margin="@dimen/margin_normal"
         android:layout_marginBottom="@dimen/margin_normal"
-        android:layout_marginTop="@dimen/margin_normal"
         android:backgroundTint="@color/colorPrimary"
         android:text="@string/button_deleteLocation"
         android:textColor="@android:color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:ignore="UnusedAttribute"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/location_details_layout"
+        />
+
 
 </android.support.constraint.ConstraintLayout>

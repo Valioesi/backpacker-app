@@ -52,14 +52,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 Log.d(TAG, friendId);
 
                 //we want to differentiate whether the notification came from NFC event or because the user was added as friend via mail
-                //we do this by checking if nfc preference is set to true saved in shared preferences (would be false if not)
-                if (Preferences.getNfcEvent(this)) { //was nfc
+                //we do this by checking, when the last nfc event was
+                long nfcEventTime = Preferences.getNfcEventTime(this);
+                long currentTime = System.currentTimeMillis();
+                if (nfcEventTime != 0 && nfcEventTime > currentTime - 30000) { //was recent nfc, because it was not more than 30 seconds ago
                     //in this case we will have no user actions and no notifications
                     //only the friend will be added in the background
                     addFriend(friendId);
                     Log.d(TAG, "came from nfc");
                     //reset preferences to false
-                    Preferences.saveNfcEvent(this, false);
+                    Preferences.saveNfcEventTime(this, (long) 0);
                 } else {
                     //notification came because of email
                     //now we want to show notification on phone, which will need the user to a new activity to share his locations as well

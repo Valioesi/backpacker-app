@@ -53,10 +53,10 @@ public class Preferences {
      * This function gets the earlier saved string from the shared preferences
      *
      * @param context application context, needed to call appropriate functions
-     * @return true (nfc) or false (if it was not via nfc)
+     * @return time (currentTimeMillies) in long of last adding of a friend via NFC
      */
-    public static boolean getNfcEvent(Context context) {
-        return getPreferences(context).getBoolean(context.getString(R.string.saved_nfc_event), false);
+    public static long getNfcEventTime(Context context) {
+        return getPreferences(context).getLong(context.getString(R.string.saved_nfc_event), 0);
     }
 
 
@@ -92,15 +92,15 @@ public class Preferences {
     }
 
     /**
-     * This function saves a boolean to preferences to indicate, if it the adding of a friend was via NFC or Email.
+     * This function saves a number to preferences to indicate, when the adding of a friend occurred via NFC.
      *
      * @param context  application context, needed to call appropriate functions
-     * @param nfcEvent This boolean will be passed to indicate, if it the adding of a friend was via NFC (true).
+     * @param time this long will be passed to indicate, when the nfc event happened
      */
-    public static void saveNfcEvent(Context context, boolean nfcEvent) {
+    public static void saveNfcEventTime(Context context, Long time) {
         SharedPreferences sharedPreferences = getPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(context.getString(R.string.saved_nfc_event), nfcEvent);
+        editor.putLong(context.getString(R.string.saved_nfc_event), time);
         editor.apply();
     }
 

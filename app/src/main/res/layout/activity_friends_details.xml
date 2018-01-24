@@ -61,6 +61,7 @@
             android:layout_height="wrap_content"
             android:text="@string/des_favoritePlaces"
             android:textSize="@dimen/place_autocomplete_prediction_secondary_text"
+            android:layout_marginStart="@dimen/margin_normal"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

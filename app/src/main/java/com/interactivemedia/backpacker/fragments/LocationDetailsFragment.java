@@ -101,6 +101,8 @@ public class LocationDetailsFragment extends Fragment {
             textViewUser.setText(text);
         }
 
+
+        btnRemoveLocation = view.findViewById(R.id.btnRemoveLocation);
         progressBar = view.findViewById(R.id.progress_bar);
 
         return view;
@@ -269,6 +271,7 @@ public class LocationDetailsFragment extends Fragment {
             } else {
                 Log.i("JSON response: ", result);
                 Toast.makeText(getContext(), "Location deleted successfully", Toast.LENGTH_LONG).show();
+                getActivity().finish();
             }
         }
     }

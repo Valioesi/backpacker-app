@@ -109,7 +109,7 @@ public class LocationDetailsActivity extends AppCompatActivity {
 
             //check if we got names (in case of multiple users)
             String name = null;
-            if(userNames != null){
+            if(userNames != null && userNames.size() > 0){
                 name = userNames.get(position);
             }
             return LocationDetailsFragment.newInstance(locationGoogleId, userIds.get(position), name);

@@ -11,9 +11,9 @@
         android:layout_height="150dp"
         android:contentDescription="@string/location_thumbnail"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/constraintLayout2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
 
     <TextView
@@ -27,13 +27,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout2"
         android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_height="0dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/image_view_location"
         app:layout_constraintTop_toBottomOf="@id/text_view_title">
 
@@ -41,23 +42,40 @@
             android:id="@+id/text_view_categories"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="@dimen/floatingText"/>
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="4dp"
+            android:padding="10dp"
+            android:text="hier steht auch irgendwas"
+            android:textSize="@dimen/floatingText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/text_view_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/text_view_categories" />
+            android:padding="10dp"
+            android:text="This is a very interesting place. You absolutely need to check it out!"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_view_categories"
+            app:layout_constraintVertical_bias="1.0" />
 
         <TextView
             android:id="@+id/text_view_users"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:visibility="gone"
+
+            android:padding="10dp"
             android:textSize="@dimen/floatingText"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/text_view_description" />
 
     </android.support.constraint.ConstraintLayout>
