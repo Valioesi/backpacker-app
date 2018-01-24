@@ -333,23 +333,27 @@ public class MyMapFragment extends Fragment {
      * @param multiple boolean, which indicates, if there are multiple users for this location
      */
     private void setMarker(Location location, int index, boolean multiple) {
-        //if there are multiple users for this location, use a different marker
-        BitmapDescriptor icon;
-        if (multiple) {
-            Bitmap bitmap = drawableToBitmap(getResources().getDrawable(R.drawable.ic_place_multiple_36dp));
-            icon = BitmapDescriptorFactory.fromBitmap(bitmap);
-        } else {
-            icon = BitmapDescriptorFactory.defaultMarker(MarkerColors.computeColor(index));
-        }
-        MarkerOptions options = new MarkerOptions()
-                .position(new LatLng(location.getCoordinates()[0], location.getCoordinates()[1]))
-                .title(location.getName())
-                .icon(icon);
+        //only if fragment is still attached
+        if(isAdded()){
+            //if there are multiple users for this location, use a different marker
+            BitmapDescriptor icon;
+            if (multiple) {
+                Bitmap bitmap = drawableToBitmap(getResources().getDrawable(R.drawable.ic_place_multiple_36dp));
+                icon = BitmapDescriptorFactory.fromBitmap(bitmap);
+            } else {
+                icon = BitmapDescriptorFactory.defaultMarker(MarkerColors.computeColor(index));
+            }
+            MarkerOptions options = new MarkerOptions()
+                    .position(new LatLng(location.getCoordinates()[0], location.getCoordinates()[1]))
+                    .title(location.getName())
+                    .icon(icon);
 
-        Marker marker = map.addMarker(options);
-        //set tag is important, so that we can use the data from location in our info window
-        marker.setTag(location);
-        addMarkerToHashMap(location.getGoogleId(), marker);
+            Marker marker = map.addMarker(options);
+            //set tag is important, so that we can use the data from location in our info window
+            marker.setTag(location);
+            addMarkerToHashMap(location.getGoogleId(), marker);
+
+        }
     }
 
     /**

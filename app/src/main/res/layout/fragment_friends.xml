@@ -44,6 +44,18 @@
 
     </android.support.constraint.ConstraintLayout>
 
+    <TextView
+        android:id="@+id/add_friend_info_offline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_normal"
+        android:layout_marginEnd="5dp"
+        android:text="@string/add_friend_info_offline"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/add_friend_button"
+        android:textSize="@dimen/floatingText"/>
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_friend_button"
         android:layout_width="wrap_content"
@@ -54,8 +66,7 @@
         android:tint="@android:color/white"
         app:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

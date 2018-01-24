@@ -41,7 +41,7 @@ Die Berechtigungen werden in der Form
 | READ_EXTERNAL_STORAGE  | Lesezugriff auf den externen Speicher: Zum Abrufen der aufgenommenen Bilder oder zum Auswählen von bereits gespeicherten Bildern für das eigene Profil oder eine neue Location. |
 | NFC                    | Zugriff auf NFC Funktionen: Zum Hinzufügen neuer Freunde. |
 
-TODO: runtime permissions
+Ab Android 6.0 muss, um auf den externen Speicher zuzugreifen, ebenso bei Runtime eine Berechtigung vom Nutzer eingeholt werden. Dies gilt für alle als gefährlich eingestuften Berechtigungen. Siehe hierzu diesen [Leitfaden](https://developer.android.com/training/permissions/requesting.html). 
 
 Zudem wird im Manifest angegeben, welche Features die App verwendet. Dies wird in der Form 
 

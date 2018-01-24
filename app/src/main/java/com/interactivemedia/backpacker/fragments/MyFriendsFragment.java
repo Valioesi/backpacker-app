@@ -124,8 +124,13 @@ public class MyFriendsFragment extends Fragment {
             loadFriends();
         } else {
             //show sad backpack
-            getView().findViewById(R.id.main_layout).setVisibility(View.GONE);
-            getView().findViewById(R.id.no_internet).setVisibility(View.VISIBLE);
+            View view = getView();
+            if(view != null){
+                getView().findViewById(R.id.main_layout).setVisibility(View.GONE);
+                getView().findViewById(R.id.no_internet).setVisibility(View.VISIBLE);
+                getView().findViewById(R.id.add_friend_info_offline).setVisibility(View.VISIBLE);
+            }
+
         }
 
     }

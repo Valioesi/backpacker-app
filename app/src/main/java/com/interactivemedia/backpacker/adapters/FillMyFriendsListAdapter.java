@@ -24,7 +24,7 @@ import java.util.ArrayList;
  * Created by Rebecca Durm on 04.01.2018.
  */
 
-public class FillMyFriendsListAdapter extends ArrayAdapter<Location> {
+public class FillMyFriendsListAdapter extends ArrayAdapter<User> {
     private Context context;
     private int layoutResourceId;
     private ArrayList<User> friends;

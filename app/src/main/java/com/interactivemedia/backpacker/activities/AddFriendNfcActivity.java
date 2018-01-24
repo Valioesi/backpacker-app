@@ -107,7 +107,16 @@ public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapte
 
                 Log.e("NFC", friendId);
 
-                new AddFriendRelationship().execute("/users/" + userId + "/friends/" + friendId + "?notify=true");
+                //only make request, if user has internet
+                //otherwise show toast and save id in preferences to upload later
+                if(Request.hasInternetConnection(context)){
+                    new AddFriendRelationship().execute("/users/" + userId + "/friends/" + friendId + "?notify=true");
+                } else {
+                    Preferences.saveFriendId(context, friendId);
+                    Toast.makeText(this, "You do not have an internet connection. Don't worry! Your friend will be added later.", Toast.LENGTH_LONG).show();
+                    finish();
+                }
+
             } else {
                 Toast.makeText(this, "You need to sign in", Toast.LENGTH_LONG).show();
                 Intent loginIntent = new Intent(this, LoginActivity.class);
@@ -139,15 +148,26 @@ public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapte
      */
     @Override
     public void onNdefPushComplete(NfcEvent nfcEvent) {
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(context, "You have successfully exchanged locations", Toast.LENGTH_LONG).show();
-            }
-        });
-        //we want to save the timestamp in preferences to check it later in our firebase service
         Preferences.saveNfcEvent(this, true);
+
+        //we want to save the boolean in preferences to check it later in our firebase service
+        //but only, if we we are online
+        if(Request.hasInternetConnection(context)){
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, "You have successfully exchanged locations", Toast.LENGTH_LONG).show();
+                }
+            });
+
+        } else {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, "You do not have an internet connection. Don't worry! Your friend will be added later.", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
 
         //return to home activity
         finish();
