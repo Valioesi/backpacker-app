@@ -7,8 +7,9 @@ import android.util.Log;
 import com.interactivemedia.backpacker.R;
 
 /**
- * this class shell provide some helper functions to deal with saving and reading from shared preferences
- * Created by vali_ on 12.01.2018.
+ * This class shell provide some helper functions to deal with
+ * saving and reading from {@link SharedPreferences}. E.g the access token will
+ * be saved to the shared preferences.
  */
 
 public class Preferences {
@@ -130,7 +131,7 @@ public class Preferences {
     }
 
     /**
-     * helper function to get the shared preferences
+     * This is a helper function to get the {@link SharedPreferences}.
      *
      * @param context application context, needed to call appropriate functions
      * @return shared preferences

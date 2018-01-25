@@ -21,9 +21,8 @@ import java.util.ArrayList;
 
 
 /**
- * Created by Vali on 05.12.2017.
- * this array adapter is used for the list view in the filter sidebar in map fragment
- * it is needed to have icons with different colors in our list
+ * This array adapter is used for the list view in the filter sidebar in {@link com.google.android.gms.maps.MapFragment}.
+ * It is needed to have icons with different colors in our list.
  */
 
 public class MapFilterAdapter extends ArrayAdapter<User>{

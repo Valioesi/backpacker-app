@@ -1,8 +1,7 @@
 package com.interactivemedia.backpacker.models;
 
 /**
- * Created by Vali on 01.12.2017.
- * This is model for a location. We will use this to parse our JSON to objects via GSON library.
+ * This is the model for a location. We will use this to parse our JSON to objects via gson library.
  */
 
 public class Location  {

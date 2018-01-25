@@ -41,6 +41,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * The current data (including his or her profile picture) is shown. Via input fields
+ * the user can edit his name. He can also add or change his profile picture by
+ * using an image from storage or take a new one via camera.
+ */
 public class EditProfileActivity extends AppCompatActivity implements PictureDialogFragment.PictureDialogListener {
 
     private EditText editTextFirstName;
@@ -72,7 +77,7 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
 
 
     /**
-     * this function is called when a place was selected in place picker widget or a picture is taken
+     * This function is called when a place was selected in place picker widget or a picture is taken.
      *
      * @param requestCode integer we have set to differentiate between actions (camera, storage)
      * @param resultCode  integer that indicates the status code
@@ -101,7 +106,8 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
     }
 
     /**
-     * this function is called upon click of add picture button, opens option dialog (PictureDialogFragment)
+     * This function is called upon click of add picture button.
+     * It opens option the dialog {@link PictureDialogFragment}.
      *
      * @param view the button
      */
@@ -112,12 +118,12 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
 
 
     /**
-     * this function is called upon click on take picture via camera
-     * it calls createImageFile() and opens the camera via an intent
+     * This function is called upon click on take picture via camera.
+     * It calls createImageFile() and opens the camera via an intent.
      * <p>
      * The dialog fragment receives a reference to this Activity through the
-     * Fragment.onAttach() callback, which it uses to call the following methods
-     * defined by the PictureDialogFragment.PictureDialogListener interface
+     * Fragment.onAttach() callback, which it uses to call the following method
+     * defined by the {@link com.interactivemedia.backpacker.fragments.PictureDialogFragment.PictureDialogListener} interface.
      */
     @Override
     public void onDialogCameraClick(PictureDialogFragment dialog) {
@@ -146,7 +152,8 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
     }
 
     /**
-     * this function starts the check for permission, in the permission callback we will start the intent to pick an image
+     * This function starts the check for permission.
+     * In the permission callback we will start the intent to pick an image.
      */
     public void getPictureFromStorage() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -154,8 +161,9 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
     }
 
     /**
-     * this function is called, when the option storage is clicked in the picture options dialog
-     * if the permission was already granted we call the function getPictureFromStorage, otherwise we ask for permssion
+     * This function is called, when the option "storage" is clicked in the picture options dialog.
+     * If the permission was already granted we call the function getPictureFromStorage,
+     * otherwise we ask for permission.
      */
     @Override
     public void onDialogStorageClick(PictureDialogFragment dialogFragment) {
@@ -167,7 +175,7 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
 
 
     /**
-     * this function is called after we ask for permission for access to external storage
+     * This function is called after we ask for permission for access to external storage.
      *
      * @param requestCode  is specified in the class
      * @param permissions  just one string in this case: storage
@@ -199,7 +207,7 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
     }
 
     /**
-     * this function starts the home activity, e.g. in case of error
+     * This function starts the {@link HomeActivity}, e.g. in case of error.
      */
     private void redirectToHome() {
         Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
@@ -208,7 +216,7 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
     }
 
     /**
-     * this function is called upon click of save profile button, it calls the async task to post the data
+     * This function is called upon click of save profile button, it calls the async task to post the data.
      *
      * @param view the button
      */
@@ -224,6 +232,9 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
         new PatchProfile().execute("/users/" + userId, jsonBody);
     }
 
+    /**
+     * This {@link AsyncTask} makes a request to the server to update the user profile.
+     */
     private class PatchProfile extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... strings) {
@@ -257,7 +268,7 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
     }
 
     /**
-     * this async task makes an api call to get the logged in user's data
+     * This {@link AsyncTask} makes an api call to get the logged in user's data.
      */
     private class GetProfile extends AsyncTask<String, Integer, String> {
         @Override
@@ -321,6 +332,9 @@ public class EditProfileActivity extends AppCompatActivity implements PictureDia
         }
     }
 
+    /**
+     * This {@link AsyncTask} uploads the new image to the server.
+     */
     private class UploadPicture extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... strings) {

@@ -22,7 +22,11 @@ import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.models.User;
 
 /**
- * Will be used for adding a new friend via Email if nfc is not available or user presses "Not working" Button.
+ * This activity is adding a new friend via Email if nfc is not available or user presses "Not working" Button.
+ * {@link AddFriendNfcActivity} will redirect to this activity, if NFC is not available.
+ * The user can search for another user via EMail. After a successful search the found
+ * user, with whom the locations can now be shared, is shown. That user will then receive
+ * a push notification and can share his locations as well.
  */
 public class AddFriendEmailActivity extends AppCompatActivity {
 

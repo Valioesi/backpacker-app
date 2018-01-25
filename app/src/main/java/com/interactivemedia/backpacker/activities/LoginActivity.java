@@ -31,7 +31,11 @@ import com.interactivemedia.backpacker.helpers.Preferences;
 import com.interactivemedia.backpacker.helpers.Request;
 import com.interactivemedia.backpacker.models.User;
 
-
+/**
+ * This is the launcher activity. A button gives the user the opportunity to login via Google
+ * Sign in. If successful, he will be directed to {@link HomeActivity}. If he is already logged in,
+ * he will be redirected without further user interaction.
+ */
 public class LoginActivity extends AppCompatActivity {
 
     private GoogleSignInClient mGoogleSignInClient;
@@ -104,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * this function starts the home activity (e.g. user is signed in)
+     * This function starts the {@link HomeActivity}.
      */
     private void startHomeActivity() {
         Intent intent = new Intent(this, HomeActivity.class);
@@ -113,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     /**
-     * handles, what happens after the attempted silent sign in
+     * This function handles what happens after the attempted silent sign in.
      * We want to refresh our ID token.
      *
      * @param completedTask holds information about the sign in attempt
@@ -144,7 +148,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * this function is called in onClickListener of sign in button, starts the sign in intent
+     * This function is called in onClickListener of sign in button.
+     * It starts the sign in intent.
      */
     private void signIn() {
         Intent intent = mGoogleSignInClient.getSignInIntent();
@@ -152,7 +157,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * this function ic called when the result of the sign in intent kicks in
+     * This function ic called, when the result of the sign in intent kicks in.
      *
      * @param requestCode in this case we only have SING_IN_REQUEST, but might be used to differentiate between different intents
      * @param resultCode  signifies if everything worked
@@ -172,8 +177,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * handles, what happens after the attempted sign in
-     * starts HomeActivity, when sign in was successful
+     * This function handles, what happens after the attempted sign in.
+     * {@link HomeActivity} is started, if sign in was successful.
      *
      * @param completedTask holds information about the sign in attempt
      */
@@ -239,7 +244,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     /**
-     * this AsyncTask sends a post request to the users endpoint to create a new user, if it does not exists
+     * This AsyncTask sends a post request to the users endpoint to create a new user, if it does not exists.
      */
     private class PostUser extends AsyncTask<String, Integer, String> {
         @Override

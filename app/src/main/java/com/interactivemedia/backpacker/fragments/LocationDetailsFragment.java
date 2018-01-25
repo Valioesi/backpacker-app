@@ -32,6 +32,11 @@ import com.interactivemedia.backpacker.models.Location;
 
 /**
  * A simple {@link Fragment} subclass.
+ *
+ * This fragment is used to navigate between different views (or in this case
+ * between multiple instances of this fragment). This is the case, if a specific
+ * location was added by multiple friends. For a more detailed description of the UI, see
+ * {@link com.interactivemedia.backpacker.activities.LocationDetailsActivity}.
  */
 public class LocationDetailsFragment extends Fragment {
 
@@ -110,7 +115,7 @@ public class LocationDetailsFragment extends Fragment {
 
 
     /**
-     * this AsyncTask makes a call to our API to get the location passed through the intent
+     * This AsyncTask makes a call to our API to get the location passed through the intent.
      */
     @SuppressLint("StaticFieldLeak")
     private class GetLocation extends AsyncTask<String, Integer, String> {
@@ -218,6 +223,11 @@ public class LocationDetailsFragment extends Fragment {
 
         }
 
+        /**
+         * This function opens a dialog to confirm the deletion of the location.
+         *
+         * @param locationId id of the location as string
+         */
         private void alertMessage(final String locationId) {
               DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -245,11 +255,18 @@ public class LocationDetailsFragment extends Fragment {
             }
         }
 
-        //Delete Location
+    /**
+     * This function calls the AsyncTask to delete the location.
+     *
+     * @param locationId id of location as string
+     */
     private void deleteLocation(String locationId) {
         new DeleteLocation().execute("/locations/" + locationId );
     }
 
+    /**
+     * This {@link AsyncTask} makes a request to the API to delete the location.
+     */
     @SuppressLint("StaticFieldLeak")
     private class DeleteLocation extends AsyncTask<String, Integer, String> {
 

@@ -21,14 +21,15 @@ import java.net.URL;
 import java.util.ArrayList;
 
 /**
- * Created by Vali on 26.11.2017.
- * this helper class serves as a mean to make http request using HttpUrlConnection
- * for now it includes get and post requests, as well as a function to upload images
+ * This helper class serves as a mean to make http request using {@link HttpURLConnection}.
+ * The class implements methods, which will be used all the time inside activities, fragments and services.
+ * The functions do not open an own thread, which is why they have to be wrapped inside an
+ * {@link android.os.AsyncTask} or a new thread in a different manner.
  */
 
 public class Request {
 
-    public static final String DOMAIN_URL = "http://10.60.59.184:3000";   //Uni
+    public static final String DOMAIN_URL = "http://10.60.43.26:3000";   //Uni
     //public static final String DOMAIN_URL = "http://192.168.178.25:3000";   //Vali Stuttgart
     // public static final String DOMAIN_URL="http://192.168.178.50:3000"; //Rebecca Stuttgart
     private static final String API_URL = DOMAIN_URL;
@@ -38,14 +39,14 @@ public class Request {
 
 
     /**
-     * this function can be used to perform a get request to a server
+     * This function can be used to perform a get request to a server.
      *
      * @param context  application context, needed to get shared preferences
      * @param endpoint -> String of the REST endpoint, is added to our URL
      * @return the server response as String
      */
     public static String get(Context context, String endpoint) {
-        if(context != null){
+        if (context != null) {
             HttpURLConnection urlConnection = null;
             try {
                 URL url = new URL(API_URL + endpoint);
@@ -80,14 +81,14 @@ public class Request {
     }
 
     /**
-     * this function can be used to perform a delete request to a server
+     * This function can be used to perform a delete request to a server.
      *
      * @param context  application context, needed to get shared preferences
      * @param endpoint -> String of the REST endpoint, is added to our URL
      * @return the server response as String
      */
     public static String delete(Context context, String endpoint) {
-        if(context != null){
+        if (context != null) {
             HttpURLConnection urlConnection = null;
             try {
                 URL url = new URL(API_URL + endpoint);
@@ -122,9 +123,9 @@ public class Request {
     }
 
     /**
-     * this function performs a post request -> calls postPutOrPatch, which does the actual work
-     * this function was added to have a structure, which reuses code for all post, put and patch
-     * without having to change the function parameters (e.g. post(endpoint, body, method)
+     * This function performs a post request. It calls postPutOrPatch, which does the actual work.
+     * This function was added to have a structure, which reuses code for all post, put and patch
+     * without having to change the function parameters (e.g. post(endpoint, body, method).
      *
      * @param context  application context, needed to get shared preferences
      * @param endpoint -> String of the REST endpoint, is added to our URL
@@ -136,9 +137,9 @@ public class Request {
     }
 
     /**
-     * this function performs a patch request -> calls postPutOrPatch, which does the actual work
-     * this function was added to have a structure, which reuses code for all post, put and patch
-     * without having to change the function parameters (e.g. post(endpoint, body, method)
+     * This function performs a patch request. It calls postPutOrPatch, which does the actual work.
+     * This function was added to have a structure, which reuses code for all post, put and patch
+     * without having to change the function parameters (e.g. post(endpoint, body, method).
      *
      * @param context  application context, needed to get shared preferences
      * @param endpoint -> String of the REST endpoint, is added to our URL
@@ -150,9 +151,9 @@ public class Request {
     }
 
     /**
-     * this function performs a put request -> calls postPutOrPatch, which does the actual work
-     * this function was added to have a structure, which reuses code for all post, put and patch
-     * without having to change the function parameters (e.g. post(endpoint, body, patchRequest)
+     * This function performs a put request. It calls postPutOrPatch, which does the actual work.
+     * This function was added to have a structure, which reuses code for all post, put and patch
+     * without having to change the function parameters (e.g. post(endpoint, body, method).
      *
      * @param context  application context, needed to get shared preferences
      * @param endpoint -> String of the REST endpoint, is added to our URL
@@ -164,8 +165,8 @@ public class Request {
 
 
     /**
-     * this function can be used to perform a post or patch request to a server
-     * it will be called by the two function post or patch
+     * This function can be used to perform a post, put or patch request to a server.
+     * It will be called by the functions post, put or patch.
      *
      * @param context       application context, needed to get shared preferences
      * @param endpoint      -> String of the REST endpoint, is added to our URL
@@ -174,7 +175,7 @@ public class Request {
      * @return response as string
      */
     private static String postPutOrPatch(Context context, String endpoint, String body, RequestMethod requestMethod) {
-        if(context != null){
+        if (context != null) {
 
             HttpURLConnection urlConnection = null;
             try {
@@ -238,7 +239,7 @@ public class Request {
     }
 
     /**
-     * this function is used to upload pictures to the server
+     * This function is used to upload pictures to the server.
      *
      * @param context       application context, needed to get shared preferences
      * @param endpoint      -> String of the REST endpoint, is added to our URL
@@ -247,7 +248,7 @@ public class Request {
      * @return response as string
      */
     public static String uploadPictures(Context context, String endpoint, ArrayList<String> picturePaths, String requestMethod) {
-        if(context != null){
+        if (context != null) {
             HttpURLConnection urlConnection = null;
             try {
                 URL url = new URL(API_URL + endpoint);
@@ -335,7 +336,7 @@ public class Request {
 
 
     /**
-     * this method converts the inputstream to a string
+     * This method converts the {@link InputStream} to a string.
      *
      * @param in is the inputstream
      * @return the response as String

@@ -11,7 +11,6 @@ import com.interactivemedia.backpacker.helpers.Request;
  * This service handles everything regarding the Firebase Cloud Messaging token.
  * This class is based on the FCM quickstart project: https://github.com/firebase/quickstart-android
  *
- * Created by vali_ on 20.01.2018.
  */
 
 public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
@@ -40,10 +39,7 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
     }
 
     /**
-     * Persist token to third-party servers.
-     *
-     * Modify this method to associate the user's FCM InstanceID token with any server-side account
-     * maintained by your application.
+     * This function sends the fcm token to the server.
      *
      * @param token The new token.
      */

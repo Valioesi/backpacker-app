@@ -147,6 +147,9 @@ public class MyLocationsFragment extends Fragment {
 
     }
 
+    /**
+     * This function calls {@link GetLocations} to load the user's locations.
+     */
     private void loadLocations() {
         //call AsycTask to the locations of one user to show from server
         new GetLocations(fillListAdapter).execute("/locations?users=" + userId);
@@ -156,7 +159,8 @@ public class MyLocationsFragment extends Fragment {
 
 
     /**
-     * this AsyncTask makes a call to our API to get locations, which will be rendered on the map
+     * This AsyncTask makes a call to our API to get locations, which will then
+     * be used to fill the list.
      */
     @SuppressLint("StaticFieldLeak")
     private class GetLocations extends AsyncTask<String, Integer, String> {
@@ -220,7 +224,7 @@ public class MyLocationsFragment extends Fragment {
         }
     }
     /**
-     * this function simply opens the addLocationActivity
+     * This opens {@link AddLocationActivity}.
      */
     private void openAddLocationActivity(){
         Intent intent = new Intent(context, AddLocationActivity.class);
@@ -228,6 +232,9 @@ public class MyLocationsFragment extends Fragment {
     }
 
 
+    /**
+     * This function makes the list invisible.
+     */
     private void setLayout() {
         //set visibility of ListView gone and of TextView visible to see the message
         lvMyLocations.setVisibility(View.GONE);

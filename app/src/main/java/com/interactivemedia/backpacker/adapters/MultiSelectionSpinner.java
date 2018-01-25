@@ -13,18 +13,19 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by Vali on 07.12.2017.
- * this is a class taken from a project on github: https://github.com/GunaseelanArumaikkannu/MultiSpinner
- * it implements a spinner with a multiselect list
- * needed for out AddLocationActivity to add multiple categories
+ * This is a class taken from a project on github: https://github.com/GunaseelanArumaikkannu/MultiSpinner
+ * It implements a spinner with a multiselect list.
+ * It is needed for {@link com.interactivemedia.backpacker.activities.AddLocationActivity} to add multiple categories.
  */
 public class MultiSelectionSpinner extends android.support.v7.widget.AppCompatSpinner implements
         OnMultiChoiceClickListener {
 
-    public interface OnMultipleItemsSelectedListener{
+    public interface OnMultipleItemsSelectedListener {
         void selectedIndices(List<Integer> indices);
+
         void selectedStrings(List<String> strings);
     }
+
     private OnMultipleItemsSelectedListener listener;
 
     String[] _items = null;
@@ -50,7 +51,7 @@ public class MultiSelectionSpinner extends android.support.v7.widget.AppCompatSp
         super.setAdapter(simple_adapter);
     }
 
-    public void setListener(OnMultipleItemsSelectedListener listener){
+    public void setListener(OnMultipleItemsSelectedListener listener) {
         this.listener = listener;
     }
 
@@ -109,7 +110,7 @@ public class MultiSelectionSpinner extends android.support.v7.widget.AppCompatSp
     public void setItems(List<String> items) {
         _items = items.toArray(new String[items.size()]);
         mSelection = new boolean[_items.length];
-        mSelectionAtStart  = new boolean[_items.length];
+        mSelectionAtStart = new boolean[_items.length];
         simple_adapter.clear();
         simple_adapter.add(_items[0]);
         Arrays.fill(mSelection, false);

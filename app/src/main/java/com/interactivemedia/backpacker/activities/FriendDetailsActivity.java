@@ -37,6 +37,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.TreeSet;
 
+/**
+ * This activity shows name and profile picture of a friend. In addition a list of
+ * his or her favorite locations are shown. They can be filtered depending on a chosen country.
+ * Via a click on a button and a popup, which asks the user to confirm, the user is able
+ * to delete the friend.
+ */
 public class FriendDetailsActivity extends AppCompatActivity {
 
     private ArrayList<Location> friendsLocations;
@@ -127,8 +133,10 @@ public class FriendDetailsActivity extends AppCompatActivity {
     }
 
 
-    //remove friend confirmation dialog
-    //taken from: http://www.androidhub4you.com/2012/09/alert-dialog-box-or-confirmation-box-in.html
+    /**
+     * This function opens a dialog to confirm the removal of the friend
+     * @param friendId id of the friend that is to bo deleted
+     */
     public void alertMessage(final String friendId) {
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
@@ -156,12 +164,19 @@ public class FriendDetailsActivity extends AppCompatActivity {
     }
 
 
-    //initializes Request to load Locations of a friend.
+
+    /**
+     * This method calls {@link GetLocationOfFriend} to get the locations of the friend.
+     * @param friendId id of friend
+     */
     private void loadLocations(String friendId) {
         new GetLocationOfFriend().execute("/locations?users=" + friendId);
     }
 
 
+    /**
+     * This {@link AsyncTask} makes an API request to get the locations of the friend.
+     */
     @SuppressLint("StaticFieldLeak")
     private class GetLocationOfFriend extends AsyncTask<String, Integer, String> {
         @Override
@@ -230,7 +245,10 @@ public class FriendDetailsActivity extends AppCompatActivity {
 
     }
 
-    //set layout with spinner to invisible
+
+    /**
+     * This method sets the layout, which contains to {@link Spinner}, to be invisible.
+     */
     private void setLayouts() {
         locationInfo = findViewById(R.id.layout_locationInfo);
         noLocations = findViewById(R.id.noLocations);
@@ -240,7 +258,10 @@ public class FriendDetailsActivity extends AppCompatActivity {
 
     }
 
-    //Fill Spinner with values from Friend's Location
+
+    /**
+     * This function fills the {@link Spinner} with the values of the friend's location.
+     */
     private void fillSpinner() {
         countries = new ArrayList<>();
         HashSet hashCountryList = new HashSet<>();
@@ -293,13 +314,20 @@ public class FriendDetailsActivity extends AppCompatActivity {
 
     }
 
-    //delete friend after pushing the button --> Send request to backend.
+
+    /**
+     * This function calls {@link DeleteFriend} after click on "delete friend" button.
+     * @param friendId id of riend to be deleted
+     */
     private void deleteFriend(String friendId) {
         String userId = Preferences.getUserId(this);
         //String meId = "5a323b82654ba50ef8d2b8c2";
         new DeleteFriend(adapter).execute("/users/" + userId + "/friends/" + friendId);
     }
 
+    /**
+     * This {@link AsyncTask} performs an API request to delete the friend.
+     */
     @SuppressLint("StaticFieldLeak")
     private class DeleteFriend extends AsyncTask<String, Integer, String> {
 

@@ -21,6 +21,9 @@ import com.interactivemedia.backpacker.fragments.SettingsFragment;
 import com.interactivemedia.backpacker.helpers.Preferences;
 import com.interactivemedia.backpacker.helpers.Request;
 
+/**
+ * This activity implements a {@link BottomNavigationView} to hold the 4 main fragments.
+ */
 public class HomeActivity extends AppCompatActivity {
 
     private Context context;
@@ -88,6 +91,10 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * This {@link AsyncTask} adds friends, that could not be added earlier during NFC exchange because of
+     * missing internet.
+     */
     private class AddFriend extends AsyncTask<String, Integer, String> {
 
         @Override

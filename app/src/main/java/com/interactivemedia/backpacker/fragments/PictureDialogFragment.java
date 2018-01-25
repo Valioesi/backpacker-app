@@ -13,8 +13,13 @@ import com.interactivemedia.backpacker.R;
 import com.interactivemedia.backpacker.activities.AddLocationActivity;
 
 /**
- * this DialogFragment handles the dialog in which the user can chose the option of adding an image (camera or storage)
- * used in AddLocationFragment
+ * This DialogFragment handles the dialog in which the user can chose the option of adding an image (camera or storage).
+ * It extends the android class {@link DialogFragment}. It is used inside {@link AddLocationActivity}
+ * and {@link com.interactivemedia.backpacker.activities.EditProfileActivity} to show the user
+ * the possibility to chose between camera or storage, once he wants to select an image.
+ * The fragment can be used in multiple activities in the same manner, because it
+ * offers the interface {@link PictureDialogListener}. This interface must be implemented inside
+ * of the activities to handle clicks on list elements of the dialog.
  */
 public class PictureDialogFragment extends DialogFragment {
 

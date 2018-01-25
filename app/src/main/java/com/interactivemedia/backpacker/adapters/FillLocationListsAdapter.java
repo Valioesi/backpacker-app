@@ -33,7 +33,6 @@ import java.util.HashSet;
 
 /**
  * Adapter fills ListView with ListViewItems
- * Created by Rebecca Durm on 04.01.2018.
  */
 
 public class FillLocationListsAdapter extends ArrayAdapter<Location> implements Filterable {
@@ -169,18 +168,15 @@ public class FillLocationListsAdapter extends ArrayAdapter<Location> implements 
     }
 
 
+    /**
+     * Changes the attribute "favorite" in the Backend depending on the user's input. Click on image view changes
+     * isFavorite value.
+     */
     @SuppressLint("StaticFieldLeak")
     private class ChangeFavorite extends AsyncTask<String, Integer, String> {
         Boolean isFavorite;
         String googleId;
 
-        /**
-         * Changes the attribute "favorite" in the Backend depending on the user's input. Click on image view changes
-         * isFavorite value.
-         *
-         * @param isFavorite Determines if location is a favorite Place or not. Is set by clicking the image view.
-         * @param googleId   GoogleID of the location. Is necessary for changing the location's attributes.
-         */
         ChangeFavorite(boolean isFavorite, String googleId) {
             this.isFavorite = isFavorite;
             this.googleId = googleId;
@@ -249,12 +245,6 @@ public class FillLocationListsAdapter extends ArrayAdapter<Location> implements 
                 results.values = locations;
 
             }
-
-//            //if not sorted
-//            else {
-//                results.count = locations.size();
-//                results.values = locations;
-//            }
 
 
             return results;

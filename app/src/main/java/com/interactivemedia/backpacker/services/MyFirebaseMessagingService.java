@@ -14,9 +14,7 @@ import com.interactivemedia.backpacker.helpers.Preferences;
 import com.interactivemedia.backpacker.helpers.Request;
 
 /**
- * This service handles receiving push notifications from backend.
- * <p>
- * Created by vali_ on 20.01.2018.
+ * This service handles receiving push notifications from the backend.
  */
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -76,7 +74,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }
 
 
-                //TOKEN: fjtJ8AKJZGA:APA91bH_HU8N58ZFMAntQu2qdyJGPPQ5z6rztpYebX0g9HrOS-epEdoPlVkZvz3gXqJRJa2CBN4Uy5ycfSqK80crKK4RfkvS0Ts-ZzYs_XckbSSYsn1J3YhQAtd_eqpIqRx3YB3V8BNZ
             }
 
         }

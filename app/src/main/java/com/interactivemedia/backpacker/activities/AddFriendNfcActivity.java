@@ -25,7 +25,11 @@ import java.util.concurrent.TimeUnit;
 import static android.nfc.NdefRecord.createMime;
 
 /**
- * Will be used for adding a new friend via Nfc.
+ * This activity is used for adding a new friend via Nfc. During the connection only
+ * the user id of the initiator is exchanged. Afterwards the receiver of the id adds the first
+ * user as friend triggering a push notification to the first user, which will add the second user as
+ * a friend as well.
+ * Because of this exchange the two users and their locations will be seen in the other screens.
  */
 public class AddFriendNfcActivity extends AppCompatActivity implements NfcAdapter.OnNdefPushCompleteCallback, NfcAdapter.CreateNdefMessageCallback {
 

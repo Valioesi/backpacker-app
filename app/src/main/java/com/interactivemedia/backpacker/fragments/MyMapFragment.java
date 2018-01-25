@@ -59,10 +59,22 @@ import java.util.HashMap;
 /**
  * A simple {@link Fragment} subclass.
  * <p>
- * This fragment included a MapView
+ * This fragment includes a {@link MapView}
  * The decision to use a MapView inside our own Fragment instead of using a MyMapFragment (which would have
  * already included all of the lifecycle methods) is based on flexibility in the future and the possibility to easily edit the xml file
  * and add functionality to the fragment.
+ * </p>
+ * <p>
+ *  This fragment is the most complex class of the project. It shows a map to the user,
+ *  which includes markers of the friend's locations, as well as his or her own locations.
+ *  The user can filter markers depending on friends. The list of friends to be filtered
+ *  is inside a {@link DrawerLayout}. For every marker an individual pop up window will
+ *  be shown for friends, which shows an image and information of the location. If a location
+ *  was added by multiple friends a special marker will be shown. A click on the pop up window will
+ *  open {@link LocationDetailsActivity}. A {@link android.support.design.widget.FloatingActionButton} will lead
+ *  to {@link AddLocationActivity}. The fragment is integrated into the {@link com.interactivemedia.backpacker.activities.HomeActivity}
+ * </p>
+ *
  */
 public class MyMapFragment extends Fragment {
 
@@ -207,7 +219,7 @@ public class MyMapFragment extends Fragment {
     }
 
     /**
-     * this function simply opens the addLocationActivity
+     * This function simply opens the {@link AddLocationActivity}.
      */
     private void openAddLocationActivity() {
         Intent intent = new Intent(context, AddLocationActivity.class);
@@ -216,8 +228,8 @@ public class MyMapFragment extends Fragment {
 
 
     /**
-     * this function starts the async task to load locations of logged in user,
-     * the process to load locations of friends will be started in onPostExecute of the async task
+     * This function starts the async task to load locations of logged in user.
+     * The process to load locations of friends will be started in onPostExecute of the async task.
      */
     private void loadLocationsOfUser() {
         //check, if user is online
@@ -233,7 +245,7 @@ public class MyMapFragment extends Fragment {
     }
 
     /**
-     * this function calls the async task to get locations from server
+     * This function calls the async task to get locations of friends from the server.
      */
     private void loadLocationsOfFriends() {
         //call AsycnTask to get users and their saved locations to show from server
@@ -244,8 +256,8 @@ public class MyMapFragment extends Fragment {
 
 
     /**
-     * this AsyncTask makes a call to our API to get locations of the logged in user, which will be rendered on the map
-     * the task to get locations of friends will be started in the onPostExecute
+     * This {@link AsyncTask} makes a call to our API to get locations of the logged in user, which will be rendered on the map.
+     * The task to get locations of friends will be started in the onPostExecute.
      */
     @SuppressLint("StaticFieldLeak")
     private class GetLocationsOfUser extends AsyncTask<String, Integer, String> {
@@ -282,7 +294,7 @@ public class MyMapFragment extends Fragment {
     }
 
     /**
-     * this AsyncTask makes a call to our API to get friends and their locations, which will be rendered on the map
+     * This AsyncTask makes a call to our API to get friends and their locations, which will be rendered on the map,
      */
     @SuppressLint("StaticFieldLeak")
     private class GetLocationsOfFriends extends AsyncTask<String, Integer, String> {
@@ -326,7 +338,7 @@ public class MyMapFragment extends Fragment {
 
 
     /**
-     * this function sets one marker on the map
+     * This function sets one marker on the map.
      *
      * @param location the location object, which holds the data needed for the marker
      * @param index    the index of the loop through the user's friends -> needed to compute color for marker
@@ -357,7 +369,7 @@ public class MyMapFragment extends Fragment {
     }
 
     /**
-     * this function loops through all users and adds their locations to the map
+     * This function loops through all users and adds their locations to the map.
      */
     private void addMarkersForAllUsers() {
         for (int i = 0; i < friends.size(); i++) {
@@ -373,7 +385,7 @@ public class MyMapFragment extends Fragment {
     }
 
     /**
-     * this function adds a user to the googleIdHashmap
+     * This function adds a user to the googleIdHashmap
      *
      * @param googleId the key, under which the user will be stored
      * @param user     the user to be added (will be in array list in hash map)
@@ -400,8 +412,8 @@ public class MyMapFragment extends Fragment {
 
 
     /**
-     * this function is used to hold all existing markers in a hash map
-     * this is necessary for: if there already is a marker for a google id, it has to be removed from the map
+     * This function is used to hold all existing markers in a hash map.
+     * This is necessary for: if there already is a marker for a google id, it has to be removed from the map.
      *
      * @param googleId the key, under which the marker will be stored
      * @param marker   the marker to be stored
@@ -429,7 +441,7 @@ public class MyMapFragment extends Fragment {
     }
 
     /**
-     * this function configures the info window for the markers
+     * This function configures the info window for the markers.
      */
     private void configureInfoWindow() {
         //set individual info window
@@ -567,8 +579,8 @@ public class MyMapFragment extends Fragment {
 
 
     /**
-     * this is a helper function, which converts a drawable into a bitmap
-     * needed for creation of marker
+     * This is a helper function, which converts a drawable into a bitmap, which is
+     * needed for creation of marker.
      *
      * @param drawable the Drawable, we want to convert
      * @return Bitmap, created from drawable

@@ -20,15 +20,16 @@ import java.util.Locale;
 
 /**
  * Created by vali_ on 05.01.2018.
- *
- * this class contains some helper functions to deal with storage stuff, e.g. create an image file on the phone
- * this class was created to reuse code in AddLocationActivity and EditProfileActivity
+ * <p>
+ * This class contains some helper functions to deal with the device's storage.
+ * The functions are essential for activities and fragments, in which
+ * images are taken via camera or chose from storage.
  */
 
 public class Storage {
     /**
-     * this function creates a file on the phone, where the image will be saved later
-     * taken from: https://developer.android.com/training/camera/photobasics.html#TaskPath
+     * This function creates a file on the phone, where the image will be saved later.
+     * See reference: https://developer.android.com/training/camera/photobasics.html#TaskPath
      *
      * @return the created file
      * @throws IOException if file cannot be created
@@ -44,7 +45,16 @@ public class Storage {
         );
     }
 
-    public static boolean getStoragePermission(Activity activity, int requestCode){
+
+    /**
+     * This function requests external storage permission, when the SDK of the phone
+     * is 23 or above.
+     *
+     * @param activity    the activity, in which the function is called
+     * @param requestCode request code needed to pass to requestPermissions function
+     * @return true, if permission was granted, false otherwise
+     */
+    public static boolean getStoragePermission(Activity activity, int requestCode) {
         if (Build.VERSION.SDK_INT >= 23 && activity.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             // Should we show an explanation?
             if (activity.shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
@@ -60,7 +70,14 @@ public class Storage {
     }
 
 
-    public static String getPicturePathFromStorage(Intent data, Activity activity){
+    /**
+     * This function retrieves the absolute path of an image file.
+     *
+     * @param data     the {@link Intent} holding the data
+     * @param activity the activity, in which the function is called
+     * @return absolute path of file as a String, null if an error occurred
+     */
+    public static String getPicturePathFromStorage(Intent data, Activity activity) {
         if (data.getData() != null) {
             Uri selectedImageUri = data.getData();
             //get path to selected image (always so fucking complicated in Android!)

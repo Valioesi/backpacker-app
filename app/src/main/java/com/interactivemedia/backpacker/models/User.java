@@ -3,9 +3,7 @@ package com.interactivemedia.backpacker.models;
 import java.util.ArrayList;
 
 /**
- * Created by Vali on 26.11.2017.
- *
- * This is an example model for users. We will use this to parse our JSON to objects via GSON library
+ * This is the model for users. We will use this to parse our JSON to objects via GSON library.
  */
 
 public class User {

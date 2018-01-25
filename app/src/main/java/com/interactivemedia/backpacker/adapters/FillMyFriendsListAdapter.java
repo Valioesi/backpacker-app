@@ -21,7 +21,6 @@ import java.util.ArrayList;
 
 /**
  * Adapter fills ListView with ListViewItems
- * Created by Rebecca Durm on 04.01.2018.
  */
 
 public class FillMyFriendsListAdapter extends ArrayAdapter<User> {
@@ -78,22 +77,7 @@ public class FillMyFriendsListAdapter extends ArrayAdapter<User> {
 
         return convertView;
 
-//        //The Friends Details Activity is only accessed via MyFriendsFragment.
-//        //That's why there is no need to do a second request in the FriendDetailsActivity. We can simply hand over the information from this request
-//        //read it in the FriendDetailsActivity by getting the extras of the Input.
-//        //if the FriendDetailsActivity was accessable from other activities or fragments it will be more useful to
-//        //simply hand the userId.
-//        view.setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(getContext(), FriendDetailsActivity.class);
-//                intent.putExtra("userId", userId);
-//                intent.putExtra("firstName", firstName);
-//                intent.putExtra("lastName", lastName);
-//                intent.putExtra("avatar", avatar);
-//                context.startActivity(intent);
-//            }
-//        });
+
     }
 
 

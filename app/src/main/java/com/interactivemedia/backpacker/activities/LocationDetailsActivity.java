@@ -16,6 +16,12 @@ import com.interactivemedia.backpacker.fragments.LocationDetailsFragment;
 
 import java.util.ArrayList;
 
+/**
+ * This activity shows description, categories and images of a location.
+ * If the (real) location was added by multiple friends, the user can navigate
+ * via tabs and a {@link ViewPager} (swiping) between the different information.
+ * The UI of a single location is implemented in the {@link LocationDetailsFragment}.
+ */
 public class LocationDetailsActivity extends AppCompatActivity {
 
     private String locationGoogleId;

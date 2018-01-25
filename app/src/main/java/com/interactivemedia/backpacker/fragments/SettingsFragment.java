@@ -32,6 +32,10 @@ import java.nio.channels.SocketChannel;
 
 /**
  * A simple {@link Fragment} subclass.
+ * This fragment has the smallest functionality of the 4 "main fragments".
+ * It only holds 3 buttons. "Edit Profile" leads to {@link EditProfileActivity},
+ * "Show Credits" shows a popup window, which shows info about the dev team of the application.
+ * "Logout" logs the user out and redirects to {@link LoginActivity}.
  */
 public class SettingsFragment extends Fragment {
 
@@ -118,6 +122,9 @@ public class SettingsFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Shows a dialog to confirm logout.
+     */
     private void alertMessage() {
         //remove friend confirmation dialog
         //taken from: http://www.androidhub4you.com/2012/09/alert-dialog-box-or-confirmation-box-in.html
@@ -146,6 +153,9 @@ public class SettingsFragment extends Fragment {
         }
 
 
+    /**
+     * This function logs the user out.
+     */
     private void logout() {
 
 
@@ -185,6 +195,9 @@ public class SettingsFragment extends Fragment {
         }
     }
 
+    /**
+     * This function opens a pop up to show the credits.
+     */
     private void showCredits() {
         //show credit information
         //source: https://stackoverflow.com/questions/6264694/how-to-add-message-box-with-ok-button
@@ -201,7 +214,7 @@ public class SettingsFragment extends Fragment {
     }
 
     /**
-     * this function starts the EditProfileActivity
+     * This function starts the {@link EditProfileActivity}.
      */
     private void openProfile() {
         Intent intent = new Intent(context, EditProfileActivity.class);

@@ -34,6 +34,9 @@ import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
+ * The user will be shown a list of his friends including names and profile pictures.
+ * On click of an item {@link FriendDetailsActivity} will be opened. A {@link FloatingActionButton}
+ * will direct toe {@link AddFriendNfcActivity}. This fragment will only be used inside {@link com.interactivemedia.backpacker.activities.HomeActivity}
  */
 public class MyFriendsFragment extends Fragment {
 
@@ -100,7 +103,6 @@ public class MyFriendsFragment extends Fragment {
         });
 
 
-
         //set on click listener for add friend button -> open AddFriendNfcActivity
         FloatingActionButton button = view.findViewById(R.id.add_friend_button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -125,7 +127,7 @@ public class MyFriendsFragment extends Fragment {
         } else {
             //show sad backpack
             View view = getView();
-            if(view != null){
+            if (view != null) {
                 getView().findViewById(R.id.main_layout).setVisibility(View.GONE);
                 getView().findViewById(R.id.no_internet).setVisibility(View.VISIBLE);
                 getView().findViewById(R.id.add_friend_info_offline).setVisibility(View.VISIBLE);
@@ -135,12 +137,18 @@ public class MyFriendsFragment extends Fragment {
 
     }
 
+    /**
+     * This function calls {@link GetFriends} to load friends and their locations.
+     */
     private void loadFriends() {
         String userId = Preferences.getUserId(context);
         new GetFriends().execute("/users/" + userId + "/friends");
     }
 
 
+    /**
+     * This {@link AsyncTask} performs a request to the API to load friends.
+     */
     @SuppressLint("StaticFieldLeak")
     private class GetFriends extends AsyncTask<String, Integer, String> {
 
@@ -160,7 +168,7 @@ public class MyFriendsFragment extends Fragment {
                 Intent intent = new Intent(context, LoginActivity.class);
                 startActivity(intent);
             } else {
-                 Log.d("JSON response: ", result);
+                Log.d("JSON response: ", result);
 
                 //we need to handle the conversion from json string to User Object, because user in this json is in format
                 //user : { id: ..., firstName: ..., lastName:..}    instead of just user: id

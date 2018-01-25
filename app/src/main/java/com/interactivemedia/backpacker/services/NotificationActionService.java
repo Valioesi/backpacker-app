@@ -13,8 +13,8 @@ import com.interactivemedia.backpacker.helpers.Request;
 
 /**
  * This service handles the action of the notification.
- * If the user presses the "Share locations, too" button, this service will be called and makes it
- * perform the appropriate API request.
+ * If the user presses the "Share locations, too" button, this service will be called.
+ * It performs the appropriate API request.
  */
 public class NotificationActionService extends IntentService {
 

@@ -47,7 +47,9 @@ import java.util.List;
 
 /**
  * This activity deals with the adding of a location to the user's list.
- * It uses Google place picker to select a location.
+ * It uses Google {@link PlacePicker} to select a location. PlacePicker is a in integrated UI widget,
+ * that is part of th Google Paces API. The user can add a description, categories and multiple images
+ * from storage or camera to the chosen location.
  */
 public class AddLocationActivity extends AppCompatActivity implements MultiSelectionSpinner.OnMultipleItemsSelectedListener, PictureDialogFragment.PictureDialogListener {
 
